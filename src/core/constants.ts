@@ -245,3 +245,60 @@ export const DEMO_PASSAGE_RAYONS = 3
  */
 export const DEMO_DISTANCE_CHANGEMENT_KM = 80_000
 export const DEMO_DUREE_MAX_CIBLE_S = 45
+
+// ===========================================================================
+// Niveaux (étape 4a)
+// ===========================================================================
+
+/**
+ * Chiffres significatifs affichés à chaque niveau de connaissance (1 Découverte,
+ * 2 Explorateur, 3 Navigateur, 4 Expert). Source : choix pédagogique. Les niveaux
+ * 1 et 3 gardent les valeurs des anciens profils enfant (2) et adulte (4).
+ */
+export const CHIFFRES_SIGNIFICATIFS_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, number>> = {
+  1: 2,
+  2: 3,
+  3: 4,
+  4: 5,
+}
+
+/**
+ * Comparaisons imagées (« 30 diamètres de la Terre ») visibles à chaque niveau.
+ * Source : choix pédagogique. L'expert lit directement les grandeurs.
+ */
+export const COMPARAISONS_IMAGEES_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, boolean>> = {
+  1: true,
+  2: true,
+  3: true,
+  4: false,
+}
+
+/** Formules de calcul visibles à chaque niveau. Source : choix pédagogique. */
+export const FORMULES_VISIBLES_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, boolean>> = {
+  1: false,
+  2: false,
+  3: true,
+  4: true,
+}
+
+/** Notation scientifique (3,844 × 10⁵ km) à chaque niveau. Source : choix pédagogique. */
+export const NOTATION_SCIENTIFIQUE_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, boolean>> = {
+  1: false,
+  2: false,
+  3: false,
+  4: true,
+}
+
+/**
+ * Catégories d'information ajoutées à chaque niveau : un niveau voit ses propres
+ * catégories et celles de tous les niveaux inférieurs. Source : choix pédagogique,
+ * du plus concret (distance, vitesse, temps) au plus abstrait (atmosphère, orbite).
+ */
+export const CATEGORIES_AJOUTEES_NIVEAU: Readonly<
+  Record<1 | 2 | 3 | 4, readonly string[]>
+> = {
+  1: ['distance', 'vitesse', 'temps'],
+  2: ['lumiere', 'radio'],
+  3: ['temperature', 'gravite'],
+  4: ['atmosphere', 'orbite'],
+}
