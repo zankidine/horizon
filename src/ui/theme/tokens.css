@@ -1,0 +1,55 @@
+/*
+ * Variables de thème, par ambiance. L'ambiance est choisie par l'attribut
+ * data-ambiance sur la racine (<html>). Les dix premiers noms sont partagés
+ * avec d'autres développeurs : ne pas les renommer. Les variables
+ * --poste-* sont propres au poste de commandement.
+ * Polices système uniquement : l'application doit marcher hors ligne.
+ */
+
+/* « aventure » : chaleureuse, arrondie, plus claire. Aussi la valeur par
+   défaut avant que l'attribut soit posé. */
+:root,
+:root[data-ambiance='aventure'] {
+  --cockpit-bg: #e8d3b4;
+  --cockpit-metal: #b9a98f;
+  --screen-bg: #17324a;
+  --screen-text: #fdf3da;
+  --accent: #ff8a3d;
+  --accent-2: #2fb5a8;
+  --warning: #e5484d;
+  --radius: 18px;
+  --font-ui:
+    ui-rounded, 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', system-ui,
+    -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --vitre-reflet: rgb(255 255 255 / 0.2);
+
+  --poste-texte: #3d2b1f;
+  --poste-silhouette: #2c2a4a;
+  --poste-silhouette-lueur: #ffb36b;
+  --poste-montant: #cdbda2;
+  --poste-ombre: rgb(61 43 31 / 0.35);
+  --poste-voyant-eteint: #8a7a64;
+}
+
+/* « cinema » : sombre, ambre et cyan, sobre. */
+:root[data-ambiance='cinema'] {
+  --cockpit-bg: #0c0f13;
+  --cockpit-metal: #3b4450;
+  --screen-bg: #04090d;
+  --screen-text: #86e8f2;
+  --accent: #ffb000;
+  --accent-2: #19c7d6;
+  --warning: #ff4a3d;
+  --radius: 4px;
+  --font-ui:
+    ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas,
+    'Liberation Mono', monospace;
+  --vitre-reflet: rgb(160 200 255 / 0.08);
+
+  --poste-texte: #b9c4cf;
+  --poste-silhouette: #05070a;
+  --poste-silhouette-lueur: #19c7d6;
+  --poste-montant: #1c222a;
+  --poste-ombre: rgb(0 0 0 / 0.6);
+  --poste-voyant-eteint: #2b333c;
+}
