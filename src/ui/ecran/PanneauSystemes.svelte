@@ -14,12 +14,15 @@
     ecran,
     categoriesVisibles,
     avecPied = true,
+    dansFenetre = false,
   }: {
     ecran: EtatEcran
     /** Réglage de qualité et crédits : dans le panneau, ou ailleurs en paysage. */
     avecPied?: boolean
     /** Grandeurs montrées selon le niveau de connaissance (tout par défaut). */
     categoriesVisibles?: readonly Categorie[]
+    /** Affiché dans une fenêtre : sans cadre propre. */
+    dansFenetre?: boolean
   } = $props()
 
   const hud = $derived(ecran.hud)
@@ -31,7 +34,8 @@
 </script>
 
 <HudPanneau
-  id="hud-systemes"
+  sansCadre={dansFenetre}
+  id="hud-systemes{dansFenetre ? '-fenetre' : ''}"
   titre={hud.t(hud.textes.statut.titre)}
   allume={hud.estAllume(RANGS.systemes)}
   flou={false}

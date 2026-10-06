@@ -10,6 +10,7 @@
     allume = true,
     flou = false,
     repliable = false,
+    sansCadre = false,
     ouvert = true,
     ontoggle,
     children,
@@ -25,42 +26,55 @@
     /** Flou d'arrière-plan (limité à quelques panneaux). */
     flou?: boolean
     repliable?: boolean
+    /** Dans une fenêtre : le cadre et le titre sont ceux de la fenêtre. */
+    sansCadre?: boolean
     ouvert?: boolean
     ontoggle?: () => void
     children: Snippet
   } = $props()
 </script>
 
-<section class="panneau" class:allume class:flou class:replie={!ouvert}>
-  <HudCoins />
-  <span class="balayage" aria-hidden="true"></span>
+<section
+  class="panneau"
+  class:allume={allume || sansCadre}
+  class:flou={flou && !sansCadre}
+  class:nu={sansCadre}
+  class:replie={!ouvert}
+>
+  {#if !sansCadre}
+    <HudCoins />
+    <span class="balayage" aria-hidden="true"></span>
+  {/if}
 
-  <h2 class="entete">
-    {#if repliable}
-      <button
-        type="button"
-        class="bascule"
-        aria-expanded={ouvert}
-        aria-controls="{id}-corps"
-        onclick={() => ontoggle?.()}
-      >
-        <span class="titre">{titre}</span>
-        {#if !ouvert && resume}<span class="resume">{resume}</span>{/if}
-        <svg
-          class="fleche"
-          viewBox="0 0 12 12"
-          aria-hidden="true"
-          focusable="false"
+  {#if !sansCadre}
+    <h2 class="entete">
+      {#if repliable}
+        <button
+          type="button"
+          class="bascule"
+          aria-expanded={ouvert}
+          aria-controls="{id}-corps"
+          onclick={() => ontoggle?.()}
         >
-          <path d="M2 4.5 L6 8.5 L10 4.5" />
-        </svg>
-      </button>
-    {:else}
-      <span class="titre"
-        >{#if prefixe}<span class="invisible">{prefixe}</span>{/if}{titre}</span
-      >
-    {/if}
-  </h2>
+          <span class="titre">{titre}</span>
+          {#if !ouvert && resume}<span class="resume">{resume}</span>{/if}
+          <svg
+            class="fleche"
+            viewBox="0 0 12 12"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M2 4.5 L6 8.5 L10 4.5" />
+          </svg>
+        </button>
+      {:else}
+        <span class="titre"
+          >{#if prefixe}<span class="invisible">{prefixe}</span
+            >{/if}{titre}</span
+        >
+      {/if}
+    </h2>
+  {/if}
 
   {#if ouvert}
     <div class="corps" id="{id}-corps">
@@ -91,6 +105,14 @@
     transition:
       opacity 320ms ease-out,
       transform 320ms ease-out;
+  }
+
+  /* Dans une fenêtre : ni cadre, ni fond, ni halo. */
+  .panneau.nu {
+    overflow: visible;
+    border: 0;
+    background: none;
+    box-shadow: none;
   }
 
   .panneau.allume {

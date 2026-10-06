@@ -3,6 +3,7 @@
  * inertie), séquence d'allumage, panneaux repliables, fenêtre système,
  * masquage. Les composants .svelte ne font qu'afficher.
  */
+import { tick } from 'svelte'
 import type { TexteProfil } from '../../core/validation'
 import type { NiveauQualite } from '../../core/qualite'
 import donneesHud from '../../data/hud.json'
@@ -13,7 +14,6 @@ import {
   fenetreVisible,
   INERTIE_TETE_MS,
   PAS_ALLUMAGE_MS,
-  type Ancre,
 } from '../../lib/hud'
 import type { MiseEnPage } from '../../lib/miseEnPage'
 import type { Vecteur } from '../../lib/parallaxe'
@@ -23,8 +23,12 @@ import { EtatFenetreSysteme } from './fenetre.svelte.ts'
 
 const DONNEES = validerDonneesHud(donneesHud)
 
+/** Fenêtres encore vides : le contenu viendra avec leurs écrans. */
 export const IDS_SYSTEME = ['navigation', 'scan', 'communications'] as const
-export type IdSysteme = (typeof IDS_SYSTEME)[number]
+/** Fenêtres qui montrent un panneau : accessibles par un bouton en bas. */
+export const IDS_PANNEAUX = ['systemes', 'cible', 'trajet'] as const
+export type IdPanneau = (typeof IDS_PANNEAUX)[number]
+export type IdSysteme = (typeof IDS_SYSTEME)[number] | IdPanneau
 
 /** Rangs de la séquence d'allumage, dans l'ordre d'apparition. */
 export const RANGS = {
@@ -37,9 +41,6 @@ export const RANGS = {
 } as const
 
 const TOTAL_ELEMENTS = Object.keys(RANGS).length
-
-/** Tiroirs des petits écrans : un seul est ouvert à la fois. */
-export type IdTiroir = 'systemes' | 'cible' | 'trajet'
 
 /** Ce que le HUD lit de l'écran qui l'héberge. */
 export interface ContexteHud {
@@ -54,20 +55,15 @@ export interface ContexteHud {
   readonly hauteur: number
 }
 
-/** Centre de la fenêtre : le milieu de l'écran, que le HUD laisse libre. */
-const ANCRE_FENETRE: Ancre = { x: 0.5, y: 0.5 }
-
 export class EtatHud {
   readonly textes = DONNEES.textes
   readonly demo = DONNEES.demo
   readonly idsSysteme = IDS_SYSTEME
+  readonly idsPanneaux = IDS_PANNEAUX
   readonly inertieMs = INERTIE_TETE_MS
-  readonly ancreFenetre = ANCRE_FENETRE
 
   masque = $state(false)
   allumes = $state(0)
-  /** Tiroir ouvert sur un petit écran (portrait ou compact). */
-  tiroir = $state<IdTiroir | null>(null)
 
   systeme = $state<IdSysteme>('navigation')
   readonly fenetre = new EtatFenetreSysteme()
@@ -79,8 +75,10 @@ export class EtatHud {
   constructor(contexte: ContexteHud) {
     this.#contexte = contexte
     this.fenetre.surFermee = () => {
-      this.#declencheur?.focus()
+      const declencheur = this.#declencheur
       this.#declencheur = null
+      // Le reste de l'écran est inerte tant que la fenêtre est là : on attend qu'il se réveille.
+      void tick().then(() => declencheur?.focus())
     }
   }
 
@@ -94,11 +92,6 @@ export class EtatHud {
 
   get miseEnPage(): MiseEnPage {
     return this.#contexte.miseEnPage
-  }
-
-  /** Portrait et compact replient leurs panneaux dans des tiroirs. */
-  get tiroirs(): boolean {
-    return this.miseEnPage !== 'paysage'
   }
 
   get mouvementReduit(): boolean {
@@ -121,6 +114,20 @@ export class EtatHud {
       this.#contexte.mouvementReduit
     )
     return `translate3d(${x}px, ${y}px, 0)`
+  }
+
+  /** Titre d'une fenêtre : le nom du panneau ou du système. */
+  titreFenetre(id: IdSysteme): string {
+    switch (id) {
+      case 'systemes':
+        return this.t(this.textes.ecran.tiroirSystemes)
+      case 'cible':
+        return this.t(this.textes.ecran.tiroirCible)
+      case 'trajet':
+        return this.t(this.textes.ecran.tiroirTrajet)
+      default:
+        return this.t(this.textes.icones[id])
+    }
   }
 
   /** Texte à afficher selon le profil. */
@@ -150,17 +157,6 @@ export class EtatHud {
     if (this.allumes < TOTAL_ELEMENTS) {
       this.#minuteurAllumage = setInterval(avancer, PAS_ALLUMAGE_MS / 2)
     }
-  }
-
-  // --- Tiroirs ---------------------------------------------------------------
-
-  basculerTiroir(id: IdTiroir): void {
-    this.tiroir = this.tiroir === id ? null : id
-  }
-
-  /** Vrai si ce panneau est affiché : toujours en paysage, sur demande ailleurs. */
-  estAffiche(id: IdTiroir): boolean {
-    return !this.tiroirs || this.tiroir === id
   }
 
   // --- Masquer l'interface -----------------------------------------------------

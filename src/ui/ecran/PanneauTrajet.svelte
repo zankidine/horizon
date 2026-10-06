@@ -12,10 +12,13 @@
   let {
     ecran,
     categoriesVisibles,
+    dansFenetre = false,
   }: {
     ecran: EtatEcran
     /** Grandeurs montrées selon le niveau de connaissance (tout par défaut). */
     categoriesVisibles?: readonly Categorie[]
+    /** Affiché dans une fenêtre : sans cadre propre. */
+    dansFenetre?: boolean
   } = $props()
 
   const hud = $derived(ecran.hud)
@@ -32,7 +35,8 @@
 </script>
 
 <HudPanneau
-  id="hud-trajet"
+  sansCadre={dansFenetre}
+  id="hud-trajet{dansFenetre ? '-fenetre' : ''}"
   titre={hud.t(hud.textes.ecran.tiroirTrajet)}
   allume={hud.estAllume(RANGS.trajet)}
   flou={false}

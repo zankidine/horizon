@@ -1,10 +1,18 @@
 <script lang="ts">
   import HudAlerte from './HudAlerte.svelte'
   import HudFenetreSysteme from './HudFenetreSysteme.svelte'
-  import type { EtatHud } from './hud.svelte.ts'
+  import type { Snippet } from 'svelte'
+  import type { EtatHud, IdSysteme } from './hud.svelte.ts'
 
-  // Couche des fenêtres et alertes : elle flotte devant la vitre, montants compris.
-  let { etat: hud }: { etat: EtatHud } = $props()
+  // Couche des fenêtres et alertes : elle flotte devant tout le reste.
+  let {
+    etat: hud,
+    contenu,
+  }: {
+    etat: EtatHud
+    /** Contenu de chaque fenêtre ; absent, le texte « vide » s'affiche. */
+    contenu?: Snippet<[IdSysteme]>
+  } = $props()
 
   const boite = $derived({ largeur: hud.largeur, hauteur: hud.hauteur })
 </script>
@@ -17,16 +25,19 @@
   <HudFenetreSysteme
     id="hud-systeme"
     entete={hud.t(hud.textes.systeme.entete)}
-    titre={hud.t(hud.textes.icones[hud.systeme])}
+    titre={hud.titreFenetre(hud.systeme)}
     libelleFermer={hud.t(hud.textes.systeme.fermer)}
     etat={hud.fenetre.etat}
     duree={hud.fenetre.duree}
-    ancre={hud.ancreFenetre}
     {boite}
     flou={hud.flou}
     onfermer={() => hud.fermerSysteme()}
   >
-    <p class="vide">{hud.t(hud.textes.systeme.vide)}</p>
+    {#if contenu && (hud.idsPanneaux as readonly string[]).includes(hud.systeme)}
+      {@render contenu(hud.systeme)}
+    {:else}
+      <p class="vide">{hud.t(hud.textes.systeme.vide)}</p>
+    {/if}
   </HudFenetreSysteme>
 </div>
 

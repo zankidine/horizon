@@ -18,6 +18,7 @@ import {
   niveauJauge,
   normaliserCap,
   pointCardinal,
+  cadrerFenetre,
   positionFenetre,
   positionReticule,
   progression,
@@ -286,5 +287,58 @@ describe('estToucheMasquer', () => {
   it('refuse pendant une saisie', () => {
     expect(estToucheMasquer({ key: 'h', cible: 'input' })).toBe(false)
     expect(estToucheMasquer({ key: 'h', cible: 'SELECT' })).toBe(false)
+  })
+})
+
+describe('cadrerFenetre', () => {
+  const aucune = { haut: 0, droite: 0, bas: 0, gauche: 0 }
+
+  it('centre la fenêtre dans le viewport', () => {
+    const cadre = cadrerFenetre(
+      { largeur: 1000, hauteur: 800 },
+      aucune,
+      { largeur: 400, hauteur: 200 },
+      10
+    )
+    expect(cadre.x).toBe(300)
+    expect(cadre.y).toBe(300)
+    expect(cadre.largeur).toBe(400)
+  })
+
+  it('centre dans la zone utile quand les zones sûres sont inégales', () => {
+    const cadre = cadrerFenetre(
+      { largeur: 800, hauteur: 400 },
+      { haut: 0, droite: 40, bas: 20, gauche: 0 },
+      { largeur: 200, hauteur: 100 },
+      0
+    )
+    expect(cadre.x).toBe(280)
+    expect(cadre.y).toBe(140)
+    expect(cadre.hauteurMax).toBe(380)
+  })
+
+  it('ne dépasse jamais la zone utile : la hauteur max laisse le contenu défiler', () => {
+    const cadre = cadrerFenetre(
+      { largeur: 844, hauteur: 390 },
+      { haut: 0, droite: 47, bas: 21, gauche: 47 },
+      { largeur: 900, hauteur: 900 },
+      8
+    )
+    expect(cadre.largeur).toBe(844 - 47 - 47 - 16)
+    expect(cadre.hauteurMax).toBe(390 - 21 - 16)
+    expect(cadre.y).toBe(8)
+    expect(cadre.x).toBe(55)
+  })
+
+  it('reste sûre avec des valeurs invalides', () => {
+    const cadre = cadrerFenetre(
+      { largeur: NaN, hauteur: -5 },
+      { haut: NaN, droite: 0, bas: 0, gauche: 0 },
+      { largeur: NaN, hauteur: 10 },
+      4
+    )
+    expect(Number.isFinite(cadre.x)).toBe(true)
+    expect(Number.isFinite(cadre.y)).toBe(true)
+    expect(cadre.hauteurMax).toBe(0)
   })
 })

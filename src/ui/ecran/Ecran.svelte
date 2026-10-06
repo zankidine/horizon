@@ -5,12 +5,11 @@
   import { formaterValeurFiche } from '../../lib/fiche-format'
   import HudFenetres from '../hud/HudFenetres.svelte'
   import HudReticule from '../hud/HudReticule.svelte'
-  import { RANGS, type IdTiroir } from '../hud/hud.svelte.ts'
+  import { RANGS, type IdPanneau, type IdSysteme } from '../hud/hud.svelte.ts'
   import VueExterieure from '../VueExterieure.svelte'
   import BarreHaute from './BarreHaute.svelte'
   import { EtatEcran } from './ecran.svelte.ts'
   import { moteur } from './moteur.svelte.ts'
-  import PiedEcran from './PiedEcran.svelte'
   import PanneauCible from './PanneauCible.svelte'
   import PanneauCopilote from './PanneauCopilote.svelte'
   import PanneauSystemes from './PanneauSystemes.svelte'
@@ -48,20 +47,17 @@
     ecran.synchroniserMoteur()
   })
 
-  // Le HUD masqué ou un tiroir fermé met les graphes en pause.
+  // Le HUD masqué met les graphes en pause.
   $effect(() => {
     void hud.masque
-    void hud.tiroir
     void ecran.miseEnPage
     moteur.reveiller()
   })
 
-  const TIROIRS_HAUT: readonly IdTiroir[] = ['systemes', 'cible']
-  const NOM_TIROIR = {
-    systemes: 'tiroirSystemes',
-    cible: 'tiroirCible',
-    trajet: 'tiroirTrajet',
-  } as const
+  // Une fenêtre ouverte rend le reste inerte : focus et clavier restent dans la fenêtre.
+  const fenetreOuverte = $derived(hud.fenetreVisible)
+
+  const TIROIRS_HAUT: readonly IdPanneau[] = ['systemes', 'cible']
 </script>
 
 <svelte:window
@@ -69,26 +65,26 @@
   onpointermove={(evenement) => ecran.surPointeur(evenement)}
 />
 
-{#snippet chip(id: IdTiroir)}
+{#snippet chip(id: IdPanneau)}
   <button
     type="button"
     class="chip"
-    class:actif={hud.tiroir === id}
-    aria-expanded={hud.tiroir === id}
-    aria-controls="tiroir-{id}"
-    onclick={() => hud.basculerTiroir(id)}
+    class:actif={hud.estSystemeOuvert(id)}
+    aria-expanded={hud.estSystemeOuvert(id)}
+    aria-controls="hud-systeme"
+    onclick={(evenement) => hud.basculerSysteme(id, evenement.currentTarget)}
   >
-    {hud.t(hud.textes.ecran[NOM_TIROIR[id]])}
+    {hud.titreFenetre(id)}
   </button>
 {/snippet}
 
-{#snippet panneau(id: IdTiroir)}
+{#snippet contenuFenetre(id: IdSysteme)}
   {#if id === 'systemes'}
-    <PanneauSystemes {ecran} {categoriesVisibles} />
+    <PanneauSystemes {ecran} {categoriesVisibles} dansFenetre />
   {:else if id === 'cible'}
-    <PanneauCible {ecran} {categoriesVisibles} />
-  {:else}
-    <PanneauTrajet {ecran} {categoriesVisibles} />
+    <PanneauCible {ecran} {categoriesVisibles} dansFenetre />
+  {:else if id === 'trajet'}
+    <PanneauTrajet {ecran} {categoriesVisibles} dansFenetre />
   {/if}
 {/snippet}
 
@@ -108,7 +104,11 @@
   <Verre niveau={ecran.niveauQualite} />
 
   <!-- Couche « monde » : réticule posé sur la vraie direction de la cible. -->
-  <div class="monde" class:cache={hud.masque} inert={hud.masque}>
+  <div
+    class="monde"
+    class:cache={hud.masque}
+    inert={hud.masque || fenetreOuverte}
+  >
     <HudReticule
       ancre={reticule}
       {boite}
@@ -123,6 +123,7 @@
     role="group"
     aria-label={hud.t(hud.textes.hud.groupe)}
     data-masque={hud.masque}
+    inert={fenetreOuverte}
   >
     <div class="rangee-haut">
       <!-- Commande toujours disponible, même quand le reste est caché. -->
@@ -169,8 +170,8 @@
       >
         <PanneauCible {ecran} {categoriesVisibles} />
       </aside>
-      <div class="zone pied-zone" class:cache={hud.masque} inert={hud.masque}>
-        <PiedEcran {ecran} />
+      <div class="zone chips-zone" class:cache={hud.masque} inert={hud.masque}>
+        {#each hud.idsPanneaux as id (id)}{@render chip(id)}{/each}
       </div>
     {:else}
       {#if ecran.miseEnPage === 'compact'}
@@ -187,18 +188,6 @@
               ? hud.t(hud.textes.cible.titre)
               : hud.t(hud.textes.ecran.scanEnCours)}
           </p>
-        </section>
-      {/if}
-
-      {#if hud.tiroir}
-        <section
-          class="zone tiroir"
-          class:bas={hud.tiroir === 'trajet'}
-          id="tiroir-{hud.tiroir}"
-          class:cache={hud.masque}
-          inert={hud.masque}
-        >
-          {@render panneau(hud.tiroir)}
         </section>
       {/if}
     {/if}
@@ -225,7 +214,7 @@
     </div>
   </div>
 
-  <HudFenetres etat={hud} />
+  <HudFenetres etat={hud} contenu={contenuFenetre} />
 </main>
 
 <style>
@@ -387,9 +376,12 @@
     grid-area: droite;
   }
 
-  .ecran[data-mise-en-page='paysage'] .pied-zone {
+  .ecran[data-mise-en-page='paysage'] .chips-zone {
     grid-area: pied;
     align-self: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
   }
 
   .ecran[data-mise-en-page='paysage'] .bas {
@@ -398,25 +390,14 @@
     width: min(100%, 34rem);
   }
 
-  /* --- Portrait : tiroirs en haut et en bas, centre libre -------------------- */
+  /* --- Portrait : boutons de fenêtres en haut et en bas, centre libre ------- */
   .ecran[data-mise-en-page='portrait'] .hud {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
-  }
-
-  .ecran[data-mise-en-page='portrait'] .tiroir {
-    max-height: min(48dvh, 100%);
-    overflow-y: auto;
-    scrollbar-width: thin;
-  }
-
-  .ecran[data-mise-en-page='portrait'] .tiroir.bas {
-    grid-row: 4;
-    align-self: end;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
   }
 
   .ecran[data-mise-en-page='portrait'] .bas {
-    grid-row: 5;
+    grid-row: 4;
   }
 
   /* --- Compact : téléphone en paysage, le centre reste libre ------------------ */
@@ -456,16 +437,6 @@
   .mini-scan {
     font-style: italic;
     opacity: 0.8;
-  }
-
-  .ecran[data-mise-en-page='compact'] .tiroir {
-    grid-row: 2;
-    justify-self: end;
-    align-self: start;
-    width: min(46%, 22rem);
-    max-height: 100%;
-    overflow-y: auto;
-    scrollbar-width: thin;
   }
 
   .ecran[data-mise-en-page='compact'] .bas {
