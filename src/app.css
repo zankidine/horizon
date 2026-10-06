@@ -1,12 +1,9 @@
 :root {
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
+  font-family: var(--font-ui);
   line-height: 1.5;
   font-weight: 400;
-  color: #e3e7ec;
-  background-color: #15181c;
+  color: var(--poste-texte);
+  background-color: var(--cockpit-bg);
 }
 
 * {
@@ -19,6 +16,7 @@ body {
   min-height: 100vh;
   min-height: 100dvh;
   overscroll-behavior: none;
+  background-color: var(--cockpit-bg);
 }
 
 #app {
