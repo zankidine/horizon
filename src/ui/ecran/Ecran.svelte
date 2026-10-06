@@ -10,6 +10,7 @@
   import BarreHaute from './BarreHaute.svelte'
   import { EtatEcran } from './ecran.svelte.ts'
   import { moteur } from './moteur.svelte.ts'
+  import PiedEcran from './PiedEcran.svelte'
   import PanneauCible from './PanneauCible.svelte'
   import PanneauCopilote from './PanneauCopilote.svelte'
   import PanneauSystemes from './PanneauSystemes.svelte'
@@ -33,6 +34,9 @@
   onMount(() => {
     ecran.demarrer()
     hud.demarrerAllumage()
+    if (import.meta.env.DEV) {
+      void import('../dev/monter-stats').then((m) => m.monterPanneauStats())
+    }
   })
   onDestroy(() => ecran.arreter())
 
@@ -155,7 +159,8 @@
         class:cache={hud.masque}
         inert={hud.masque}
       >
-        <PanneauSystemes {ecran} {categoriesVisibles} />
+        <PanneauSystemes {ecran} {categoriesVisibles} avecPied={false} />
+        <PanneauTrajet {ecran} {categoriesVisibles} />
       </aside>
       <aside
         class="zone colonne droite"
@@ -163,8 +168,10 @@
         inert={hud.masque}
       >
         <PanneauCible {ecran} {categoriesVisibles} />
-        <PanneauTrajet {ecran} {categoriesVisibles} />
       </aside>
+      <div class="zone pied-zone" class:cache={hud.masque} inert={hud.masque}>
+        <PiedEcran {ecran} />
+      </div>
     {:else}
       {#if ecran.miseEnPage === 'compact'}
         <!-- Petit panneau cible : nom, distance, avancement du scan. -->
@@ -192,13 +199,6 @@
           inert={hud.masque}
         >
           {@render panneau(hud.tiroir)}
-          <button
-            type="button"
-            class="replier"
-            onclick={() => (hud.tiroir = null)}
-          >
-            {hud.t(hud.textes.ecran.fermerTiroir)}
-          </button>
         </section>
       {/if}
     {/if}
@@ -235,7 +235,7 @@
     --sa-r: env(safe-area-inset-right, 0px);
     --sa-b: env(safe-area-inset-bottom, 0px);
     --sa-l: env(safe-area-inset-left, 0px);
-    --colonne: clamp(12rem, 19vw, 15rem);
+    --colonne: clamp(12rem, 17vw, 15rem);
 
     position: relative;
     width: 100%;
@@ -311,8 +311,7 @@
   }
 
   .masquer,
-  .chip,
-  .replier {
+  .chip {
     box-sizing: border-box;
     min-width: 44px;
     min-height: 44px;
@@ -346,8 +345,7 @@
   }
 
   .masquer:focus-visible,
-  .chip:focus-visible,
-  .replier:focus-visible {
+  .chip:focus-visible {
     outline: 3px solid var(--hud-texte);
     outline-offset: 2px;
   }
@@ -364,7 +362,7 @@
     grid-template-areas:
       'haut haut haut'
       'gauche . droite'
-      '. bas .';
+      'pied bas .';
   }
 
   .ecran[data-mise-en-page='paysage'] .rangee-haut {
@@ -387,6 +385,11 @@
 
   .ecran[data-mise-en-page='paysage'] .droite {
     grid-area: droite;
+  }
+
+  .ecran[data-mise-en-page='paysage'] .pied-zone {
+    grid-area: pied;
+    align-self: end;
   }
 
   .ecran[data-mise-en-page='paysage'] .bas {
@@ -473,12 +476,6 @@
     gap: var(--pad);
   }
 
-  .replier {
-    width: 100%;
-    margin-top: 0.3rem;
-    border-radius: var(--hud-rayon);
-  }
-
   .copilote-ligne {
     box-sizing: border-box;
     margin: 0 0 0.3rem;
@@ -496,12 +493,18 @@
 
   .ecran[data-mise-en-page='compact'] .copilote-ligne {
     flex: 0 1 18rem;
+    min-width: 5rem;
     margin: 0;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     overflow: hidden;
+  }
+
+  .ecran[data-mise-en-page='compact'] .bas :global(.actions) {
+    flex: none;
+    flex-wrap: nowrap;
   }
 
   .ecran[data-mise-en-page='portrait'] .bas {

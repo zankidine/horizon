@@ -158,8 +158,8 @@
         "adulte": "Radar"
       },
       "legendeRadar": {
-        "enfant": "L : Lune, T : Terre, autres points : simulation",
-        "adulte": "L : Lune, T : Terre, autres points : simulation"
+        "enfant": "Autres points : simulation",
+        "adulte": "Autres points : simulation"
       },
       "vitesse": {
         "enfant": "Vitesse",
@@ -212,8 +212,8 @@
         "adulte": "Temps-lumière"
       },
       "radio": {
-        "enfant": "Radio avec la Terre",
-        "adulte": "Radio aller-retour"
+        "enfant": "Radio : Terre",
+        "adulte": "Radio A/R Terre"
       },
       "temperature": {
         "enfant": "Température",

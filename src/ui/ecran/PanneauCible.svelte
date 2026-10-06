@@ -120,6 +120,8 @@
   }
 
   .attente dd {
+    font-size: 14px;
+    white-space: nowrap;
     font-family: var(--hud-font-titre);
     font-style: italic;
     opacity: 0.7;
@@ -138,7 +140,7 @@
   }
 
   .disque {
-    width: min(100%, 6.5rem);
+    width: min(100%, 5.5rem);
     aspect-ratio: 1;
   }
 

@@ -60,15 +60,17 @@
       </div>
       <p class="message">{hud.t(hud.textes.copilote.message)}</p>
     </div>
-    {#if ecran.miseEnPage === 'paysage'}
-      <ul class="journal" aria-hidden="true">
-        {#each ecran.journal as ligne (ligne.index)}
-          <li>{ligne.texte}</li>
-        {/each}
-        <li class="simulation">{hud.t(hud.textes.ecran.simulation)}</li>
-      </ul>
-    {/if}
-    {@render actions()}
+    <div class="bas-panneau">
+      {#if ecran.miseEnPage === 'paysage'}
+        <ul class="journal" aria-hidden="true">
+          {#each ecran.journal as ligne (ligne.index)}
+            <li>{ligne.texte}</li>
+          {/each}
+          <li class="simulation">{hud.t(hud.textes.ecran.simulation)}</li>
+        </ul>
+      {/if}
+      {@render actions()}
+    </div>
   </HudPanneau>
 {/if}
 
@@ -97,6 +99,13 @@
     flex-wrap: wrap;
     gap: 0.4rem;
     pointer-events: none;
+  }
+
+  .bas-panneau {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.6rem;
   }
 
   .journal {

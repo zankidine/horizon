@@ -48,11 +48,11 @@
 
   .alerte {
     position: absolute;
-    top: calc(var(--sa-t, 0px) + 112px);
+    top: 62%;
     left: 50%;
     width: max-content;
     max-width: calc(100% - 2 * var(--pad));
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
   }
 
   .vide {

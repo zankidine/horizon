@@ -48,6 +48,7 @@
   <HudJauge
     etiquette={hud.t(hud.textes.ecran.progression)}
     valeur={ecran.avancement}
+    avertir={false}
   />
 
   {#if estVisible(categoriesVisibles, 'distance')}
@@ -66,6 +67,6 @@
   }
 
   .carte {
-    height: 5.5rem;
+    height: 4.5rem;
   }
 </style>

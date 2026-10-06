@@ -41,7 +41,7 @@
     align-items: center;
     gap: 0.7rem;
     min-width: 0;
-    height: 44px;
+    height: 40px;
     padding: 0 0.7rem;
     border-block: var(--hud-epaisseur) solid
       color-mix(in srgb, var(--hud-ligne) 55%, transparent);

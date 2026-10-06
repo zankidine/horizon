@@ -5,19 +5,19 @@
   import HudPanneau from '../hud/HudPanneau.svelte'
   import HudValeur from '../hud/HudValeur.svelte'
   import { RANGS } from '../hud/hud.svelte.ts'
-  import {
-    CREDITS_TEXTURES,
-    REGLAGES_QUALITE,
-    type EtatEcran,
-  } from './ecran.svelte.ts'
+  import type { EtatEcran } from './ecran.svelte.ts'
+  import PiedEcran from './PiedEcran.svelte'
   import GraphiqueCanvas from './GraphiqueCanvas.svelte'
   import { dessinOscilloscope, dessinSpectre } from './dessins'
 
   let {
     ecran,
     categoriesVisibles,
+    avecPied = true,
   }: {
     ecran: EtatEcran
+    /** Réglage de qualité et crédits : dans le panneau, ou ailleurs en paysage. */
+    avecPied?: boolean
     /** Grandeurs montrées selon le niveau de connaissance (tout par défaut). */
     categoriesVisibles?: readonly Categorie[]
   } = $props()
@@ -103,21 +103,9 @@
     </p>
   {/if}
 
-  <div class="pied">
-    <label class="qualite">
-      <span class="invisible">Qualité graphique</span>
-      <select
-        value={ecran.hublot.reglage}
-        onchange={(evenement) =>
-          ecran.changerQualite(evenement.currentTarget.value)}
-      >
-        {#each REGLAGES_QUALITE as option (option.valeur)}
-          <option value={option.valeur}>Qualité : {option.libelle}</option>
-        {/each}
-      </select>
-    </label>
-    <p class="credits">{CREDITS_TEXTURES.join(' · ')}</p>
-  </div>
+  {#if avecPied}
+    <PiedEcran {ecran} />
+  {/if}
 </HudPanneau>
 
 <style>
@@ -180,48 +168,10 @@
   }
 
   .trace {
-    height: 44px;
+    height: 36px;
   }
 
   .trace.spectre {
-    height: 38px;
-  }
-
-  .pied {
-    display: grid;
-    gap: 0.3rem;
-  }
-
-  .qualite select {
-    box-sizing: border-box;
-    width: 100%;
-    min-height: 44px;
-    padding: 0 0.5rem;
-    border: var(--hud-epaisseur) solid
-      color-mix(in srgb, var(--hud-ligne) 65%, transparent);
-    border-radius: var(--hud-rayon);
-    background: var(--hud-fond);
-    color: var(--hud-texte);
-    font: inherit;
-  }
-
-  .qualite select:focus-visible {
-    outline: 3px solid var(--hud-texte);
-    outline-offset: 2px;
-  }
-
-  .credits {
-    font-size: 14px;
-    line-height: 1.25;
-    opacity: 0.7;
-  }
-
-  .invisible {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    clip-path: inset(50%);
+    height: 30px;
   }
 </style>
