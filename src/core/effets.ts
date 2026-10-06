@@ -19,7 +19,7 @@ export const VITESSE_POUSSIERE_MAX = 14
 export const ETIREMENT_ETOILES_MAX = 1.5
 
 /** Étirement maximal des grains de poussière proches, à pleine vitesse. */
-export const ETIREMENT_POUSSIERE_MAX = 6
+export const ETIREMENT_POUSSIERE_MAX = 4
 
 /** Part de l'intensité de la poussière conservée en mouvement réduit. */
 export const INTENSITE_POUSSIERE_MOUVEMENT_REDUIT = 0.4

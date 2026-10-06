@@ -2,24 +2,28 @@
   import { T } from '@threlte/core'
   import {
     creerSceneHublot,
+    etatHublotParDefaut,
     CAMERA,
     ECHELLE_HALO,
     ECHELLE_LISERE,
     INCLINAISON_TERRE,
     INTENSITE_AMBIANTE,
     INTENSITE_SOLEIL,
-    POSITION_LUNE,
     POSITION_SOLEIL,
-    POSITION_TERRE,
-    RAYON_LUNE,
-    RAYON_TERRE,
     type EtatHublot,
   } from './hublot.svelte'
+  import { vaisseau as vaisseauParDefaut, type SimulationVaisseau } from './vaisseau.svelte'
 
-  let { etat }: { etat: EtatHublot } = $props()
+  // Les deux props sont facultatives : sans elles, la scène utilise l'état du
+  // hublot et le vaisseau partagés (singletons). Une scène montée par
+  // VueExterieure, qui ne passe que `etat`, reflète donc le vaisseau du jeu.
+  let {
+    etat = etatHublotParDefaut(),
+    vaisseau = vaisseauParDefaut,
+  }: { etat?: EtatHublot; vaisseau?: SimulationVaisseau } = $props()
 
   // svelte-ignore state_referenced_locally
-  const scene = creerSceneHublot(etat)
+  const scene = creerSceneHublot(etat, vaisseau)
 </script>
 
 <T.PerspectiveCamera
@@ -39,11 +43,24 @@
   frustumCulled={false}
 />
 
-<T.Group position={POSITION_TERRE} rotation.z={INCLINAISON_TERRE}>
+<T.Points
+  geometry={scene.geometriePoussiere}
+  material={scene.materiauPoussiere}
+  frustumCulled={false}
+/>
+
+<T.Mesh
+  geometry={scene.geometrieSoleil}
+  material={scene.materiauSoleil}
+  frustumCulled={false}
+  bind:ref={scene.refs.soleil}
+/>
+
+<!-- Position et taille de la Terre et de la Lune : placées à chaque image par la scène. -->
+<T.Group rotation.z={INCLINAISON_TERRE} bind:ref={scene.refs.groupeTerre}>
   <T.Mesh
     geometry={scene.geometrieSphere}
     material={scene.materiauTerre}
-    scale={RAYON_TERRE}
     bind:ref={scene.refs.terre}
   />
   <T.Mesh
@@ -59,9 +76,7 @@
 </T.Group>
 
 <T.Mesh
-  position={POSITION_LUNE}
   geometry={scene.geometrieSphere}
   material={scene.materiauLune}
-  scale={RAYON_LUNE}
   bind:ref={scene.refs.lune}
 />
