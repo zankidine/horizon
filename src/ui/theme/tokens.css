@@ -3,11 +3,19 @@
  * data-ambiance sur la racine (<html>). Les dix premiers noms sont partagés
  * avec d'autres développeurs : ne pas les renommer. Les variables
  * --poste-* sont propres au poste de commandement.
- * Polices système uniquement : l'application doit marcher hors ligne.
+ * Les polices du HUD sont hébergées (polices.css) : aucun chargement externe.
  */
 
 /* « aventure » : chaleureuse, arrondie, plus claire. Aussi la valeur par
    défaut avant que l'attribut soit posé. */
+:root {
+  /* Replis système si les polices du HUD ne sont pas encore chargées. */
+  --hud-repli-titre:
+    'Arial Narrow', 'Roboto Condensed', 'Helvetica Neue', system-ui, sans-serif;
+  --hud-repli-chiffres:
+    ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+}
+
 :root,
 :root[data-ambiance='aventure'] {
   --cockpit-bg: #e8d3b4;
@@ -29,6 +37,19 @@
   --poste-montant: #cdbda2;
   --poste-ombre: rgb(61 43 31 / 0.35);
   --poste-voyant-eteint: #8a7a64;
+
+  /* HUD : ambre et or, accent turquoise, traits épais et lisibles. */
+  --hud-ligne: #ffc247;
+  --hud-fond: rgb(32 20 6 / 0.78);
+  --hud-halo: rgb(255 176 56 / 0.45);
+  --hud-texte: #fff6dc;
+  --hud-alerte: #ff6a5a;
+  --hud-epaisseur: 3px;
+  --hud-accent: #35d6c4;
+  --hud-rayon: 18px;
+  --hud-taille: 1.05rem;
+  --hud-font-titre: 'Rajdhani', var(--hud-repli-titre);
+  --hud-font-chiffres: 'Share Tech Mono', var(--hud-repli-chiffres);
 }
 
 /* « cinema » : sombre, ambre et cyan, sobre. */
@@ -52,4 +73,17 @@
   --poste-montant: #1c222a;
   --poste-ombre: rgb(0 0 0 / 0.6);
   --poste-voyant-eteint: #2b333c;
+
+  /* HUD : holographique, cyan et blanc sur bleu nuit, lignes fines. */
+  --hud-ligne: #7be8ff;
+  --hud-fond: rgb(4 16 36 / 0.74);
+  --hud-halo: rgb(70 210 255 / 0.4);
+  --hud-texte: #eefcff;
+  --hud-alerte: #ff6b5e;
+  --hud-epaisseur: 1px;
+  --hud-accent: #ffffff;
+  --hud-rayon: 12px;
+  --hud-taille: 0.95rem;
+  --hud-font-titre: 'Rajdhani', var(--hud-repli-titre);
+  --hud-font-chiffres: 'Share Tech Mono', var(--hud-repli-chiffres);
 }
