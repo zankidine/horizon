@@ -10,6 +10,7 @@ Avant d'utiliser une bibliothèque, lis sa documentation actuelle : ne te fie pa
 
 - Logique dans des fichiers .svelte.ts, jamais dans les composants .svelte.
 - src/core : simulation en TypeScript pur (aucun import du DOM, de Svelte ou de Three). Testée avec Vitest.
+  src/core peut importer des fonctions pures de src/lib (par exemple format-fr), jamais du DOM, de Svelte ni de Three.
 - Missions et textes en données JSON validées (src/data), pas en code.
   Chaque fait existe en version « enfant » et « adulte ».
 - Aucune valeur calculable écrite en dur : distances, durées et comparaisons viennent du code.

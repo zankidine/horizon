@@ -60,6 +60,23 @@ describe('paliers', () => {
   })
 })
 
+describe('paliers : aide', () => {
+  it('l’aide diminue avec le niveau : tolérance et fenêtre se resserrent, les indices diminuent', () => {
+    const aides = IDS.map((n) => paliers(n).aide)
+    for (let i = 1; i < aides.length; i++) {
+      expect(aides[i].tolerance).toBeLessThan(aides[i - 1].tolerance)
+      expect(aides[i].fenetreTimingS).toBeLessThan(aides[i - 1].fenetreTimingS)
+      expect(aides[i].indicesMax).toBeLessThanOrEqual(aides[i - 1].indicesMax)
+    }
+  })
+
+  it('le rappel est plus long au niveau 1 qu’aux autres, et il y a toujours au moins un indice', () => {
+    const delais = IDS.map((n) => paliers(n).aide.delaiRappelS)
+    expect(delais[0]).toBe(Math.max(...delais))
+    for (const n of IDS) expect(paliers(n).aide.indicesMax).toBeGreaterThanOrEqual(1)
+  })
+})
+
 describe('compatibilité avec comparer()', () => {
   it('comparer reste utilisable avec le profil dérivé du niveau', () => {
     expect(comparer(384_400, profilDepuisNiveau(1))[0].approximatif).toBe(true)
