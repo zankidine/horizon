@@ -1,7 +1,11 @@
 <script lang="ts">
   import { Canvas } from '@threlte/core'
   import SceneHublot from './SceneHublot.svelte'
-  import { EtatHublot, REGLAGES_QUALITE } from './hublot.svelte'
+  import {
+    CREDITS_TEXTURES,
+    EtatHublot,
+    REGLAGES_QUALITE,
+  } from './hublot.svelte'
 
   const etat = new EtatHublot()
   const boulons = Array.from({ length: 8 }, (_, i) => (i * 360) / 8 + 22.5)
@@ -70,6 +74,8 @@
       {/each}
     </svg>
   </div>
+
+  <p class="credits">{CREDITS_TEXTURES.join(' · ')}</p>
 
   <div class="qualite" role="group" aria-label="Qualité graphique">
     {#each REGLAGES_QUALITE as option (option.valeur)}
@@ -151,6 +157,17 @@
     pointer-events: none;
   }
 
+  .credits {
+    position: fixed;
+    left: max(0.75rem, env(safe-area-inset-left));
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    max-width: 14rem;
+    margin: 0;
+    font-size: 0.7rem;
+    line-height: 1.3;
+    color: #9aa3ad;
+  }
+
   .qualite {
     position: fixed;
     right: max(0.75rem, env(safe-area-inset-right));
@@ -184,6 +201,13 @@
     .qualite {
       right: 50%;
       transform: translateX(50%);
+      bottom: calc(max(0.75rem, env(safe-area-inset-bottom)) + 2.75rem);
+    }
+
+    .credits {
+      right: max(0.75rem, env(safe-area-inset-right));
+      max-width: none;
+      text-align: center;
     }
   }
 </style>

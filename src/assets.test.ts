@@ -13,6 +13,16 @@ describe('assets.json', () => {
       expect(asset.source.length).toBeGreaterThan(0)
       expect(asset.url).toMatch(/^https:\/\//)
       expect(asset.licence.length).toBeGreaterThan(0)
+      expect(asset.licence_url).toMatch(/^https:\/\//)
+      expect(asset.mention_requise.length).toBeGreaterThan(0)
+      expect(asset.credit.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('liste un fichier source et son empreinte', () => {
+    for (const asset of assets) {
+      expect(asset.fichier_source).toMatch(/^https:\/\//)
+      expect(asset.sha256_source).toMatch(/^[0-9a-f]{64}$/)
     }
   })
 
