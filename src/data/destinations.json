@@ -1,0 +1,32 @@
+{
+  "destinations": [
+    {
+      "id": "lune",
+      "active": true,
+      "nom": { "enfant": "La Lune", "adulte": "La Lune" },
+      "description": {
+        "enfant": "Notre voisine dans le ciel, la seule où des humains ont marché.",
+        "adulte": "Le satellite naturel de la Terre, seul autre corps céleste visité par des humains."
+      },
+      "distanceConstante": "DISTANCE_TERRE_LUNE_KM"
+    },
+    {
+      "id": "mars",
+      "active": false,
+      "nom": { "enfant": "Mars", "adulte": "Mars" },
+      "description": {
+        "enfant": "La planète rouge, pleine de poussière et de volcans.",
+        "adulte": "La quatrième planète du Système solaire, désertique et froide."
+      }
+    },
+    {
+      "id": "jupiter",
+      "active": false,
+      "nom": { "enfant": "Jupiter", "adulte": "Jupiter" },
+      "description": {
+        "enfant": "La géante du Système solaire, avec sa grande tache rouge.",
+        "adulte": "La plus grosse planète du Système solaire, une géante gazeuse."
+      }
+    }
+  ]
+}
