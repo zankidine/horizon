@@ -19,6 +19,7 @@
     "@eslint/js": "^10.0.1",
     "@sveltejs/vite-plugin-svelte": "^7.3.1",
     "@tsconfig/svelte": "^5.0.8",
+    "@types/three": "0.186.0",
     "@typescript-eslint/eslint-plugin": "^8.71.1",
     "@typescript-eslint/parser": "^8.71.1",
     "@vitest/ui": "^5.0.3",
@@ -32,5 +33,9 @@
     "vite": "^8.3.3",
     "vite-plugin-pwa": "^2.0.0",
     "vitest": "^5.0.3"
+  },
+  "dependencies": {
+    "@threlte/core": "8.6.1",
+    "three": "0.186.1"
   }
 }
