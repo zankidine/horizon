@@ -462,3 +462,154 @@ export const DELAI_RAPPEL_S_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, number>> = {
   3: 15,
   4: 12,
 }
+
+// ===========================================================================
+// Missions : fin de la mission 1 (étape 6c)
+// ===========================================================================
+
+/**
+ * Licence de jeu : pendant le voyage vers la Lune, la vitesse du vaisseau reste
+ * constante. Le vrai vaisseau ralentit en s'éloignant de la Terre, car la
+ * gravité de la Terre le retient (physique de base, pas un chiffre NASA).
+ * Le débriefing « Dans la vraie vie… » le dit. Le temps de trajet de l'écran
+ * de navigation (APOLLO_11_DUREE_TRAJET_JOURS) n'est pas touché.
+ */
+export const VOYAGE_VITESSE_CONSTANTE = true
+
+/**
+ * Début de l'injection translunaire d'Apollo 11, en heures de mission.
+ * Source : NASA, Apollo 11 Mission Overview (nasa.gov/history/apollo-11-mission-overview/),
+ * dernière mise à jour affichée 2026-07-29, consultée le 2026-10-06 :
+ * « Two hours, 44 minutes and one-and-a-half revolutions after launch, the
+ * S-IVB stage reignited for a second burn of five minutes, 48 seconds ».
+ */
+export const APOLLO_11_TLI_DEBUT_H = 2 + 44 / MINUTES_PAR_HEURE
+
+/** Durée de la poussée d'injection translunaire d'Apollo 11, en secondes (même page : 5 min 48 s). */
+export const APOLLO_11_TLI_DUREE_S = 5 * SECONDES_PAR_MINUTE + 48
+
+/**
+ * Début de la première manœuvre d'insertion en orbite lunaire d'Apollo 11, en
+ * heures de mission. Source : NASA, Apollo 11 Mission Overview, consultée le
+ * 2026-10-06 : « At about 75 hours, 50 minutes into the flight, a retrograde
+ * firing of the SPS for 357.5 seconds placed the spacecraft into an initial,
+ * elliptical-lunar orbit ». Le dossier de presse prévoyait 75:54:28 (plan).
+ */
+export const APOLLO_11_LOI_H = 75 + 50 / MINUTES_PAR_HEURE
+
+/**
+ * Durée du trajet Terre-Lune d'Apollo 11 en heures : de la fin de la poussée
+ * d'injection au début de l'insertion lunaire. Valeur calculée à partir des
+ * trois constantes NASA ci-dessus (environ 73 heures, soit environ 3 jours).
+ */
+export const APOLLO_11_TRAJET_H = APOLLO_11_LOI_H - APOLLO_11_TLI_DEBUT_H - APOLLO_11_TLI_DUREE_S / SECONDES_PAR_HEURE
+
+/**
+ * Vitesse moyenne du trajet d'Apollo 11, en km/h : la distance Terre-Lune
+ * (centre à centre) divisée par la durée du trajet. Valeur CALCULÉE, pas
+ * une mesure de la NASA : la vitesse réelle diminue en s'éloignant de la Terre.
+ */
+export const APOLLO_11_VITESSE_MOYENNE_KM_H = DISTANCE_TERRE_LUNE_KM / APOLLO_11_TRAJET_H
+
+/**
+ * Orbite lunaire d'Apollo 11 après la seconde manœuvre : 62 par 70,5 miles
+ * (altitude basse et haute). Source : NASA, Apollo 11 Mission Overview,
+ * consultée le 2026-10-06 : « a lunar orbit of 62 by 70.5 miles ».
+ */
+export const APOLLO_11_ORBITE_LUNAIRE_BASSE_MILES = 62
+export const APOLLO_11_ORBITE_LUNAIRE_HAUTE_MILES = 70.5
+
+/** Altitude basse de l'orbite lunaire d'Apollo 11 en km (environ 100 km). */
+export const APOLLO_11_ORBITE_LUNAIRE_BASSE_KM = APOLLO_11_ORBITE_LUNAIRE_BASSE_MILES * MILE_KM
+
+/** Altitude haute de l'orbite lunaire d'Apollo 11 en km (environ 113 km). */
+export const APOLLO_11_ORBITE_LUNAIRE_HAUTE_KM = APOLLO_11_ORBITE_LUNAIRE_HAUTE_MILES * MILE_KM
+
+/**
+ * Altitude de l'orbite lunaire du jeu, en km. Source : choix de jeu, entre
+ * l'altitude basse et l'altitude haute de l'orbite d'Apollo 11 (test).
+ */
+export const ALTITUDE_ORBITE_LUNAIRE_KM = 110
+
+/**
+ * Temps passé sur la Lune par Armstrong et Aldrin, en heures (21 h 36 min).
+ * Source : NASA, Apollo 11 Mission Overview, consultée le 2026-10-06 :
+ * « Armstrong and Aldrin spent 21 hours, 36 minutes on the moon's surface ».
+ */
+export const APOLLO_11_SURFACE_H = 21 + 36 / MINUTES_PAR_HEURE
+
+/**
+ * Durée de la sortie sur la surface, en heures (« more than two-and-a-half
+ * hours », donc au moins 2,5 heures). Source : NASA, Apollo 11 Mission Overview,
+ * consultée le 2026-10-06.
+ */
+export const APOLLO_11_SORTIE_H = 2.5
+
+/**
+ * Masse de roches et de sol lunaires rapportés par Apollo 11, en kg.
+ * Source : NASA NSSDCA, Apollo 11 Lunar Module / EASEP
+ * (nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1969-059C), consultée
+ * le 2026-10-06 : « collected 21.55 kg of lunar rock and soil ».
+ */
+export const APOLLO_11_ECHANTILLONS_KG = 21.55
+
+/**
+ * Descente (scène 9) : valeurs de JEU, aucune n'est mesurée. La gravité lunaire,
+ * elle, vient de astres.json. Hauteur de départ de la descente, en mètres.
+ */
+export const DESCENTE_ALTITUDE_DEPART_M = 120
+
+/** Descente : vitesse de toucher minimale de la zone de réussite, en m/s. Valeur de jeu. */
+export const DESCENTE_ZONE_VITESSE_MIN_MS = 0.3
+
+/** Descente : vitesse de toucher maximale de la zone de réussite, en m/s. Valeur de jeu. */
+export const DESCENTE_ZONE_VITESSE_MAX_MS = 2
+
+/**
+ * Descente : le moteur pousse avec cette force, en multiples de la gravité
+ * (2,5 : le vaisseau ralentit à 1,5 fois la gravité). Valeur de jeu.
+ */
+export const DESCENTE_POUSSEE_FACTEUR_G = 2.5
+
+/**
+ * Descente assistée : au-delà de cette vitesse (la vitesse maximale de la zone
+ * multipliée par ce nombre), le copilote freine à la place du joueur. 1 : la
+ * descente reste toujours dans la zone ; plus le nombre est grand, moins l'aide
+ * est forte ; null : aucune aide pendant la descente (rattrapage seulement
+ * après une erreur). Valeurs de jeu.
+ */
+export const DESCENTE_MARGE_ASSISTANCE_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, number | null>> = {
+  1: 1,
+  2: 2,
+  3: 4,
+  4: null,
+}
+
+/** Saut (scène 10) : hauteur d'un saut sur Terre, en cm. EXEMPLE de jeu, pas une mesure. */
+export const SAUT_TERRE_EXEMPLE_CM = 40
+
+/** Combinaison (scène 10) : valeurs de SIMULATION, fictives. Oxygène en pourcentage. */
+export const COMBINAISON_OXYGENE_POURCENT = 98
+
+/** Combinaison : pression interne en kPa. Valeur de SIMULATION, fictive. */
+export const COMBINAISON_PRESSION_KPA = 30
+
+/** Combinaison : charge de la batterie en pourcentage. Valeur de SIMULATION, fictive. */
+export const COMBINAISON_BATTERIE_POURCENT = 100
+
+/**
+ * Sites d'entraînement fictifs (scène 8) : planéité du terrain en pourcentage
+ * (100 = sol parfaitement plat). Valeurs de JEU : ces sites n'existent pas.
+ */
+export const SITES_PLANEITE_POURCENT: Readonly<Record<'alpha' | 'beta' | 'gamma', number>> = {
+  alpha: 95,
+  beta: 60,
+  gamma: 90,
+}
+
+/** Sites d'entraînement fictifs : part du séjour au soleil, en pourcentage. Valeurs de JEU. */
+export const SITES_LUMIERE_POURCENT: Readonly<Record<'alpha' | 'beta' | 'gamma', number>> = {
+  alpha: 40,
+  beta: 95,
+  gamma: 85,
+}
