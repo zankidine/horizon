@@ -45,19 +45,18 @@
     display: grid;
     justify-items: center;
     align-content: center;
-    gap: 2px;
+    gap: var(--esp-1);
     box-sizing: border-box;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 2px 6px;
-    border: var(--hud-epaisseur) solid
-      color-mix(in srgb, var(--hud-ligne) 65%, transparent);
+    min-width: var(--cible);
+    min-height: var(--cible);
+    padding: var(--esp-1) var(--esp-2);
+    border: var(--hud-epaisseur) solid var(--hud-bordure);
     border-radius: var(--hud-rayon);
     background: var(--hud-fond);
     box-shadow: 0 0 10px var(--hud-halo);
     color: var(--hud-ligne);
     font-family: var(--hud-font-titre);
-    font-size: max(14px, 0.9rem);
+    font-size: var(--txt-s);
     font-weight: 700;
     letter-spacing: 0.06em;
     cursor: pointer;
@@ -70,7 +69,7 @@
 
   .bouton:hover,
   .bouton.actif {
-    background: color-mix(in srgb, var(--hud-ligne) 22%, var(--hud-fond));
+    background: var(--hud-fond-actif);
     color: var(--hud-texte);
   }
 
@@ -79,8 +78,8 @@
   }
 
   .bouton:focus-visible {
-    outline: 3px solid var(--hud-texte);
-    outline-offset: 2px;
+    outline: var(--hud-focus);
+    outline-offset: var(--hud-focus-decalage);
   }
 
   .icone {

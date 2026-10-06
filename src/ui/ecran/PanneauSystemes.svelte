@@ -119,23 +119,23 @@
 
   .simulation {
     justify-self: end;
-    font-size: 14px;
+    font-size: var(--txt-s);
     font-style: italic;
     letter-spacing: 0.06em;
-    opacity: 0.7;
+    color: var(--hud-texte-doux);
   }
 
   .jauges {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: 0.8rem;
+    gap: var(--esp-3);
   }
 
   .barres,
   .barre {
     display: grid;
-    gap: 0.25rem;
+    gap: var(--esp-1);
   }
 
   .arc {
@@ -147,7 +147,7 @@
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 0.6rem;
+    gap: var(--esp-3);
     font-weight: 500;
     line-height: 1.1;
   }
@@ -162,13 +162,13 @@
 
   .graphe {
     display: grid;
-    gap: 0.15rem;
+    gap: var(--esp-1);
     margin: 0;
   }
 
   figcaption {
     font-weight: 500;
-    opacity: 0.85;
+    color: var(--hud-texte-doux);
   }
 
   .trace {

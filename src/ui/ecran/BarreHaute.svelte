@@ -39,18 +39,13 @@
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    gap: 0.7rem;
+    gap: var(--esp-3);
     min-width: 0;
     height: 40px;
-    padding: 0 0.7rem;
+    padding: 0 var(--esp-3);
     border-block: var(--hud-epaisseur) solid
       color-mix(in srgb, var(--hud-ligne) 55%, transparent);
-    background: linear-gradient(
-      90deg,
-      var(--hud-fond),
-      color-mix(in srgb, var(--hud-fond) 70%, transparent),
-      var(--hud-fond)
-    );
+    background: var(--hud-fond);
     clip-path: polygon(
       10px 0,
       calc(100% - 10px) 0,
@@ -61,7 +56,7 @@
     );
     color: var(--hud-texte);
     font-family: var(--hud-font-chiffres);
-    font-size: max(14px, 0.9rem);
+    font-size: var(--txt-s);
     opacity: 0;
     transform: translateY(-6px);
     transition:

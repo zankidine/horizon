@@ -27,38 +27,43 @@
 <style>
   .pied {
     box-sizing: border-box;
-    padding: 0.3rem;
+    padding: var(--esp-1);
     border-radius: var(--hud-rayon);
     background: var(--hud-fond);
     color: var(--hud-texte);
     display: grid;
-    gap: 0.3rem;
+    gap: var(--esp-1);
     pointer-events: auto;
   }
 
   .qualite select {
     box-sizing: border-box;
     width: 100%;
-    min-height: 44px;
-    padding: 0 0.5rem;
-    border: var(--hud-epaisseur) solid
-      color-mix(in srgb, var(--hud-ligne) 65%, transparent);
+    min-height: var(--cible);
+    padding: 0 var(--esp-2);
+    border: var(--hud-epaisseur) solid var(--hud-bordure);
     border-radius: var(--hud-rayon);
     background: var(--hud-fond);
     color: var(--hud-texte);
     font: inherit;
   }
 
+  @media (hover: hover) {
+    .qualite select:hover {
+      background: var(--hud-fond-actif);
+    }
+  }
+
   .qualite select:focus-visible {
-    outline: 3px solid var(--hud-texte);
-    outline-offset: 2px;
+    outline: var(--hud-focus);
+    outline-offset: var(--hud-focus-decalage);
   }
 
   .credits {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--txt-s);
     line-height: 1.25;
-    opacity: 0.8;
+    color: var(--hud-texte-doux);
   }
 
   .invisible {

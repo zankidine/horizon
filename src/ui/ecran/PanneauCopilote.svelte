@@ -78,7 +78,7 @@
   .ligne {
     display: flex;
     align-items: center;
-    gap: 0.7rem;
+    gap: var(--esp-3);
   }
 
   .onde {
@@ -97,7 +97,7 @@
   .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: var(--esp-2);
     pointer-events: none;
   }
 
@@ -105,7 +105,7 @@
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 0.6rem;
+    gap: var(--esp-3);
   }
 
   .journal {
@@ -116,9 +116,9 @@
     overflow: hidden;
     list-style: none;
     font-family: var(--hud-font-chiffres);
-    font-size: 14px;
+    font-size: var(--txt-s);
     line-height: 1.3;
-    opacity: 0.75;
+    color: var(--hud-texte-doux);
   }
 
   .journal li {
@@ -130,7 +130,7 @@
     font-family: var(--hud-font-titre);
     font-style: italic;
     animation: none;
-    opacity: 0.8;
+    color: var(--hud-texte-doux);
   }
 
   @keyframes monter {

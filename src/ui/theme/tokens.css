@@ -8,16 +8,55 @@
 
 /* « aventure » : chaleureuse, arrondie, plus claire. Aussi la valeur par
    défaut avant que l'attribut soit posé. */
-:root {
+:root,
+[data-ambiance] {
   /* Replis système si les polices du HUD ne sont pas encore chargées. */
   --hud-repli-titre:
     'Arial Narrow', 'Roboto Condensed', 'Helvetica Neue', system-ui, sans-serif;
   --hud-repli-chiffres:
     ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+
+  /*
+   * Jetons de design du HUD, communs aux deux ambiances (recalculés sur tout
+   * élément portant data-ambiance : la page hud-demo.html montre les deux).
+   * Espacements : échelle de 4 px (0,25 rem) en rem.
+   */
+  --esp-1: 0.25rem;
+  --esp-2: 0.5rem;
+  --esp-3: 0.75rem;
+  --esp-4: 1rem;
+  --esp-5: 1.5rem;
+
+  /* Typographie : rem, jamais sous 14 px (lisible sur mobile). */
+  --txt-s: max(14px, 0.875rem);
+  --txt-l: max(14px, 1.25rem);
+  --txt-xl: max(14px, 1.75rem);
+  --interligne: 1.25;
+
+  /* Taille minimale d'une cible tactile. */
+  --cible: 44px;
+
+  /* Focus visible, identique partout (le contour suit le texte de l'ambiance). */
+  --hud-focus: 3px solid var(--hud-texte);
+  --hud-focus-decalage: 2px;
+  --hud-focus-interieur: -3px;
+
+  /* Bordures : deux intensités de la couleur d'information. */
+  --hud-bordure: color-mix(in srgb, var(--hud-ligne) 65%, transparent);
+  --hud-bordure-douce: color-mix(in srgb, var(--hud-ligne) 45%, transparent);
+  --hud-rayon-petit: calc(var(--hud-rayon) * 0.5);
+
+  /* Rôles de couleur : trois accents par ambiance (primaire, positif, chaud). */
+  --role-info: var(--hud-ligne);
+  --role-deco: var(--hud-ligne-doux);
+  --role-avert: var(--hud-chaud);
+  --role-alerte: var(--hud-chaud);
+  --hud-alerte: var(--role-alerte);
 }
 
 :root,
-:root[data-ambiance='aventure'] {
+:root[data-ambiance='aventure'],
+[data-ambiance='aventure'] {
   --cockpit-bg: #e8d3b4;
   --cockpit-metal: #b9a98f;
   --screen-bg: #17324a;
@@ -40,20 +79,29 @@
 
   /* HUD : ambre et or, accent turquoise, traits épais et lisibles. */
   --hud-ligne: #ffc247;
+  --hud-ligne-doux: #c99a3a;
   --hud-fond: rgb(32 20 6 / 0.78);
+  --hud-fond-actif: rgb(92 58 12 / 0.9);
+  --hud-fond-alerte: rgb(78 26 18 / 0.92);
   --hud-halo: rgb(255 176 56 / 0.45);
   --hud-texte: #fff6dc;
-  --hud-alerte: #ff6a5a;
+  --hud-texte-doux: #e9dcb8;
+  --hud-chaud: #ff7a66;
   --hud-epaisseur: 3px;
+  --trait-fin: 2px;
+  --trait-epais: 4px;
   --hud-accent: #35d6c4;
+  --role-valide: #35d6c4;
   --hud-rayon: 18px;
-  --hud-taille: 1.05rem;
+  --txt-m: max(14px, 1.0625rem);
+  --hud-taille: var(--txt-m);
   --hud-font-titre: 'Rajdhani', var(--hud-repli-titre);
   --hud-font-chiffres: 'Share Tech Mono', var(--hud-repli-chiffres);
 }
 
 /* « cinema » : sombre, ambre et cyan, sobre. */
-:root[data-ambiance='cinema'] {
+:root[data-ambiance='cinema'],
+[data-ambiance='cinema'] {
   --cockpit-bg: #0c0f13;
   --cockpit-metal: #3b4450;
   --screen-bg: #04090d;
@@ -76,14 +124,22 @@
 
   /* HUD : holographique, cyan et blanc sur bleu nuit, lignes fines. */
   --hud-ligne: #7be8ff;
+  --hud-ligne-doux: #4fb3cc;
   --hud-fond: rgb(4 16 36 / 0.74);
+  --hud-fond-actif: rgb(18 62 96 / 0.88);
+  --hud-fond-alerte: rgb(70 20 26 / 0.92);
   --hud-halo: rgb(70 210 255 / 0.4);
   --hud-texte: #eefcff;
-  --hud-alerte: #ff6b5e;
+  --hud-texte-doux: #c3e3ee;
+  --hud-chaud: #ff8a6b;
   --hud-epaisseur: 1px;
+  --trait-fin: 1px;
+  --trait-epais: 2px;
   --hud-accent: #ffffff;
+  --role-valide: #7df0b4;
   --hud-rayon: 12px;
-  --hud-taille: 0.95rem;
+  --txt-m: max(14px, 0.9375rem);
+  --hud-taille: var(--txt-m);
   --hud-font-titre: 'Rajdhani', var(--hud-repli-titre);
   --hud-font-chiffres: 'Share Tech Mono', var(--hud-repli-chiffres);
 }

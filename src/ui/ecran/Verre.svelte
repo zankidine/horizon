@@ -45,8 +45,9 @@
   /* Franges colorées sur les bords : aberration chromatique légère. */
   .aberration {
     box-shadow:
-      inset 5px 0 8px -4px rgb(80 220 255 / 0.16),
-      inset -5px 0 8px -4px rgb(255 70 110 / 0.14);
+      inset 5px 0 8px -4px color-mix(in srgb, var(--role-info) 16%, transparent),
+      inset -5px 0 8px -4px
+        color-mix(in srgb, var(--role-alerte) 14%, transparent);
   }
 
   .grain {

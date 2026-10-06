@@ -269,8 +269,8 @@
     text-size-adjust: 100%;
     /* Aberration chromatique légère, sur les textes seulement. */
     text-shadow:
-      -0.5px 0 rgb(255 70 110 / 0.3),
-      0.5px 0 rgb(80 220 255 / 0.3);
+      -0.5px 0 color-mix(in srgb, var(--role-alerte) 30%, transparent),
+      0.5px 0 color-mix(in srgb, var(--role-info) 30%, transparent);
   }
 
   .zone,
@@ -302,16 +302,15 @@
   .masquer,
   .chip {
     box-sizing: border-box;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 0 0.9rem;
-    border: var(--hud-epaisseur) solid
-      color-mix(in srgb, var(--hud-ligne) 65%, transparent);
-    border-radius: 999px;
+    min-width: var(--cible);
+    min-height: var(--cible);
+    padding: 0 var(--esp-4);
+    border: var(--hud-epaisseur) solid var(--hud-bordure);
+    border-radius: var(--hud-rayon);
     background: var(--hud-fond);
     color: var(--hud-texte);
     font-family: var(--hud-font-titre);
-    font-size: max(14px, 0.95rem);
+    font-size: var(--txt-m);
     font-weight: 700;
     letter-spacing: 0.05em;
     cursor: pointer;
@@ -326,22 +325,29 @@
 
   .chip {
     border-radius: var(--hud-rayon);
-    padding: 0 0.7rem;
+    padding: 0 var(--esp-3);
   }
 
   .chip.actif {
-    background: color-mix(in srgb, var(--hud-ligne) 30%, var(--hud-fond));
+    background: var(--hud-fond-actif);
+  }
+
+  @media (hover: hover) {
+    .masquer:hover,
+    .chip:hover {
+      background: var(--hud-fond-actif);
+    }
   }
 
   .masquer:focus-visible,
   .chip:focus-visible {
-    outline: 3px solid var(--hud-texte);
-    outline-offset: 2px;
+    outline: var(--hud-focus);
+    outline-offset: var(--hud-focus-decalage);
   }
 
   .chips {
     display: flex;
-    gap: 0.4rem;
+    gap: var(--esp-2);
   }
 
   /* --- Paysage : colonnes à gauche et à droite, centre libre ------------------ */
@@ -381,7 +387,7 @@
     align-self: end;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: var(--esp-2);
   }
 
   .ecran[data-mise-en-page='paysage'] .bas {
@@ -404,7 +410,7 @@
   .ecran[data-mise-en-page='compact'] .hud {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr) auto;
-    gap: 4px;
+    gap: var(--esp-1);
   }
 
   .ecran[data-mise-en-page='compact'] .mini-cible {
@@ -413,13 +419,12 @@
     justify-self: start;
     box-sizing: border-box;
     width: 10.5rem;
-    padding: 0.2rem 0.6rem;
-    border: var(--hud-epaisseur) solid
-      color-mix(in srgb, var(--hud-ligne) 65%, transparent);
+    padding: var(--esp-1) var(--esp-3);
+    border: var(--hud-epaisseur) solid var(--hud-bordure);
     border-radius: var(--hud-rayon);
     background: var(--hud-fond);
     color: var(--hud-texte);
-    font-size: 14px;
+    font-size: var(--txt-s);
     line-height: 1.2;
   }
 
@@ -436,7 +441,7 @@
 
   .mini-scan {
     font-style: italic;
-    opacity: 0.8;
+    color: var(--hud-texte-doux);
   }
 
   .ecran[data-mise-en-page='compact'] .bas {
@@ -450,13 +455,12 @@
   .copilote-ligne {
     box-sizing: border-box;
     margin: 0 0 0.3rem;
-    padding: 0.25rem 0.6rem;
-    border: var(--hud-epaisseur) solid
-      color-mix(in srgb, var(--hud-ligne) 50%, transparent);
+    padding: var(--esp-1) var(--esp-3);
+    border: var(--hud-epaisseur) solid var(--hud-bordure);
     border-radius: var(--hud-rayon);
     background: var(--hud-fond);
     color: var(--hud-texte);
-    font-size: max(14px, 0.9rem);
+    font-size: var(--txt-s);
     font-weight: 500;
     line-height: 1.2;
     pointer-events: auto;
@@ -466,11 +470,6 @@
     flex: 0 1 18rem;
     min-width: 5rem;
     margin: 0;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    overflow: hidden;
   }
 
   .ecran[data-mise-en-page='compact'] .bas :global(.actions) {
@@ -480,7 +479,7 @@
 
   .ecran[data-mise-en-page='portrait'] .bas {
     display: grid;
-    gap: 0.3rem;
+    gap: var(--esp-1);
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -93,7 +93,7 @@
   }
 
   .nom {
-    font-size: 1.25em;
+    font-size: var(--txt-l);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -101,7 +101,7 @@
 
   .fiche {
     display: grid;
-    gap: 0.1rem;
+    gap: 0;
     margin: 0;
   }
 
@@ -109,7 +109,7 @@
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 0.6rem;
+    gap: var(--esp-3);
     line-height: 1.2;
   }
 
@@ -124,22 +124,22 @@
   }
 
   .attente dd {
-    font-size: 14px;
+    font-size: var(--txt-s);
     white-space: nowrap;
     font-family: var(--hud-font-titre);
     font-style: italic;
-    opacity: 0.7;
+    color: var(--hud-texte-doux);
   }
 
   .source {
-    font-size: 14px;
-    opacity: 0.75;
+    font-size: var(--txt-s);
+    color: var(--hud-texte-doux);
   }
 
   .radar {
     display: grid;
     justify-items: center;
-    gap: 0.2rem;
+    gap: var(--esp-1);
     margin: 0;
   }
 
@@ -149,8 +149,8 @@
   }
 
   figcaption {
-    font-size: 14px;
+    font-size: var(--txt-s);
     text-align: center;
-    opacity: 0.75;
+    color: var(--hud-texte-doux);
   }
 </style>

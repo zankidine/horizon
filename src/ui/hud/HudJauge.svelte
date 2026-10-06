@@ -77,7 +77,7 @@
     overflow: hidden;
     border: var(--hud-epaisseur) solid
       color-mix(in srgb, var(--hud-ligne) 55%, transparent);
-    border-radius: 999px;
+    border-radius: var(--hud-rayon);
     background: rgb(0 0 0 / 0.35);
   }
 
@@ -131,7 +131,7 @@
     inset: 0;
     display: grid;
     place-items: center;
-    font-size: max(14px, 0.9rem);
+    font-size: var(--txt-s);
   }
 
   @media (prefers-reduced-motion: reduce) {

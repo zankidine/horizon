@@ -22,7 +22,8 @@ for (const { id, nom } of NIVEAUX) {
   const bouton = document.createElement('button')
   bouton.type = 'button'
   bouton.textContent = `Niveau ${id} ${nom}`
-  bouton.style.cssText = 'min-height:44px;min-width:44px;padding:0 12px;font:inherit'
+  bouton.style.cssText =
+    'min-height:44px;min-width:44px;padding:0 12px;font:inherit'
   bouton.addEventListener('click', () => {
     appStore.niveau = id
   })

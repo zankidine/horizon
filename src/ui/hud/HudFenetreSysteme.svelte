@@ -163,7 +163,7 @@
 
 <style>
   .fenetre {
-    --epaisseur: calc(var(--hud-epaisseur) * 1.5);
+    --epaisseur: var(--trait-epais);
 
     position: absolute;
     top: 0;
@@ -172,7 +172,7 @@
     display: grid;
     grid-template-rows: minmax(0, 1fr);
     color: var(--hud-texte);
-    font-size: max(14px, var(--hud-taille));
+    font-size: var(--txt-m);
     pointer-events: auto;
   }
 
@@ -240,7 +240,7 @@
       'entete fermer'
       'titre fermer';
     align-items: center;
-    padding: 0.4rem 0.5rem 0.4rem 0.9rem;
+    padding: var(--esp-2) var(--esp-2) var(--esp-2) var(--esp-4);
     border-bottom: var(--hud-epaisseur) solid
       color-mix(in srgb, var(--hud-ligne) 45%, transparent);
   }
@@ -253,7 +253,7 @@
     grid-area: entete;
     margin: 0;
     font-family: var(--hud-font-titre);
-    font-size: max(14px, 0.85rem);
+    font-size: var(--txt-s);
     font-weight: 700;
     letter-spacing: 0.28em;
     color: var(--hud-ligne);
@@ -263,7 +263,7 @@
     grid-area: titre;
     margin: 0;
     font-family: var(--hud-font-titre);
-    font-size: 1.25em;
+    font-size: var(--txt-l);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -274,23 +274,23 @@
     header {
       grid-template-columns: auto minmax(0, 1fr) auto;
       grid-template-areas: 'entete titre fermer';
-      column-gap: 0.8rem;
-      padding-block: 0.15rem;
+      column-gap: var(--esp-3);
+      padding-block: var(--esp-1);
     }
 
     .titre {
-      font-size: 1.1em;
+      font-size: var(--txt-m);
     }
 
     .corps {
-      padding-block: 0.5rem 0.6rem;
+      padding-block: var(--esp-2) var(--esp-3);
     }
   }
 
   .corps {
     min-height: 0;
     overflow: auto;
-    padding: 0.8rem 0.9rem 1rem;
+    padding: var(--esp-3) var(--esp-4) var(--esp-4);
   }
 
   /* Cadre : quatre traits qui grandissent depuis un coin (transform seulement). */

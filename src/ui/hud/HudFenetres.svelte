@@ -44,7 +44,7 @@
 <style>
   .fenetres {
     --pad: clamp(8px, 2vmin, 16px);
-    --haut: calc(44px + var(--pad));
+    --haut: calc(var(--cible) + var(--pad));
 
     position: absolute;
     inset: 0;
