@@ -99,7 +99,7 @@ function arrondirResultat(valeur: number, unite?: UniteFormule) {
  * Exprime une durée dans l'unité la plus lisible puis l'arrondit. Si l'arrondi
  * atteint l'unité suivante (60 secondes), la durée passe dans cette unité (1 minute).
  */
-function dureeArrondie(secondes: number, chiffres: number) {
+export function dureeArrondie(secondes: number, chiffres: number) {
   let unite = uniteDureeLisible(secondes)
   let valeur = arrondirSignificatif(secondesEn(secondes, unite), chiffres)
   const uniteApresArrondi = uniteDureeLisible(valeur * SECONDES_PAR_UNITE[unite])

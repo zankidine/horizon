@@ -1,9 +1,11 @@
-import type {
-  Comparaison,
-  Formule,
-  Grandeur,
-  TypeComparaison,
-  UniteComparaison,
+import {
+  CHIFFRES_SIGNIFICATIFS,
+  dureeArrondie,
+  type Comparaison,
+  type Formule,
+  type Grandeur,
+  type TypeComparaison,
+  type UniteComparaison,
 } from '../core/comparisons'
 
 /** Espace insécable : colle un nombre à son unité. */
@@ -95,4 +97,22 @@ export function formaterComparaison(comparaison: Comparaison): ComparaisonFr {
 
 export function formaterComparaisons(comparaisons: readonly Comparaison[]): ComparaisonFr[] {
   return comparaisons.map(formaterComparaison)
+}
+
+/**
+ * Met une durée en secondes en français (« 3 jours », « 1,3 seconde »), dans
+ * l'unité la plus lisible. Réutilise l'arrondi de comparer(), y compris le
+ * passage à l'unité suivante (59,6 secondes donnent « 1 minute »).
+ */
+export function formaterDuree(
+  secondes: number,
+  chiffres: number = CHIFFRES_SIGNIFICATIFS.enfant
+): string {
+  const { valeur, unite } = dureeArrondie(secondes, chiffres)
+  return formaterQuantite(valeur, unite)
+}
+
+/** Remplace les {marqueurs} d'un modèle de texte (venant des données JSON) par des valeurs. */
+export function remplir(modele: string, valeurs: Readonly<Record<string, string>>): string {
+  return modele.replace(/\{(\w+)\}/g, (marqueur, cle: string) => valeurs[cle] ?? marqueur)
 }
