@@ -19,3 +19,12 @@ Avant d'utiliser une bibliothèque, lis sa documentation actuelle : ne te fie pa
 - Aucune clé d'API dans le client.
 - Pas de nouvelle dépendance sans me demander.
 - Petits commits. Termine toujours par : lint, tests, build.
+
+## Git
+
+- Une seule branche : main. Un seul terminal à la fois.
+- Commits directs sur main, petits et clairs.
+- Avant chaque envoi : git pull --rebase origin main.
+- Jamais de push --force.
+- À la fin de chaque étape validée, crée et pousse une balise etape-N-nom (points de restauration).
+- Ne supprime ni ne crée de branche.
