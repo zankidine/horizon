@@ -1,7 +1,7 @@
 import {
-  DEPART_RAYONS_TERRESTRES,
+  DEPART_LACET_DEG,
+  DEPART_POSITION_KM,
   DT_MAX_S,
-  RAYON_MOYEN_TERRE_KM,
   TANGAGE_MAX_DEG,
   VITESSE_DEMO_KM_S,
   VITESSE_ROTATION_CAP_MAX_DEG_S,
@@ -61,14 +61,11 @@ export function borner(valeur: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, valeur))
 }
 
-/**
- * État de départ : à DEPART_RAYONS_TERRESTRES rayons de la Terre, sur le côté
- * de l'axe Terre-Lune, à la vitesse de la démonstration, cap vers la Terre.
- */
+/** État de départ : position et cap de départ, à la vitesse de la démonstration, sans poussée. */
 export function creerVaisseau(): EtatVaisseau {
   return {
-    position: [0, 0, DEPART_RAYONS_TERRESTRES * RAYON_MOYEN_TERRE_KM],
-    lacet: 0,
+    position: DEPART_POSITION_KM,
+    lacet: DEPART_LACET_DEG * RAD_PAR_DEG,
     tangage: 0,
     vitesseKmS: VITESSE_DEMO_KM_S,
     poussee: false,

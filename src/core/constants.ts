@@ -206,11 +206,13 @@ export const VITESSE_VISUELLE_MIN_KM_S = 0.1
 export const VITESSE_VISUELLE_MAX_KM_S = 100
 
 /**
- * Distance de départ du vaisseau à la Terre, en rayons terrestres. Source :
- * choix de jeu : assez loin pour voir la Terre entière et la Lune dans le même
- * champ de vision.
+ * Position de départ du vaisseau en kilomètres (la Terre est à l'origine, la
+ * Lune sur l'axe x) et lacet de départ en degrés. Source : choix de jeu :
+ * à environ 134 000 km de la Terre, de côté, cap proche de la Terre, pour que
+ * la Terre et la Lune se voient bientôt toutes deux dans le champ de vision.
  */
-export const DEPART_RAYONS_TERRESTRES = 20
+export const DEPART_POSITION_KM = [-60_000, 0, 120_000] as const
+export const DEPART_LACET_DEG = -26.6
 
 /**
  * Diamètres angulaires (en degrés) entre lesquels la taille à l'écran d'un
@@ -227,3 +229,19 @@ export const DIAMETRE_REEL_MAX_DEG = 90
  */
 export const DIAMETRE_AFFICHE_MIN_DEG = 2.5
 export const DIAMETRE_AFFICHE_MAX_DEG = 70
+
+/**
+ * Pilotage automatique de la démonstration : le vaisseau vise un point situé à
+ * ce nombre de rayons au-dessus de l'astre (il le frôle sans le traverser).
+ * Source : choix de jeu.
+ */
+export const DEMO_PASSAGE_RAYONS = 3
+
+/**
+ * La démonstration passe à l'astre suivant quand le vaisseau est à moins de
+ * cette distance du point visé (en km), ou après DEMO_DUREE_MAX_CIBLE_S
+ * secondes de temps réel si le virage borné ne l'a pas amené assez près.
+ * Source : choix de jeu.
+ */
+export const DEMO_DISTANCE_CHANGEMENT_KM = 80_000
+export const DEMO_DUREE_MAX_CIBLE_S = 45
