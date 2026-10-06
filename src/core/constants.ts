@@ -338,3 +338,127 @@ export const KM_PAR_1E6_KM = 1e6
  * un diamètre arrondi au km. Source : choix de jeu.
  */
 export const TOLERANCE_CONCORDANCE_DIAMETRE_KM = 1
+
+// ===========================================================================
+// Missions (étape 6a)
+// ===========================================================================
+
+/**
+ * Kilomètres dans un mile international (valeur exacte : 1 mile = 1 609,344 m).
+ * Source : accord international sur le yard et la livre (1959), NIST, Handbook 44.
+ */
+export const MILE_KM = 1.609344
+
+/**
+ * Mètres dans un pied (valeur exacte : 0,3048 m).
+ * Source : accord international sur le yard et la livre (1959), NIST, Handbook 44.
+ */
+export const PIED_M = 0.3048
+
+/**
+ * Altitude moyenne de la Station spatiale internationale, en miles (« about 250
+ * miles »). Sert d'altitude d'orbite basse dans la mission 1.
+ * Source : NASA, International Space Station (nasa.gov/international-space-station/),
+ * consultée le 2026-10-06 : « Orbiting 250 miles above Earth at 17,500 miles per hour ».
+ */
+export const ISS_ALTITUDE_MILES = 250
+
+/**
+ * Vitesse orbitale de la Station spatiale internationale, en miles par heure.
+ * Source : NASA, International Space Station (nasa.gov/international-space-station/),
+ * consultée le 2026-10-06 (même phrase que la constante précédente). Recoupement :
+ * le dossier de presse d'Apollo 11 donne 25 567 pieds/s en orbite basse, soit
+ * 28 056 km/h (nasa.gov/wp-content/uploads/static/apollo50th/pdf/A11_PressKit.pdf).
+ */
+export const ISS_VITESSE_MPH = 17_500
+
+/**
+ * Gain de vitesse de l'injection translunaire d'Apollo 11, en pieds par seconde.
+ * Source : NASA, Apollo 11 Press Kit (release 69-83K), tableau des manœuvres,
+ * « Translunar injection, Vel. Change 9,965 » ; consulté le 2026-10-06
+ * (nasa.gov/wp-content/uploads/static/apollo50th/pdf/A11_PressKit.pdf). Le texte
+ * du même dossier (35 533 − 25 567 pieds/s) donne 9 966 : même valeur à 1 près.
+ */
+export const APOLLO_11_TLI_DELTA_V_PIEDS_S = 9_965
+
+/** Altitude d'orbite basse en kilomètres, déduite de ISS_ALTITUDE_MILES (environ 402 km). */
+export const ALTITUDE_ORBITE_KM = ISS_ALTITUDE_MILES * MILE_KM
+
+/** Vitesse orbitale en kilomètres par heure, déduite de ISS_VITESSE_MPH (environ 28 000 km/h). */
+export const VITESSE_ORBITALE_KM_H = ISS_VITESSE_MPH * MILE_KM
+
+/** Vitesse orbitale en kilomètres par seconde (environ 7,8 km/s). */
+export const VITESSE_ORBITALE_KM_S = VITESSE_ORBITALE_KM_H / SECONDES_PAR_HEURE
+
+/** Gain de vitesse pour partir vers la Lune, en km/s, déduit des pieds par seconde (environ 3 km/s). */
+export const GAIN_VITESSE_LUNE_KM_S = (APOLLO_11_TLI_DELTA_V_PIEDS_S * PIED_M) / METRES_PAR_KM
+
+/**
+ * Le voyage vers la Lune s'arrête à ce nombre de rayons lunaires du centre de
+ * la Lune. Source : choix de jeu (la Lune remplit alors une grande part du hublot).
+ */
+export const MISSION_ARRIVEE_LUNE_RAYONS = 10
+
+/**
+ * Durée visée du voyage vers la Lune, en secondes de jeu. Source : choix de jeu
+ * (« environ une minute », pour que l'enfant ne s'ennuie pas). Avec la vitesse
+ * orbitale plus le gain pour la Lune (environ 10,9 km/s) et le facteur
+ * FACTEUR_ACCELERATION_TEMPS, le trajet dure en effet un peu moins d'une minute.
+ */
+export const DUREE_VOYAGE_LUNE_VISEE_S = 60
+
+/** Écart relatif toléré entre la durée visée et la durée réelle du voyage (test). Source : choix de jeu. */
+export const TOLERANCE_DUREE_VOYAGE = 0.2
+
+/**
+ * Poussée chronométrée : secondes entre le début de l'étape et l'ouverture de la
+ * fenêtre de tir. Source : choix de jeu.
+ */
+export const TIMING_OUVERTURE_S = 3
+
+/**
+ * Largeur de la fenêtre de tir de la poussée, en secondes, selon le niveau :
+ * large aux bas niveaux (poussée assistée), étroite au niveau Expert.
+ * Source : choix de jeu.
+ */
+export const TIMING_FENETRE_S_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, number>> = {
+  1: 6,
+  2: 4,
+  3: 2.5,
+  4: 1.5,
+}
+
+/**
+ * Écart relatif toléré pour une réponse numérique, selon le niveau (0,10 = 10 %).
+ * Les niveaux 1 et 2 voient des valeurs arrondies : leur réponse l'est aussi.
+ * Source : choix pédagogique.
+ */
+export const TOLERANCE_CALCUL_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, number>> = {
+  1: 0.1,
+  2: 0.05,
+  3: 0.02,
+  4: 0.01,
+}
+
+/**
+ * Indices donnés avant la solution expliquée, selon le niveau (au plus le nombre
+ * d'indices écrits dans la mission). Source : choix pédagogique.
+ */
+export const INDICES_MAX_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, number>> = {
+  1: 3,
+  2: 2,
+  3: 1,
+  4: 1,
+}
+
+/**
+ * Secondes d'inactivité avant un rappel doux de l'objectif, selon le niveau :
+ * plus long au niveau 1 (l'enfant prend son temps). Jamais une pénalité.
+ * Source : choix pédagogique.
+ */
+export const DELAI_RAPPEL_S_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, number>> = {
+  1: 25,
+  2: 20,
+  3: 15,
+  4: 12,
+}

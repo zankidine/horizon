@@ -2,6 +2,10 @@ import {
   CATEGORIES_AJOUTEES_NIVEAU,
   CHIFFRES_SIGNIFICATIFS_NIVEAU,
   COMPARAISONS_IMAGEES_NIVEAU,
+  DELAI_RAPPEL_S_NIVEAU,
+  INDICES_MAX_NIVEAU,
+  TIMING_FENETRE_S_NIVEAU,
+  TOLERANCE_CALCUL_NIVEAU,
   FORMULES_VISIBLES_NIVEAU,
   NOTATION_SCIENTIFIQUE_NIVEAU,
 } from './constants'
@@ -42,6 +46,18 @@ export const CATEGORIES_INFO = [
 ] as const
 export type CategorieInfo = (typeof CATEGORIES_INFO)[number]
 
+/** L'aide donnée dans les missions : jamais d'échec définitif, mais plus ou moins de secours. */
+export interface AideNiveau {
+  /** Écart relatif toléré pour une réponse numérique (0,1 = 10 %). */
+  tolerance: number
+  /** Indices donnés avant la solution expliquée. */
+  indicesMax: number
+  /** Largeur de la fenêtre d'une poussée chronométrée, en secondes (large = assistée). */
+  fenetreTimingS: number
+  /** Secondes d'inactivité avant un rappel doux de l'objectif. */
+  delaiRappelS: number
+}
+
 export interface Paliers {
   chiffresSignificatifs: number
   comparaisonsImagees: boolean
@@ -49,6 +65,7 @@ export interface Paliers {
   notationScientifique: boolean
   /** Catégories visibles, dans l'ordre de CATEGORIES_INFO. */
   categories: readonly CategorieInfo[]
+  aide: AideNiveau
 }
 
 export function estNiveau(valeur: unknown): valeur is Niveau {
@@ -67,6 +84,12 @@ export function paliers(niveau: Niveau): Paliers {
     formules: FORMULES_VISIBLES_NIVEAU[niveau],
     notationScientifique: NOTATION_SCIENTIFIQUE_NIVEAU[niveau],
     categories: CATEGORIES_INFO.filter((c) => ajoutees.has(c)),
+    aide: {
+      tolerance: TOLERANCE_CALCUL_NIVEAU[niveau],
+      indicesMax: INDICES_MAX_NIVEAU[niveau],
+      fenetreTimingS: TIMING_FENETRE_S_NIVEAU[niveau],
+      delaiRappelS: DELAI_RAPPEL_S_NIVEAU[niveau],
+    },
   }
 }
 
