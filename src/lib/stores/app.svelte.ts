@@ -1,3 +1,4 @@
+import { profilDepuisNiveau, type Niveau } from '../../core/niveaux'
 import {
   lirePreferences,
   nettoyerNomCopilote,
@@ -6,12 +7,13 @@ import {
   type AmbianceCockpit,
 } from '../preferences'
 
+/** Profil de texte, dérivé du niveau (1-2 enfant, 3-4 adulte). */
 export type Profile = 'enfant' | 'adulte'
 export type Ambiance = 'jour' | 'nuit'
-export type { AmbianceCockpit }
+export type { AmbianceCockpit, Niveau }
 
 interface AppState {
-  profile: Profile
+  niveau: Niveau
   ambiance: Ambiance
   ambianceCockpit: AmbianceCockpit
   copilote: string
@@ -48,7 +50,7 @@ function createAppStore() {
   const enregistrees = lirePreferences(lireStockage())
 
   let state = $state<AppState>({
-    profile: enregistrees.profil ?? PREFERENCES_PAR_DEFAUT.profil,
+    niveau: enregistrees.niveau ?? PREFERENCES_PAR_DEFAUT.niveau,
     ambiance: 'jour',
     ambianceCockpit:
       enregistrees.ambianceCockpit ?? PREFERENCES_PAR_DEFAUT.ambianceCockpit,
@@ -61,7 +63,7 @@ function createAppStore() {
   function sauvegarder(): void {
     ecrireStockage(
       serialiserPreferences({
-        profil: state.profile,
+        niveau: state.niveau,
         ambianceCockpit: state.ambianceCockpit,
         copilote: state.copilote,
       })
@@ -69,12 +71,17 @@ function createAppStore() {
   }
 
   return {
-    get profile() {
-      return state.profile
+    /** Niveau de connaissance : la source de vérité. */
+    get niveau() {
+      return state.niveau
     },
-    set profile(value: Profile) {
-      state.profile = value
+    set niveau(value: Niveau) {
+      state.niveau = value
       sauvegarder()
+    },
+    /** Profil de texte dérivé du niveau, en lecture seule (comme avant). */
+    get profile(): Profile {
+      return profilDepuisNiveau(state.niveau)
     },
     get ambiance() {
       return state.ambiance

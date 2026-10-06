@@ -1,12 +1,16 @@
 /**
  * Logique de l'écran de navigation : choix de la destination et de la vitesse,
  * calcul du trajet, textes mis en français. Le composant .svelte ne fait
- * qu'afficher ce qui est préparé ici. Le profil est lu dans appStore, jamais modifié.
+ * qu'afficher ce qui est préparé ici. Le niveau est lu dans appStore, jamais modifié :
+ * les paliers (chiffres, formules) viennent de paliers(niveau), et les textes de
+ * navigation.json suivent le profil dérivé (niveaux 1-2 : textes « enfant »,
+ * niveaux 3-4 : textes « adulte »).
  */
-import { comparer, CHIFFRES_SIGNIFICATIFS } from '../../core/comparisons'
+import { comparer } from '../../core/comparisons'
 import { VITESSES_CROISIERE_KM_H, type VitesseCroisiere } from '../../core/constants'
 import { validerDestinations, type Destination } from '../../core/destinations'
 import { VITESSES, APOLLO_11_DUREE_TRAJET_SECONDES, calculerTrajet, type Trajet } from '../../core/navigation'
+import { paliers } from '../../core/niveaux'
 import { validerTextesNavigation } from '../../core/textes-navigation'
 import { arrondirSignificatif } from '../../core/units'
 import {
@@ -78,7 +82,7 @@ export class EtatNavigation {
 
   vue = $derived.by<VueNavigation>(() => {
     const profil = appStore.profile
-    const chiffres = CHIFFRES_SIGNIFICATIFS[profil]
+    const { chiffresSignificatifs: chiffres, formules } = paliers(appStore.niveau)
     const environ = profil === 'enfant' ? 'environ ' : ''
     const duree = (secondes: number) => environ + formaterDuree(secondes, chiffres)
     const trajet = this.trajet
@@ -86,7 +90,7 @@ export class EtatNavigation {
     const vitesses: LigneVitesse[] = VITESSES.map((id) => {
       const trajetVitesse = this.destination?.active ? calculerTrajet(this.destination, id) : undefined
       const detail =
-        profil === 'adulte'
+        formules
           ? formaterGrandeur({ valeur: VITESSES_CROISIERE_KM_H[id], unite: 'km/h' })
           : trajetVitesse
             ? duree(trajetVitesse.dureeSecondes)
@@ -123,7 +127,7 @@ export class EtatNavigation {
       // Le temps de lumière a déjà sa ligne dans les résultats : pas de doublon ici.
       comparaisons: trajet
         ? formaterComparaisons(
-            comparer(trajet.distanceKm, profil).filter((c) => c.type !== 'temps-lumiere')
+            comparer(trajet.distanceKm, profil, chiffres).filter((c) => c.type !== 'temps-lumiere')
           )
         : [],
       vraieVie: {

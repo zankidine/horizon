@@ -9,7 +9,7 @@ import {
 } from './preferences'
 
 const exemple: Preferences = {
-  profil: 'adulte',
+  niveau: 4,
   ambianceCockpit: 'cinema',
   copilote: 'Nova',
 }
@@ -36,10 +36,37 @@ describe('serialiserPreferences / lirePreferences', () => {
     expect(lirePreferences(JSON.stringify(exemple))).toEqual({})
   })
 
+  it('migre la version 1 : enfant → niveau 1, adulte → niveau 3', () => {
+    const v1 = (profil: unknown) =>
+      JSON.stringify({ version: 1, profil, ambianceCockpit: 'cinema', copilote: 'Nova' })
+    expect(lirePreferences(v1('enfant'))).toEqual({ niveau: 1, ambianceCockpit: 'cinema', copilote: 'Nova' })
+    expect(lirePreferences(v1('adulte'))).toEqual({ niveau: 3, ambianceCockpit: 'cinema', copilote: 'Nova' })
+  })
+
+  it('version 1 avec un profil invalide : pas de niveau, le reste est gardé', () => {
+    const brut = JSON.stringify({ version: 1, profil: 'robot', copilote: 'Nova' })
+    expect(lirePreferences(brut)).toEqual({ copilote: 'Nova' })
+  })
+
+  it('version 2 : ignore un niveau invalide ou un ancien profil', () => {
+    for (const niveau of [0, 5, 2.5, '3', null, 'adulte']) {
+      expect(lirePreferences(JSON.stringify({ version: 2, niveau, copilote: 'Nova' }))).toEqual({
+        copilote: 'Nova',
+      })
+    }
+    expect(lirePreferences(JSON.stringify({ version: 2, profil: 'adulte' }))).toEqual({})
+  })
+
+  it('écrit la version 2 avec le niveau', () => {
+    const ecrit = JSON.parse(serialiserPreferences(exemple))
+    expect(ecrit).toMatchObject({ version: 2, niveau: 4 })
+    expect(ecrit.profil).toBeUndefined()
+  })
+
   it('ignore chaque valeur invalide séparément', () => {
     const brut = JSON.stringify({
-      version: 1,
-      profil: 'robot',
+      version: 2,
+      niveau: 'robot',
       ambianceCockpit: 'cinema',
       copilote: 42,
     })
@@ -48,7 +75,7 @@ describe('serialiserPreferences / lirePreferences', () => {
 
   it('nettoie le nom du copilote à la lecture', () => {
     const brut = JSON.stringify({
-      version: 1,
+      version: 2,
       copilote: '  Nova \n  Étoile  ',
     })
     expect(lirePreferences(brut)).toEqual({ copilote: 'Nova Étoile' })
@@ -61,7 +88,7 @@ describe('serialiserPreferences / lirePreferences', () => {
         copilote: 'Luna',
       })
     )
-    expect(relu.profil).toBe('enfant')
+    expect(relu.niveau).toBe(1)
     expect(relu.ambianceCockpit).toBe('aventure')
   })
 })
