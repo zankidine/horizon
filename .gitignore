@@ -31,3 +31,6 @@ coverage
 
 # PWA
 dev-dist
+
+# Captures du test de bout en bout (non versionnées)
+tests-e2e/captures/
