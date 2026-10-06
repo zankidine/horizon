@@ -1,11 +1,11 @@
 <script lang="ts">
   import { appStore } from './lib/stores/app.svelte'
+  import Poste from './ui/poste/Poste.svelte'
   import Preparation from './ui/preparation/Preparation.svelte'
-  import Hublot from './ui/Hublot.svelte'
 </script>
 
 {#if appStore.pretAPartir}
-  <Hublot />
+  <Poste />
 {:else}
   <Preparation />
 {/if}
