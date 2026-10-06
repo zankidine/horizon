@@ -112,3 +112,12 @@ describe('validerDestinations : structure', () => {
     expect(problemesDe(d).length).toBeGreaterThanOrEqual(2)
   })
 })
+
+describe('validerDestinations : astre facultatif', () => {
+  it('accepte l’absence de champ astre (jupiter) et refuse un identifiant mal formé', () => {
+    const d = copie()
+    expect(d.destinations[2].astre).toBeUndefined()
+    d.destinations[0].astre = 'La Lune!'
+    expect(problemesDe(d).join('\n')).toContain('destinations[0].astre')
+  })
+})

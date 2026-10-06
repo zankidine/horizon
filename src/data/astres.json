@@ -1,0 +1,666 @@
+{
+  "astres": [
+    {
+      "id": "terre",
+      "nom": "Terre",
+      "type": "planete",
+      "rayonEquatorial": {
+        "valeur": 6378.137,
+        "unite": "km",
+        "precision": "donnee",
+        "sens": "equatorial",
+        "source": {
+          "nom": "NASA NSSDCA, Earth Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+          "libelle": "Equatorial radius (km)",
+          "unite_origine": "km",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "15 November 2024"
+        }
+      },
+      "rayonMoyen": {
+        "valeur": 6371.0,
+        "unite": "km",
+        "precision": "donnee",
+        "sens": "moyen_volumetrique",
+        "source": {
+          "nom": "NASA NSSDCA, Earth Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+          "libelle": "Volumetric mean radius (km)",
+          "unite_origine": "km",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "15 November 2024"
+        }
+      },
+      "masse": {
+        "valeur": 5.9722,
+        "unite": "1e24 kg",
+        "precision": "donnee",
+        "source": {
+          "nom": "NASA NSSDCA, Earth Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+          "libelle": "Mass (10^24 kg)",
+          "unite_origine": "1e24 kg",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "15 November 2024"
+        }
+      },
+      "graviteSurface": {
+        "valeur": 9.82,
+        "unite": "m/s2",
+        "precision": "donnee",
+        "sens": "moyenne",
+        "source": {
+          "nom": "NASA NSSDCA, Earth Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+          "libelle": "Surface gravity (mean) (m/s^2)",
+          "unite_origine": "m/s2",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "15 November 2024"
+        }
+      },
+      "temperatures": [
+        {
+          "valeur": 288,
+          "unite": "K",
+          "precision": "donnee",
+          "sens": "moyenne",
+          "contexte": "libellé de la fiche : « Average temperature » ; la fiche ne précise pas « globale »",
+          "source": {
+            "nom": "NASA NSSDCA, Earth Fact Sheet",
+            "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+            "libelle": "Atmosphere: Average temperature: 288 K (15 C)",
+            "unite_origine": "K",
+            "date_consultation": "2026-10-06",
+            "mise_a_jour_page": "15 November 2024"
+          }
+        },
+        {
+          "min": 283,
+          "max": 293,
+          "unite": "K",
+          "precision": "donnee",
+          "sens": "plage_diurne",
+          "source": {
+            "nom": "NASA NSSDCA, Earth Fact Sheet",
+            "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+            "libelle": "Atmosphere: Diurnal temperature range: 283 K to 293 K (10 to 20 C)",
+            "unite_origine": "K",
+            "date_consultation": "2026-10-06",
+            "mise_a_jour_page": "15 November 2024"
+          }
+        }
+      ],
+      "atmosphere": {
+        "pression": [
+          {
+            "valeur": 1014,
+            "unite": "mb",
+            "precision": "donnee",
+            "sens": "surface",
+            "source": {
+              "nom": "NASA NSSDCA, Earth Fact Sheet",
+              "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+              "libelle": "Atmosphere: Surface pressure: 1014 mb",
+              "unite_origine": "mb",
+              "date_consultation": "2026-10-06",
+              "mise_a_jour_page": "15 November 2024"
+            }
+          }
+        ],
+        "composition": {
+          "sens": "air sec, en volume",
+          "precision": "donnee",
+          "constituants": [
+            {
+              "nom": "azote",
+              "formule": "N2",
+              "valeur": 78.08,
+              "unite": "%"
+            },
+            {
+              "nom": "dioxygène",
+              "formule": "O2",
+              "valeur": 20.95,
+              "unite": "%"
+            }
+          ],
+          "source": {
+            "nom": "NASA NSSDCA, Earth Fact Sheet",
+            "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+            "libelle": "Atmospheric composition (by volume, dry air): Major",
+            "unite_origine": "%",
+            "date_consultation": "2026-10-06",
+            "mise_a_jour_page": "15 November 2024"
+          }
+        }
+      },
+      "dureeJour": {
+        "valeur": 24.0,
+        "unite": "h",
+        "precision": "donnee",
+        "contexte": "jour solaire moyen",
+        "source": {
+          "nom": "NASA NSSDCA, Earth Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+          "libelle": "Length of day (hrs)",
+          "unite_origine": "h",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "15 November 2024"
+        }
+      },
+      "rotationSiderale": {
+        "valeur": 23.9345,
+        "unite": "h",
+        "precision": "donnee",
+        "source": {
+          "nom": "NASA NSSDCA, Earth Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+          "libelle": "Sidereal rotation period (hrs)",
+          "unite_origine": "h",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "15 November 2024"
+        }
+      },
+      "periodeOrbitale": {
+        "valeur": 365.256,
+        "unite": "j",
+        "precision": "donnee",
+        "contexte": "autour du Soleil",
+        "source": {
+          "nom": "NASA NSSDCA, Earth Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+          "libelle": "Sidereal orbit period (days)",
+          "unite_origine": "j",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "15 November 2024"
+        }
+      },
+      "distanceSoleil": {
+        "valeur": 149.598,
+        "unite": "1e6 km",
+        "precision": "donnee",
+        "sens": "demi-grand axe",
+        "source": {
+          "nom": "NASA NSSDCA, Earth Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+          "libelle": "Semimajor axis (10^6 km)",
+          "unite_origine": "1e6 km",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "15 November 2024"
+        }
+      },
+      "nombreLunes": {
+        "valeur": 1,
+        "unite": "nombre",
+        "precision": "donnee",
+        "source": {
+          "nom": "NASA NSSDCA, Earth Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+          "libelle": "Number of natural satellites",
+          "unite_origine": "nombre",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "15 November 2024"
+        }
+      }
+    },
+    {
+      "id": "lune",
+      "nom": "Lune",
+      "type": "satellite",
+      "rayonEquatorial": {
+        "valeur": 1738.1,
+        "unite": "km",
+        "precision": "donnee",
+        "sens": "equatorial",
+        "source": {
+          "nom": "NASA NSSDCA, Moon Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+          "libelle": "Equatorial radius (km)",
+          "unite_origine": "km",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "11 January 2024"
+        }
+      },
+      "rayonMoyen": {
+        "valeur": 1737.4,
+        "unite": "km",
+        "precision": "donnee",
+        "sens": "moyen_volumetrique",
+        "source": {
+          "nom": "NASA NSSDCA, Moon Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+          "libelle": "Volumetric mean radius (km)",
+          "unite_origine": "km",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "11 January 2024"
+        }
+      },
+      "masse": {
+        "valeur": 0.07346,
+        "unite": "1e24 kg",
+        "precision": "donnee",
+        "source": {
+          "nom": "NASA NSSDCA, Moon Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+          "libelle": "Mass (10^24 kg)",
+          "unite_origine": "1e24 kg",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "11 January 2024"
+        }
+      },
+      "graviteSurface": {
+        "valeur": 1.62,
+        "unite": "m/s2",
+        "precision": "donnee",
+        "sens": "moyenne",
+        "source": {
+          "nom": "NASA NSSDCA, Moon Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+          "libelle": "Surface gravity (m/s^2)",
+          "unite_origine": "m/s2",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "11 January 2024"
+        }
+      },
+      "temperatures": [
+        {
+          "indisponible": true,
+          "sens": "moyenne",
+          "raison": "La fiche de la Lune ne donne pas de température moyenne, seulement la plage jour-nuit à l'équateur.",
+          "source": {
+            "nom": "NASA NSSDCA, Moon Fact Sheet",
+            "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+            "libelle": "Lunar Atmosphere (aucune ligne « Average temperature »)",
+            "date_consultation": "2026-10-06",
+            "mise_a_jour_page": "11 January 2024"
+          }
+        },
+        {
+          "min": 95,
+          "max": 390,
+          "unite": "K",
+          "precision": "donnee",
+          "sens": "plage_diurne",
+          "contexte": "à l'équateur ; 95 K côté nuit, 390 K côté jour",
+          "source": {
+            "nom": "NASA NSSDCA, Moon Fact Sheet",
+            "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+            "libelle": "Lunar Atmosphere: Diurnal temperature range (equator): 95 K to 390 K",
+            "unite_origine": "K",
+            "date_consultation": "2026-10-06",
+            "mise_a_jour_page": "11 January 2024"
+          }
+        }
+      ],
+      "atmosphere": {
+        "pression": [
+          {
+            "valeur": 3e-15,
+            "unite": "bar",
+            "precision": "environ",
+            "sens": "nuit",
+            "contexte": "atmosphère quasi inexistante (exosphère) ; valeur de la fiche, de jour la fiche ne donne rien",
+            "source": {
+              "nom": "NASA NSSDCA, Moon Fact Sheet",
+              "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+              "libelle": "Lunar Atmosphere: Surface pressure (night): 3 x 10^-15 bar (2 x 10^-12 torr)",
+              "unite_origine": "bar",
+              "date_consultation": "2026-10-06",
+              "mise_a_jour_page": "11 January 2024"
+            }
+          }
+        ],
+        "composition": {
+          "sens": "estimation de la nuit, en particules par cm³ (limites supérieures)",
+          "precision": "estimation",
+          "constituants": [
+            {
+              "nom": "hélium 4",
+              "formule": "4He",
+              "valeur": 40000,
+              "unite": "cm-3"
+            },
+            {
+              "nom": "néon 20",
+              "formule": "20Ne",
+              "valeur": 40000,
+              "unite": "cm-3"
+            },
+            {
+              "nom": "dihydrogène",
+              "formule": "H2",
+              "valeur": 35000,
+              "unite": "cm-3"
+            },
+            {
+              "nom": "argon 40",
+              "formule": "40Ar",
+              "valeur": 30000,
+              "unite": "cm-3"
+            },
+            {
+              "nom": "néon 22",
+              "formule": "22Ne",
+              "valeur": 5000,
+              "unite": "cm-3"
+            },
+            {
+              "nom": "argon 36",
+              "formule": "36Ar",
+              "valeur": 2000,
+              "unite": "cm-3"
+            }
+          ],
+          "source": {
+            "nom": "NASA NSSDCA, Moon Fact Sheet",
+            "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+            "libelle": "Estimated Composition (night, particles per cubic cm)",
+            "unite_origine": "cm-3",
+            "date_consultation": "2026-10-06",
+            "mise_a_jour_page": "11 January 2024"
+          }
+        }
+      },
+      "dureeJour": {
+        "indisponible": true,
+        "raison": "La fiche de la Lune ne donne pas de « Length of day » ; elle donne la rotation sidérale (655,720 h) et la période synodique (29,53 jours).",
+        "source": {
+          "nom": "NASA NSSDCA, Moon Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+          "libelle": "Orbital parameters (aucune ligne « Length of day »)",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "11 January 2024"
+        }
+      },
+      "rotationSiderale": {
+        "valeur": 655.72,
+        "unite": "h",
+        "precision": "donnee",
+        "source": {
+          "nom": "NASA NSSDCA, Moon Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+          "libelle": "Sidereal rotation period (hrs)",
+          "unite_origine": "h",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "11 January 2024"
+        }
+      },
+      "periodeOrbitale": {
+        "valeur": 27.3217,
+        "unite": "j",
+        "precision": "donnee",
+        "contexte": "autour de la Terre",
+        "source": {
+          "nom": "NASA NSSDCA, Moon Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+          "libelle": "Revolution period (days)",
+          "unite_origine": "j",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "11 January 2024"
+        }
+      },
+      "distanceSoleil": {
+        "indisponible": true,
+        "raison": "La fiche de la Lune décrit son orbite autour de la Terre, pas sa distance au Soleil.",
+        "source": {
+          "nom": "NASA NSSDCA, Moon Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+          "libelle": "Orbital parameters (orbite autour de la Terre)",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "11 January 2024"
+        }
+      },
+      "nombreLunes": {
+        "indisponible": true,
+        "raison": "La fiche de la Lune ne contient pas de ligne « Number of natural satellites ».",
+        "source": {
+          "nom": "NASA NSSDCA, Moon Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+          "libelle": "Moon Fact Sheet (champ absent)",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "11 January 2024"
+        }
+      }
+    },
+    {
+      "id": "mars",
+      "nom": "Mars",
+      "type": "planete",
+      "rayonEquatorial": {
+        "valeur": 3396.2,
+        "unite": "km",
+        "precision": "donnee",
+        "sens": "equatorial",
+        "source": {
+          "nom": "NASA NSSDCA, Mars Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+          "libelle": "Equatorial radius (km)",
+          "unite_origine": "km",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "19 May 2025"
+        }
+      },
+      "rayonMoyen": {
+        "valeur": 3389.5,
+        "unite": "km",
+        "precision": "donnee",
+        "sens": "moyen_volumetrique",
+        "source": {
+          "nom": "NASA NSSDCA, Mars Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+          "libelle": "Volumetric mean radius (km)",
+          "unite_origine": "km",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "19 May 2025"
+        }
+      },
+      "masse": {
+        "valeur": 0.64169,
+        "unite": "1e24 kg",
+        "precision": "donnee",
+        "source": {
+          "nom": "NASA NSSDCA, Mars Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+          "libelle": "Mass (10^24 kg)",
+          "unite_origine": "1e24 kg",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "19 May 2025"
+        }
+      },
+      "graviteSurface": {
+        "valeur": 3.73,
+        "unite": "m/s2",
+        "precision": "donnee",
+        "sens": "moyenne",
+        "source": {
+          "nom": "NASA NSSDCA, Mars Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+          "libelle": "Surface gravity (mean) (m/s^2)",
+          "unite_origine": "m/s2",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "19 May 2025"
+        }
+      },
+      "temperatures": [
+        {
+          "valeur": 214,
+          "unite": "K",
+          "precision": "environ",
+          "sens": "moyenne",
+          "contexte": "libellé de la fiche : « Average temperature », avec « ~ » ; la fiche ne précise pas « globale »",
+          "source": {
+            "nom": "NASA NSSDCA, Mars Fact Sheet",
+            "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+            "libelle": "Martian Atmosphere: Average temperature: ~214 K (-59 C)",
+            "unite_origine": "K",
+            "date_consultation": "2026-10-06",
+            "mise_a_jour_page": "19 May 2025"
+          }
+        },
+        {
+          "min": 184,
+          "max": 242,
+          "unite": "K",
+          "precision": "donnee",
+          "sens": "plage_diurne",
+          "contexte": "mesure du site de l'atterrisseur Viking 1, pas une plage globale",
+          "source": {
+            "nom": "NASA NSSDCA, Mars Fact Sheet",
+            "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+            "libelle": "Martian Atmosphere: Diurnal temperature range: 184 K to 242 K (-89 to -31 C) (Viking 1 Lander site)",
+            "unite_origine": "K",
+            "date_consultation": "2026-10-06",
+            "mise_a_jour_page": "19 May 2025"
+          }
+        }
+      ],
+      "atmosphere": {
+        "pression": [
+          {
+            "valeur": 6.36,
+            "unite": "mb",
+            "precision": "donnee",
+            "sens": "surface",
+            "contexte": "au rayon moyen",
+            "source": {
+              "nom": "NASA NSSDCA, Mars Fact Sheet",
+              "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+              "libelle": "Martian Atmosphere: Surface pressure: 6.36 mb at mean radius",
+              "unite_origine": "mb",
+              "date_consultation": "2026-10-06",
+              "mise_a_jour_page": "19 May 2025"
+            }
+          },
+          {
+            "min": 4.0,
+            "max": 8.7,
+            "unite": "mb",
+            "precision": "donnee",
+            "sens": "variation_saisonniere",
+            "source": {
+              "nom": "NASA NSSDCA, Mars Fact Sheet",
+              "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+              "libelle": "Martian Atmosphere: (variable from 4.0 to 8.7 mb depending on season)",
+              "unite_origine": "mb",
+              "date_consultation": "2026-10-06",
+              "mise_a_jour_page": "19 May 2025"
+            }
+          }
+        ],
+        "composition": {
+          "sens": "en volume",
+          "precision": "donnee",
+          "constituants": [
+            {
+              "nom": "dioxyde de carbone",
+              "formule": "CO2",
+              "valeur": 95.1,
+              "unite": "%"
+            },
+            {
+              "nom": "azote",
+              "formule": "N2",
+              "valeur": 2.59,
+              "unite": "%"
+            },
+            {
+              "nom": "argon",
+              "formule": "Ar",
+              "valeur": 1.94,
+              "unite": "%"
+            },
+            {
+              "nom": "dioxygène",
+              "formule": "O2",
+              "valeur": 0.16,
+              "unite": "%"
+            },
+            {
+              "nom": "monoxyde de carbone",
+              "formule": "CO",
+              "valeur": 0.06,
+              "unite": "%"
+            }
+          ],
+          "source": {
+            "nom": "NASA NSSDCA, Mars Fact Sheet",
+            "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+            "libelle": "Atmospheric composition (by volume): Major",
+            "unite_origine": "%",
+            "date_consultation": "2026-10-06",
+            "mise_a_jour_page": "19 May 2025"
+          }
+        }
+      },
+      "dureeJour": {
+        "valeur": 24.6597,
+        "unite": "h",
+        "precision": "donnee",
+        "contexte": "jour solaire moyen",
+        "source": {
+          "nom": "NASA NSSDCA, Mars Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+          "libelle": "Length of day (hrs)",
+          "unite_origine": "h",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "19 May 2025"
+        }
+      },
+      "rotationSiderale": {
+        "valeur": 24.6229,
+        "unite": "h",
+        "precision": "donnee",
+        "source": {
+          "nom": "NASA NSSDCA, Mars Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+          "libelle": "Sidereal rotation period (hrs)",
+          "unite_origine": "h",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "19 May 2025"
+        }
+      },
+      "periodeOrbitale": {
+        "valeur": 686.98,
+        "unite": "j",
+        "precision": "donnee",
+        "contexte": "autour du Soleil",
+        "source": {
+          "nom": "NASA NSSDCA, Mars Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+          "libelle": "Sidereal orbit period (days)",
+          "unite_origine": "j",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "19 May 2025"
+        }
+      },
+      "distanceSoleil": {
+        "valeur": 227.956,
+        "unite": "1e6 km",
+        "precision": "donnee",
+        "sens": "demi-grand axe",
+        "source": {
+          "nom": "NASA NSSDCA, Mars Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+          "libelle": "Semimajor axis (10^6 km)",
+          "unite_origine": "1e6 km",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "19 May 2025"
+        }
+      },
+      "nombreLunes": {
+        "valeur": 2,
+        "unite": "nombre",
+        "precision": "donnee",
+        "source": {
+          "nom": "NASA NSSDCA, Mars Fact Sheet",
+          "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+          "libelle": "Number of natural satellites",
+          "unite_origine": "nombre",
+          "date_consultation": "2026-10-06",
+          "mise_a_jour_page": "19 May 2025"
+        }
+      }
+    }
+  ]
+}

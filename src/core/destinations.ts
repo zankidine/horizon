@@ -14,6 +14,8 @@ export interface Destination {
   description: TexteProfil
   /** Nom d'une constante de constants.ts (en km), présente seulement si la destination est active. */
   distanceConstante?: string
+  /** Identifiant d'un astre de astres.json (facultatif). Son existence est vérifiée par un test. */
+  astre?: string
 }
 
 const FORMAT_ID = /^[a-z0-9-]+$/
@@ -62,6 +64,9 @@ export function validerDestinations(donnees: unknown): Destination[] {
       problemes.push(`${chemin}.id : « ${brut.id} » est en double`)
     } else {
       ids.add(brut.id)
+    }
+    if (brut.astre !== undefined && (typeof brut.astre !== 'string' || !FORMAT_ID.test(brut.astre))) {
+      problemes.push(`${chemin}.astre : identifiant d'astre (minuscules, chiffres, tirets) attendu s'il est présent`)
     }
     if (typeof brut.active !== 'boolean') problemes.push(`${chemin}.active : booléen attendu`)
     verifierTexteProfil(brut.nom, `${chemin}.nom`, problemes)

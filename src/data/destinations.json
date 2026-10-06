@@ -2,6 +2,7 @@
   "destinations": [
     {
       "id": "lune",
+      "astre": "lune",
       "active": true,
       "nom": { "enfant": "La Lune", "adulte": "La Lune" },
       "description": {
@@ -12,6 +13,7 @@
     },
     {
       "id": "mars",
+      "astre": "mars",
       "active": false,
       "nom": { "enfant": "Mars", "adulte": "Mars" },
       "description": {
