@@ -90,8 +90,8 @@ function choisirObjet(distanceKm: number) {
   )
 }
 
-function arrondirResultat(valeur: number, unite?: UniteFormule) {
-  const arrondi = arrondirSignificatif(valeur, CHIFFRES_SIGNIFICATIFS.adulte)
+function arrondirResultat(valeur: number, chiffres: number, unite?: UniteFormule) {
+  const arrondi = arrondirSignificatif(valeur, chiffres)
   return { resultat: { valeur: arrondi, unite }, resultatExact: arrondi === valeur }
 }
 
@@ -113,13 +113,13 @@ export function dureeArrondie(secondes: number, chiffres: number) {
   return { valeur, unite }
 }
 
-function comparerObjet(distanceKm: number, profil: Profil): Comparaison | undefined {
+function comparerObjet(distanceKm: number, profil: Profil, chiffres: number): Comparaison | undefined {
   const objet = choisirObjet(distanceKm)
   if (!objet) return undefined
   const fois = distanceKm / objet.longueurKm
   const comparaison: Comparaison = {
     type: objet.type,
-    valeur: arrondirSignificatif(fois, CHIFFRES_SIGNIFICATIFS[profil]),
+    valeur: arrondirSignificatif(fois, chiffres),
     unite: objet.type,
     approximatif: profil === 'enfant',
   }
@@ -127,7 +127,7 @@ function comparerObjet(distanceKm: number, profil: Profil): Comparaison | undefi
     comparaison.formule = {
       dividende: { valeur: distanceKm, unite: 'km' },
       diviseur: { valeur: objet.longueurKm, unite: 'km' },
-      ...arrondirResultat(fois),
+      ...arrondirResultat(fois, chiffres),
     }
   }
   return comparaison
@@ -137,10 +137,11 @@ function comparerDuree(
   type: TypeComparaison,
   secondes: number,
   profil: Profil,
+  chiffres: number,
   formule: () => Formule
 ): Comparaison | undefined {
   if (secondes < SECONDES_PAR_UNITE.seconde) return undefined
-  const { valeur, unite } = dureeArrondie(secondes, CHIFFRES_SIGNIFICATIFS[profil])
+  const { valeur, unite } = dureeArrondie(secondes, chiffres)
   const comparaison: Comparaison = { type, valeur, unite, approximatif: profil === 'enfant' }
   if (profil === 'adulte') comparaison.formule = formule()
   return comparaison
@@ -150,13 +151,14 @@ function comparerTrajet(
   type: 'trajet-marche' | 'trajet-voiture',
   distanceKm: number,
   vitesseKmH: number,
-  profil: Profil
+  profil: Profil,
+  chiffres: number
 ) {
   const heures = dureeTrajetHeures(distanceKm, vitesseKmH)
-  return comparerDuree(type, heuresEnSecondes(heures), profil, () => ({
+  return comparerDuree(type, heuresEnSecondes(heures), profil, chiffres, () => ({
     dividende: { valeur: distanceKm, unite: 'km' },
     diviseur: { valeur: vitesseKmH, unite: 'km/h' },
-    ...arrondirResultat(heures, 'h'),
+    ...arrondirResultat(heures, chiffres, 'h'),
   }))
 }
 
@@ -164,21 +166,26 @@ function comparerTrajet(
  * Compare une distance (en km) à des objets et à des durées de trajet.
  * Ne garde que les comparaisons dont la valeur vaut au moins 1, au plus MAX_COMPARAISONS,
  * dans cet ordre : objet de référence, temps de la lumière, à pied, en voiture.
+ * `chiffres` (significatifs) vaut par défaut celui du profil ; un niveau peut en demander plus.
  */
-export function comparer(distanceKm: number, profil: Profil): Comparaison[] {
+export function comparer(
+  distanceKm: number,
+  profil: Profil,
+  chiffres: number = CHIFFRES_SIGNIFICATIFS[profil]
+): Comparaison[] {
   if (!Number.isFinite(distanceKm) || distanceKm < 0) {
     throw new RangeError(`Distance invalide : ${distanceKm} km`)
   }
   const secondesLumiere = tempsLumiereSecondes(distanceKm)
   const candidates = [
-    comparerObjet(distanceKm, profil),
-    comparerDuree('temps-lumiere', secondesLumiere, profil, () => ({
+    comparerObjet(distanceKm, profil, chiffres),
+    comparerDuree('temps-lumiere', secondesLumiere, profil, chiffres, () => ({
       dividende: { valeur: distanceKm, unite: 'km' },
       diviseur: { valeur: VITESSE_LUMIERE_KM_S, unite: 'km/s' },
-      ...arrondirResultat(secondesLumiere, 's'),
+      ...arrondirResultat(secondesLumiere, chiffres, 's'),
     })),
-    comparerTrajet('trajet-marche', distanceKm, VITESSE_MARCHE_KM_H, profil),
-    comparerTrajet('trajet-voiture', distanceKm, VITESSE_VOITURE_KM_H, profil),
+    comparerTrajet('trajet-marche', distanceKm, VITESSE_MARCHE_KM_H, profil, chiffres),
+    comparerTrajet('trajet-voiture', distanceKm, VITESSE_VOITURE_KM_H, profil, chiffres),
   ]
   return candidates
     .filter((c): c is Comparaison => c !== undefined && c.valeur >= 1)

@@ -1,6 +1,6 @@
 /**
- * Logique de l'écran « Préparation de mission » : profil, ambiance et
- * nom du copilote. Le store garde les choix et les sauvegarde.
+ * Logique de l'écran « Préparation de mission » : ambiance et nom du
+ * copilote (le niveau se choisit dans le sélecteur de niveau). Le store garde les choix et les sauvegarde.
  */
 import {
   appStore,
@@ -13,6 +13,10 @@ import {
 } from '../../lib/preferences'
 import { suggestions } from '../../data/copilotes.json'
 
+/**
+ * Ancien choix enfant/adulte. Plus utilisé par la préparation ; gardé exporté
+ * jusqu'à la réécriture du poste de commandement (poste.svelte.ts l'importe).
+ */
 export const CHOIX_PROFIL: readonly {
   valeur: Profile
   titre: string
@@ -45,20 +49,12 @@ export { LONGUEUR_MAX_COPILOTE }
 export class EtatPreparation {
   nom = $state(appStore.copilote)
 
-  get profil(): Profile {
-    return appStore.profile
-  }
-
   get ambiance(): AmbianceCockpit {
     return appStore.ambianceCockpit
   }
 
   /** Un nom est prêt quand il reste du texte utilisable après nettoyage. */
   readonly nomValide = $derived(nettoyerNomCopilote(this.nom) !== null)
-
-  choisirProfil(profil: Profile): void {
-    appStore.profile = profil
-  }
 
   choisirAmbiance(ambiance: AmbianceCockpit): void {
     appStore.ambianceCockpit = ambiance

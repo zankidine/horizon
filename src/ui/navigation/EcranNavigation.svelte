@@ -1,4 +1,5 @@
 <script lang="ts">
+  import SelecteurNiveau from '../niveaux/SelecteurNiveau.svelte'
   import { EtatNavigation, type SurConfirmer } from './navigation.svelte'
 
   let { onConfirmer }: { onConfirmer: SurConfirmer } = $props()
@@ -8,6 +9,8 @@
 
 <section class="navigation" aria-labelledby="nav-titre">
   <h1 id="nav-titre">{etat.vue.titre}</h1>
+
+  <SelecteurNiveau legende="Niveau" avecExemples={false} avecMention={false} />
 
   <div class="colonnes">
     <div class="choix">
