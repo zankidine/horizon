@@ -134,3 +134,114 @@ export const VITESSES_CROISIERE_KM_H: Readonly<Record<VitesseCroisiere, number>>
  * 16 juillet 1969, mise en orbite lunaire le 19 juillet, soit environ 3 jours.
  */
 export const APOLLO_11_DUREE_TRAJET_JOURS = 3
+
+// ===========================================================================
+// Vaisseau (étape 3d)
+// ===========================================================================
+
+/**
+ * Diamètre moyen de la Lune, en kilomètres.
+ * Source : NASA, Moon Fact Sheet (nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html),
+ * 3 474,8 km ; valeur retenue pour le jeu : 3 474 km.
+ */
+export const DIAMETRE_LUNE_KM = 3474
+
+/** Rayon de la Lune en kilomètres, déduit du diamètre. */
+export const RAYON_LUNE_KM = DIAMETRE_LUNE_KM / 2
+
+/**
+ * Vitesse du vaisseau dans la démonstration, en kilomètres par seconde.
+ * Source : choix de jeu, du même ordre que la vitesse de la Terre autour du
+ * Soleil (29,78 km/s, NASA, Earth Fact Sheet). À cette vitesse la Lune est à
+ * environ 3,6 heures de la Terre : trop long pour une démonstration, d'où
+ * le facteur d'accélération du temps ci-dessous.
+ */
+export const VITESSE_DEMO_KM_S = 30
+
+/**
+ * Facteur d'accélération du temps pour la démonstration : une seconde réelle
+ * fait avancer le vaisseau de ce nombre de secondes de voyage. Source : choix
+ * de jeu. Avec 600, les 3,6 heures de trajet vers la Lune durent environ 21
+ * secondes à l'écran, et la taille de la Terre change de façon visible.
+ * N'agit que sur le déplacement : le virage et les effets restent en temps réel.
+ */
+export const FACTEUR_ACCELERATION_TEMPS = 600
+
+/**
+ * Plus grand pas de temps pris en compte par avancer(), en secondes. Quand
+ * l'onglet reste inactif puis revient, dt peut valoir plusieurs minutes : sans
+ * borne, le vaisseau ferait un saut énorme. Source : choix de jeu (environ
+ * 6 images à 60 i/s).
+ */
+export const DT_MAX_S = 0.1
+
+/**
+ * Vitesse maximale de rotation du cap (lacet et tangage), en degrés par
+ * seconde. Source : confort de mouvement pour un enfant de 7 ans (jeu aussi
+ * destiné à un enfant) : les virages rapides donnent le mal des transports.
+ */
+export const VITESSE_ROTATION_CAP_MAX_DEG_S = 4
+
+/**
+ * Tangage maximal, en degrés au-dessus ou au-dessous de l'horizon. Source :
+ * choix de jeu. Évite le retournement du vaisseau aux pôles.
+ */
+export const TANGAGE_MAX_DEG = 80
+
+/**
+ * Amplitude maximale du roulis de dérive, en degrés. Source : confort de
+ * mouvement : un roulis de plus d'un degré est vite ressenti comme un
+ * basculement ; on reste sous ce seuil.
+ */
+export const ROULIS_AMPLITUDE_MAX_DEG = 0.8
+
+/**
+ * Bornes de l'échelle visuelle des vitesses, en km/s. En dessous du minimum
+ * l'intensité visuelle vaut 0, au-dessus du maximum elle vaut 1, entre les
+ * deux elle suit une échelle logarithmique. Source : choix de jeu. Le minimum
+ * est de l'ordre d'une manœuvre lente, le maximum dépasse la vitesse de la
+ * Terre sur son orbite (29,78 km/s).
+ */
+export const VITESSE_VISUELLE_MIN_KM_S = 0.1
+export const VITESSE_VISUELLE_MAX_KM_S = 100
+
+/**
+ * Position de départ du vaisseau en kilomètres (la Terre est à l'origine, la
+ * Lune sur l'axe x) et lacet de départ en degrés. Source : choix de jeu :
+ * à environ 134 000 km de la Terre, de côté, cap proche de la Terre, pour que
+ * la Terre et la Lune se voient bientôt toutes deux dans le champ de vision.
+ */
+export const DEPART_POSITION_KM = [-60_000, 0, 120_000] as const
+export const DEPART_LACET_DEG = -26.6
+
+/**
+ * Diamètres angulaires (en degrés) entre lesquels la taille à l'écran d'un
+ * astre suit sa taille réelle ; au-delà, elle est bornée. Source : choix de
+ * jeu. Un diamètre réel de 0,5° (la Lune vue de la Terre) serait un point
+ * de 9 pixels sur un téléphone : on le compresse vers des tailles lisibles.
+ */
+export const DIAMETRE_REEL_MIN_DEG = 0.4
+export const DIAMETRE_REEL_MAX_DEG = 90
+
+/**
+ * Diamètres angulaires affichés (en degrés) pour les deux bornes précédentes.
+ * Source : choix de jeu (le champ de vision vertical de la caméra est de 50°).
+ */
+export const DIAMETRE_AFFICHE_MIN_DEG = 2.5
+export const DIAMETRE_AFFICHE_MAX_DEG = 70
+
+/**
+ * Pilotage automatique de la démonstration : le vaisseau vise un point situé à
+ * ce nombre de rayons au-dessus de l'astre (il le frôle sans le traverser).
+ * Source : choix de jeu.
+ */
+export const DEMO_PASSAGE_RAYONS = 3
+
+/**
+ * La démonstration passe à l'astre suivant quand le vaisseau est à moins de
+ * cette distance du point visé (en km), ou après DEMO_DUREE_MAX_CIBLE_S
+ * secondes de temps réel si le virage borné ne l'a pas amené assez près.
+ * Source : choix de jeu.
+ */
+export const DEMO_DISTANCE_CHANGEMENT_KM = 80_000
+export const DEMO_DUREE_MAX_CIBLE_S = 45
