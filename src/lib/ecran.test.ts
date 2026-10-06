@@ -23,6 +23,8 @@ import {
 } from './budget'
 import { CATEGORIES, estVisible } from './categories'
 import { formaterHorloge } from './horloge'
+import { formaterValeurFiche } from './fiche-format'
+import { formaterNombre } from './format-fr'
 import { COTE_GRAIN, genererGrain } from './grain'
 import { ligneJournal, lignesJournal } from './journal'
 import { construireFiche, phaseScan } from './fiche'
@@ -209,9 +211,15 @@ describe('mise en page', () => {
   })
 
   it('paysage quand la hauteur le permet', () => {
-    expect(choisirMiseEnPage(1024, 768)).toBe('paysage')
-    expect(choisirMiseEnPage(1440, HAUTEUR_COMPACTE_PX)).toBe('paysage')
-    expect(choisirMiseEnPage(1440, HAUTEUR_COMPACTE_PX - 1)).toBe('compact')
+    expect(choisirMiseEnPage(1440, 900)).toBe('paysage')
+    expect(choisirMiseEnPage(1920, 1080)).toBe('paysage')
+    expect(choisirMiseEnPage(2600, HAUTEUR_COMPACTE_PX)).toBe('paysage')
+    expect(choisirMiseEnPage(2600, HAUTEUR_COMPACTE_PX - 1)).toBe('compact')
+  })
+
+  it('compact pour une tablette en paysage trop petite pour les colonnes', () => {
+    expect(choisirMiseEnPage(1024, 768)).toBe('compact')
+    expect(choisirMiseEnPage(1280, 800)).toBe('compact')
   })
 
   it('retombe sur portrait si la taille est inconnue', () => {
@@ -471,5 +479,22 @@ describe('fiche de cible', () => {
     expect(phaseScan(10_000, 5)).toEqual({ revelees: 5, termine: true })
     expect(phaseScan(0, 5, true)).toEqual({ revelees: 5, termine: true })
     expect(phaseScan(0, 0)).toEqual({ revelees: 0, termine: true })
+  })
+})
+
+describe('formaterValeurFiche', () => {
+  it('colle le nombre à son unité avec une espace insécable', () => {
+    expect(formaterValeurFiche({ nombre: 384400, unite: 'km' })).toBe(
+      `${formaterNombre(384400)}\u00a0km`
+    )
+    expect(formaterValeurFiche({ nombre: 12.345, unite: 'deg' })).toContain('°')
+  })
+
+  it('met une durée dans l’unité lisible', () => {
+    expect(formaterValeurFiche({ nombre: 120, unite: 's' })).toMatch(/minute/)
+  })
+
+  it('renvoie une chaîne vide pour un nombre invalide', () => {
+    expect(formaterValeurFiche({ nombre: NaN, unite: 'km' })).toBe('')
   })
 })

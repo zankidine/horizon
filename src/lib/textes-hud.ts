@@ -18,6 +18,8 @@ export interface TextesHud {
     energie: TexteProfil
     bouclier: TexteProfil
     propulsion: TexteProfil
+    reacteur: TexteProfil
+    signal: TexteProfil
   }
   cible: { titre: TexteProfil; distance: TexteProfil; reticule: TexteProfil }
   copilote: { titre: TexteProfil; prefixe: TexteProfil; message: TexteProfil }
@@ -29,17 +31,53 @@ export interface TextesHud {
     communications: TexteProfil
   }
   veille: TexteProfil
+  ecran: Record<CleEcran, TexteProfil>
+  fiche: Record<CleFiche, TexteProfil>
+  cibles: Record<'lune' | 'terre', TexteProfil>
 }
+
+const CLES_ECRAN = [
+  'simulation',
+  'scanEnCours',
+  'indisponible',
+  'source',
+  'sourceNasa',
+  'horloge',
+  'tiroirSystemes',
+  'tiroirCible',
+  'tiroirTrajet',
+  'fermerTiroir',
+  'radar',
+  'legendeRadar',
+  'vitesse',
+  'arrivee',
+  'arriveeInconnue',
+  'restant',
+  'progression',
+  'nouvelleCible',
+] as const
+export type CleEcran = (typeof CLES_ECRAN)[number]
+
+const CLES_FICHE = [
+  'distance',
+  'diametre',
+  'taille',
+  'vitesse',
+  'duree',
+  'lumiere',
+  'radio',
+  'temperature',
+  'gravite',
+  'atmosphere',
+  'orbite',
+] as const
+export type CleFiche = (typeof CLES_FICHE)[number]
 
 /** Données factices en attendant le vrai état du vaisseau. */
 export interface DemoHud {
-  cap: number
   energie: number
   bouclier: number
   propulsion: number
-  destination: string
-  /** Position du réticule, en fractions de la vitre, selon la disposition. */
-  ancreReticule: Record<'paysage' | 'portrait', { x: number; y: number }>
 }
 
 export interface DonneesHud {
@@ -57,6 +95,8 @@ const TEXTES: Readonly<Record<string, readonly string[]>> = {
   'statut.energie': [],
   'statut.bouclier': [],
   'statut.propulsion': [],
+  'statut.reacteur': [],
+  'statut.signal': [],
   'cible.titre': [],
   'cible.distance': ['valeur'],
   'cible.reticule': ['nom'],
@@ -71,6 +111,21 @@ const TEXTES: Readonly<Record<string, readonly string[]>> = {
   'icones.scan': [],
   'icones.communications': [],
   veille: [],
+  ...Object.fromEntries(
+    CLES_ECRAN.map((cle) => [
+      `ecran.${cle}`,
+      cle === 'source'
+        ? ['source']
+        : cle === 'arrivee' || cle === 'restant'
+          ? ['valeur']
+          : cle === 'nouvelleCible'
+            ? ['nom']
+            : [],
+    ])
+  ),
+  ...Object.fromEntries(CLES_FICHE.map((cle) => [`fiche.${cle}`, []])),
+  'cibles.lune': [],
+  'cibles.terre': [],
 }
 
 const CHAMPS_FRACTION = ['energie', 'bouclier', 'propulsion'] as const
@@ -113,23 +168,9 @@ export function validerDonneesHud(donnees: unknown): DonneesHud {
   if (!estObjet(demo)) {
     problemes.push('demo : objet attendu')
   } else {
-    if (typeof demo.cap !== 'number' || !Number.isFinite(demo.cap)) {
-      problemes.push('demo.cap : nombre attendu')
-    }
     for (const champ of CHAMPS_FRACTION) {
       if (!fraction(demo[champ])) {
         problemes.push(`demo.${champ} : nombre entre 0 et 1 attendu`)
-      }
-    }
-    if (typeof demo.destination !== 'string' || demo.destination === '') {
-      problemes.push('demo.destination : identifiant attendu')
-    }
-    for (const disposition of ['paysage', 'portrait']) {
-      const ancre = lire(demo, `ancreReticule.${disposition}`)
-      if (!estObjet(ancre) || !fraction(ancre.x) || !fraction(ancre.y)) {
-        problemes.push(
-          `demo.ancreReticule.${disposition} : { x, y } entre 0 et 1 attendu`
-        )
       }
     }
   }

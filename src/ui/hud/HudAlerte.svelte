@@ -1,13 +1,17 @@
 <script lang="ts">
-  let { visible, message }: { visible: boolean; message: string } = $props()
+  // Zone toujours présente : les lecteurs d'écran annoncent le message
+  // (poliment) dès qu'il apparaît, sans interrompre ce qu'ils lisent.
+  let { message }: { message: string } = $props()
 </script>
 
-{#if visible}
-  <div class="alerte" role="alert">
-    <span class="pastille" aria-hidden="true"></span>
-    {message}
-  </div>
-{/if}
+<div class="zone" role="status" aria-live="polite" aria-atomic="true">
+  {#if message}
+    <div class="alerte">
+      <span class="pastille" aria-hidden="true"></span>
+      {message}
+    </div>
+  {/if}
+</div>
 
 <style>
   .alerte {

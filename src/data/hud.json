@@ -36,6 +36,14 @@
       "propulsion": {
         "enfant": "Moteurs",
         "adulte": "Propulsion"
+      },
+      "reacteur": {
+        "enfant": "Cœur du vaisseau",
+        "adulte": "Oscilloscope réacteur"
+      },
+      "signal": {
+        "enfant": "Écoute radio",
+        "adulte": "Spectre radio"
       }
     },
     "cible": {
@@ -103,23 +111,141 @@
     "veille": {
       "enfant": "Écran en veille",
       "adulte": "Écran en veille"
+    },
+    "ecran": {
+      "simulation": {
+        "enfant": "simulation",
+        "adulte": "simulation"
+      },
+      "scanEnCours": {
+        "enfant": "scan en cours",
+        "adulte": "scan en cours"
+      },
+      "indisponible": {
+        "enfant": "donnée indisponible",
+        "adulte": "donnée indisponible"
+      },
+      "source": {
+        "enfant": "Source : {source}",
+        "adulte": "Source : {source}"
+      },
+      "sourceNasa": {
+        "enfant": "NASA, fiche de données",
+        "adulte": "NASA, fiche de données"
+      },
+      "horloge": {
+        "enfant": "Temps depuis le départ",
+        "adulte": "Temps de mission"
+      },
+      "tiroirSystemes": {
+        "enfant": "Vaisseau",
+        "adulte": "Systèmes"
+      },
+      "tiroirCible": {
+        "enfant": "Cible",
+        "adulte": "Cible"
+      },
+      "tiroirTrajet": {
+        "enfant": "Trajet",
+        "adulte": "Trajet"
+      },
+      "fermerTiroir": {
+        "enfant": "Replier",
+        "adulte": "Replier"
+      },
+      "radar": {
+        "enfant": "Radar",
+        "adulte": "Radar"
+      },
+      "legendeRadar": {
+        "enfant": "L : Lune, T : Terre, autres points : simulation",
+        "adulte": "L : Lune, T : Terre, autres points : simulation"
+      },
+      "vitesse": {
+        "enfant": "Vitesse",
+        "adulte": "Vitesse"
+      },
+      "arrivee": {
+        "enfant": "Arrivée dans {valeur}",
+        "adulte": "Arrivée dans {valeur}"
+      },
+      "arriveeInconnue": {
+        "enfant": "On ne s'en approche pas",
+        "adulte": "Pas d'approche en cours"
+      },
+      "restant": {
+        "enfant": "Il reste {valeur}",
+        "adulte": "Distance restante : {valeur}"
+      },
+      "progression": {
+        "enfant": "Avancement du trajet",
+        "adulte": "Progression du trajet"
+      },
+      "nouvelleCible": {
+        "enfant": "Nouvelle cible : {nom}",
+        "adulte": "Nouvelle cible : {nom}"
+      }
+    },
+    "fiche": {
+      "distance": {
+        "enfant": "Distance",
+        "adulte": "Distance"
+      },
+      "diametre": {
+        "enfant": "Largeur",
+        "adulte": "Diamètre"
+      },
+      "taille": {
+        "enfant": "Taille dans le ciel",
+        "adulte": "Diamètre apparent"
+      },
+      "vitesse": {
+        "enfant": "Vitesse",
+        "adulte": "Vitesse"
+      },
+      "duree": {
+        "enfant": "Arrivée",
+        "adulte": "Durée restante"
+      },
+      "lumiere": {
+        "enfant": "Lumière",
+        "adulte": "Temps-lumière"
+      },
+      "radio": {
+        "enfant": "Radio avec la Terre",
+        "adulte": "Radio aller-retour"
+      },
+      "temperature": {
+        "enfant": "Température",
+        "adulte": "Température"
+      },
+      "gravite": {
+        "enfant": "Gravité",
+        "adulte": "Gravité"
+      },
+      "atmosphere": {
+        "enfant": "Air",
+        "adulte": "Atmosphère"
+      },
+      "orbite": {
+        "enfant": "Orbite",
+        "adulte": "Orbite"
+      }
+    },
+    "cibles": {
+      "lune": {
+        "enfant": "Lune",
+        "adulte": "Lune"
+      },
+      "terre": {
+        "enfant": "Terre",
+        "adulte": "Terre"
+      }
     }
   },
   "demo": {
-    "cap": 247,
     "energie": 0.82,
     "bouclier": 0.64,
-    "propulsion": 0.38,
-    "destination": "lune",
-    "ancreReticule": {
-      "paysage": {
-        "x": 0.44,
-        "y": 0.4
-      },
-      "portrait": {
-        "x": 0.78,
-        "y": 0.58
-      }
-    }
+    "propulsion": 0.38
   }
 }

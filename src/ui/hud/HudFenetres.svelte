@@ -11,10 +11,7 @@
 
 <div class="fenetres" class:cache={hud.masque} inert={hud.masque}>
   <div class="alerte">
-    <HudAlerte
-      visible={hud.alerte}
-      message={hud.t(hud.textes.alerte.message)}
-    />
+    <HudAlerte message={hud.alerte} />
   </div>
 
   <HudFenetreSysteme
@@ -51,7 +48,7 @@
 
   .alerte {
     position: absolute;
-    top: var(--haut);
+    top: calc(var(--sa-t, 0px) + 112px);
     left: 50%;
     width: max-content;
     max-width: calc(100% - 2 * var(--pad));
