@@ -1,0 +1,32 @@
+{
+  "titre": { "enfant": "Où veux-tu aller ?", "adulte": "Navigation" },
+  "choixDestination": { "enfant": "Choisis ta destination", "adulte": "Destination" },
+  "bientot": { "enfant": "Bientôt !", "adulte": "Bientôt disponible" },
+  "choixVitesse": { "enfant": "À quelle vitesse ?", "adulte": "Vitesse de croisière" },
+  "vitesses": {
+    "lente": { "enfant": "Tranquille", "adulte": "Lente" },
+    "normale": { "enfant": "Normale", "adulte": "Normale" },
+    "rapide": { "enfant": "Super rapide", "adulte": "Rapide" }
+  },
+  "resultats": { "enfant": "Ton voyage", "adulte": "Trajet calculé" },
+  "distance": { "enfant": "Distance : {valeur}", "adulte": "Distance : {valeur}" },
+  "duree": { "enfant": "Voyage : {valeur}", "adulte": "Durée du trajet : {valeur}" },
+  "lumiere": { "enfant": "La lumière met {valeur}", "adulte": "Temps de lumière : {valeur}" },
+  "radio": {
+    "enfant": "Un message radio fait l'aller-retour en {valeur}",
+    "adulte": "Délai radio aller-retour : {valeur}"
+  },
+  "comparaisons": { "enfant": "Pour t'en faire une idée", "adulte": "Comparaisons" },
+  "vraieVie": {
+    "titre": { "enfant": "Dans la vraie vie…", "adulte": "Dans la vraie vie…" },
+    "apollo": {
+      "enfant": "Les astronautes d'Apollo 11 ont mis environ {duree} pour aller sur la Lune. Ton vaisseau va {fois} fois plus vite !",
+      "adulte": "Apollo 11 a fait le trajet Terre-Lune en environ {duree}. Ce trajet est {fois} fois plus rapide."
+    },
+    "fictives": {
+      "enfant": "Attention : les trois vitesses de ton vaisseau sont inventées. Aucun vaisseau réel ne va aussi vite.",
+      "adulte": "Les trois vitesses de croisière sont fictives : aucun engin réel n'atteint de telles vitesses."
+    }
+  },
+  "confirmer": { "enfant": "Confirmer le cap", "adulte": "Confirmer le cap" }
+}

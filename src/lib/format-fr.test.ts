@@ -5,9 +5,11 @@ import {
   accorder,
   formaterComparaison,
   formaterComparaisons,
+  formaterDuree,
   formaterFormule,
   formaterNombre,
   formaterQuantite,
+  remplir,
 } from './format-fr'
 
 /** Espace fine insécable (milliers) et espace insécable (nombre + unité). */
@@ -90,5 +92,34 @@ describe('formaterComparaison', () => {
       resultatExact: true,
     }
     expect(norm(formaterFormule(formule))).toBe('10 km ÷ 5 km/h = 2 h')
+  })
+})
+
+describe('formaterDuree', () => {
+  it('choisit l’unité la plus lisible : secondes, minutes, jours, mois, ans', () => {
+    expect(norm(formaterDuree(1.28))).toBe('1,3 seconde')
+    expect(norm(formaterDuree(3 * 86_400))).toBe('3 jours')
+    expect(norm(formaterDuree(40 * 86_400))).toBe('1,3 mois')
+    expect(norm(formaterDuree(10 * 365.25 * 86_400))).toBe('10 ans')
+  })
+
+  it('passe à l’unité suivante quand l’arrondi l’atteint (59,6 s → 1 minute)', () => {
+    expect(norm(formaterDuree(59.6))).toBe('1 minute')
+  })
+
+  it('accorde au singulier jusqu’à 1,5 et au pluriel à partir de 2', () => {
+    expect(norm(formaterDuree(0))).toBe('0 seconde')
+    expect(norm(formaterDuree(1.5 * 3600))).toBe('1,5 heure')
+    expect(norm(formaterDuree(2 * 3600))).toBe('2 heures')
+  })
+
+  it('garde plus de chiffres quand on le demande (profil adulte)', () => {
+    expect(norm(formaterDuree(1.2822, 4))).toBe('1,282 seconde')
+  })
+})
+
+describe('remplir', () => {
+  it('remplace les marqueurs et laisse les inconnus tels quels', () => {
+    expect(remplir('{a} et {b} et {c}', { a: '1', b: 'deux' })).toBe('1 et deux et {c}')
   })
 })
