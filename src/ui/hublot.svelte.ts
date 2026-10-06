@@ -33,6 +33,7 @@ import {
   type NiveauQualite,
 } from '../core/qualite'
 import { genererEtoiles } from '../core/etoiles'
+import { assets } from '../../assets.json'
 
 // ---------------------------------------------------------------------------
 // Réglage de qualité
@@ -106,6 +107,14 @@ export class EtatHublot {
     ecrireReglage(reglage)
   }
 }
+
+// ---------------------------------------------------------------------------
+// Crédits des textures (issus de assets.json, sans doublon)
+// ---------------------------------------------------------------------------
+
+export const CREDITS_TEXTURES: readonly string[] = [
+  ...new Set(assets.map((asset) => asset.credit)),
+]
 
 // ---------------------------------------------------------------------------
 // Disposition de la scène
