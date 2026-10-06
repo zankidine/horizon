@@ -18,6 +18,7 @@ import {
   niveauJauge,
   normaliserCap,
   pointCardinal,
+  positionFenetre,
   positionReticule,
   progression,
   valeurAnimee,
@@ -88,6 +89,39 @@ describe('positionReticule', () => {
     expect(
       Object.is(positionReticule({ x: 0.5, y: 0.5 }, boite).angleDeg, 0)
     ).toBe(true)
+  })
+})
+
+describe('positionFenetre', () => {
+  const boite = { largeur: 400, hauteur: 300 }
+  const taille = { largeur: 200, hauteur: 100 }
+
+  it("centre la fenêtre sur l'ancre", () => {
+    expect(positionFenetre({ x: 0.5, y: 0.5 }, boite, taille)).toEqual({
+      x: 100,
+      y: 100,
+    })
+  })
+
+  it('la garde dans le cadre, marge comprise', () => {
+    expect(positionFenetre({ x: 0, y: 0 }, boite, taille, 10)).toEqual({
+      x: 10,
+      y: 10,
+    })
+    expect(positionFenetre({ x: 1, y: 1 }, boite, taille, 10)).toEqual({
+      x: 190,
+      y: 190,
+    })
+  })
+
+  it('reste dans le cadre si la fenêtre est plus grande que lui', () => {
+    expect(
+      positionFenetre(
+        { x: 0.5, y: 0.5 },
+        { largeur: 100, hauteur: 100 },
+        taille
+      )
+    ).toEqual({ x: 0, y: 0 })
   })
 })
 
@@ -218,7 +252,7 @@ describe('boussole', () => {
   it('place les graduations autour du cap, de 0 à 1', () => {
     const graduations = graduationsBoussole(100, 45, 5)
     expect(graduations[0].position).toBeGreaterThanOrEqual(0)
-    expect(graduations.at(-1)!.position).toBeLessThanOrEqual(1)
+    expect(graduations[graduations.length - 1].position).toBeLessThanOrEqual(1)
     const centre = graduations.find((g) => g.ecart === 0)
     expect(centre?.position).toBe(0.5)
     expect(centre?.cap).toBe(100)

@@ -82,6 +82,37 @@ export function positionReticule(
   }
 }
 
+export interface TailleFenetre {
+  largeur: number
+  hauteur: number
+}
+
+/**
+ * Place une fenêtre : son centre est sur l'ancre (fractions du conteneur),
+ * puis elle est ramenée à l'intérieur du cadre, marge comprise.
+ */
+export function positionFenetre(
+  ancre: Ancre,
+  boite: Boite,
+  taille: TailleFenetre,
+  marge = 0
+): Vecteur {
+  const valide = fini(ancre.x) && fini(ancre.y)
+  const cx = (valide ? ancre.x : 0.5) * Math.max(0, boite.largeur)
+  const cy = (valide ? ancre.y : 0.5) * Math.max(0, boite.hauteur)
+  const x = limiter(
+    cx - taille.largeur / 2,
+    marge,
+    boite.largeur - taille.largeur - marge
+  )
+  const y = limiter(
+    cy - taille.hauteur / 2,
+    marge,
+    boite.hauteur - taille.hauteur - marge
+  )
+  return { x: x === 0 ? 0 : x, y: y === 0 ? 0 : y }
+}
+
 // ---------------------------------------------------------------------------
 // Animation des valeurs (compteur)
 // ---------------------------------------------------------------------------

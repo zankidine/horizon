@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy, type Snippet } from 'svelte'
+  import Hud from '../hud/Hud.svelte'
   import VueExterieure from '../VueExterieure.svelte'
   import Bouton from './Bouton.svelte'
   import EcranProvisoire from './EcranProvisoire.svelte'
@@ -86,6 +87,9 @@
         <VueExterieure etat={poste.hublot} />
       </div>
 
+      <!-- Couche HUD : entre la vue et les montants de la vitre -->
+      <Hud contexte={poste} />
+
       <div
         class="couche montants"
         aria-hidden="true"
@@ -142,7 +146,7 @@
         {#if ecranGauche}
           {@render ecranGauche()}
         {:else}
-          <EcranProvisoire cote="gauche" {poste} />
+          <EcranProvisoire texte={poste.texteVeille} />
         {/if}
       </section>
 
@@ -155,7 +159,7 @@
         {#if ecranDroit}
           {@render ecranDroit()}
         {:else}
-          <EcranProvisoire cote="droite" {poste} />
+          <EcranProvisoire texte={poste.texteVeille} />
         {/if}
       </section>
 
