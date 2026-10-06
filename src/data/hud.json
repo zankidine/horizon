@@ -1,0 +1,125 @@
+{
+  "textes": {
+    "hud": {
+      "groupe": {
+        "enfant": "Tableau de bord sur la vitre",
+        "adulte": "Interface tête haute"
+      },
+      "masquer": {
+        "enfant": "Cacher l'écran",
+        "adulte": "Masquer l'interface"
+      },
+      "afficher": {
+        "enfant": "Montrer l'écran",
+        "adulte": "Afficher l'interface"
+      }
+    },
+    "cap": {
+      "titre": {
+        "enfant": "Direction",
+        "adulte": "Cap"
+      }
+    },
+    "statut": {
+      "titre": {
+        "enfant": "Mon vaisseau",
+        "adulte": "État du vaisseau"
+      },
+      "energie": {
+        "enfant": "Énergie",
+        "adulte": "Réacteur"
+      },
+      "bouclier": {
+        "enfant": "Bouclier",
+        "adulte": "Boucliers"
+      },
+      "propulsion": {
+        "enfant": "Moteurs",
+        "adulte": "Propulsion"
+      }
+    },
+    "cible": {
+      "titre": {
+        "enfant": "Où on va",
+        "adulte": "Cible"
+      },
+      "distance": {
+        "enfant": "À {valeur} d'ici",
+        "adulte": "Distance : {valeur}"
+      },
+      "reticule": {
+        "enfant": "Cible : {nom}",
+        "adulte": "Cible verrouillée : {nom}"
+      }
+    },
+    "copilote": {
+      "titre": {
+        "enfant": "Mon copilote",
+        "adulte": "Copilote"
+      },
+      "message": {
+        "enfant": "Tout va bien, on file vers la Lune !",
+        "adulte": "Systèmes nominaux. Cap maintenu."
+      },
+      "prefixe": {
+        "enfant": "Mon copilote : ",
+        "adulte": "Copilote : "
+      }
+    },
+    "alerte": {
+      "message": {
+        "enfant": "Oups ! Ton copilote a une chose à te montrer.",
+        "adulte": "Alerte déclenchée : vérification des systèmes."
+      }
+    },
+    "systeme": {
+      "entete": {
+        "enfant": "SYSTÈME",
+        "adulte": "SYSTÈME"
+      },
+      "fermer": {
+        "enfant": "Fermer",
+        "adulte": "Fermer"
+      },
+      "vide": {
+        "enfant": "Bientôt, il y aura quelque chose à découvrir ici.",
+        "adulte": "Aucune donnée pour l'instant."
+      }
+    },
+    "icones": {
+      "navigation": {
+        "enfant": "Voyage",
+        "adulte": "Navigation"
+      },
+      "scan": {
+        "enfant": "Regarder autour",
+        "adulte": "Scan"
+      },
+      "communications": {
+        "enfant": "Radio",
+        "adulte": "Communications"
+      }
+    },
+    "veille": {
+      "enfant": "Écran en veille",
+      "adulte": "Écran en veille"
+    }
+  },
+  "demo": {
+    "cap": 247,
+    "energie": 0.82,
+    "bouclier": 0.64,
+    "propulsion": 0.38,
+    "destination": "lune",
+    "ancreReticule": {
+      "paysage": {
+        "x": 0.44,
+        "y": 0.4
+      },
+      "portrait": {
+        "x": 0.78,
+        "y": 0.58
+      }
+    }
+  }
+}

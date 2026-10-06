@@ -1,5 +1,8 @@
 <script lang="ts">
   import { onDestroy, type Snippet } from 'svelte'
+  import Hud from '../hud/Hud.svelte'
+  import HudFenetres from '../hud/HudFenetres.svelte'
+  import { EtatHud } from '../hud/hud.svelte.ts'
   import VueExterieure from '../VueExterieure.svelte'
   import Bouton from './Bouton.svelte'
   import EcranProvisoire from './EcranProvisoire.svelte'
@@ -19,7 +22,11 @@
   }: { ecranGauche?: Snippet; ecranDroit?: Snippet } = $props()
 
   const poste = new EtatPoste()
-  onDestroy(() => poste.arreter())
+  const hud = new EtatHud(poste)
+  onDestroy(() => {
+    hud.arreter()
+    poste.arreter()
+  })
 </script>
 
 <svelte:window onpointermove={(evenement) => poste.surPointeur(evenement)} />
@@ -86,6 +93,11 @@
         <VueExterieure etat={poste.hublot} />
       </div>
 
+      <!-- Couche HUD : entre la vue et les montants de la vitre -->
+      <div class="couche-hud">
+        <Hud etat={hud} />
+      </div>
+
       <div
         class="couche montants"
         aria-hidden="true"
@@ -93,6 +105,11 @@
       >
         <span class="montant premier"></span>
         <span class="montant second"></span>
+      </div>
+
+      <!-- Fenêtres système : elles flottent devant les montants -->
+      <div class="couche-fenetres">
+        <HudFenetres etat={hud} />
       </div>
 
       <div
@@ -142,7 +159,7 @@
         {#if ecranGauche}
           {@render ecranGauche()}
         {:else}
-          <EcranProvisoire cote="gauche" {poste} />
+          <EcranProvisoire texte={poste.texteVeille} />
         {/if}
       </section>
 
@@ -155,7 +172,7 @@
         {#if ecranDroit}
           {@render ecranDroit()}
         {:else}
-          <EcranProvisoire cote="droite" {poste} />
+          <EcranProvisoire texte={poste.texteVeille} />
         {/if}
       </section>
 
@@ -288,6 +305,8 @@
   }
 
   .interieur {
+    /* Le HUD adapte sa mise en page à la hauteur de la vitre (@container hud). */
+    container: hud / size;
     position: absolute;
     inset: 0;
     overflow: hidden;
@@ -300,6 +319,26 @@
   .vue {
     position: absolute;
     inset: -12px;
+  }
+
+  .couche-hud,
+  .couche-fenetres {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /*
+   * Portrait : la vitre est petite et les montants couperaient les panneaux.
+   * Le HUD passe devant les montants, sous les reflets du verre.
+   */
+  .poste[data-disposition='portrait'] .couche-hud {
+    z-index: 1;
+  }
+
+  .poste[data-disposition='portrait'] .verre,
+  .poste[data-disposition='portrait'] .couche-fenetres {
+    z-index: 2;
   }
 
   .montants,
@@ -370,9 +409,9 @@
     background: radial-gradient(
       ellipse at 50% 50%,
       transparent 52%,
-      rgb(0 0 0 / 0.55) 100%
+      rgb(0 0 0 / 0.35) 100%
     );
-    box-shadow: inset 0 0 22px rgb(0 0 0 / 0.7);
+    box-shadow: inset 0 0 22px rgb(0 0 0 / 0.5);
   }
 
   /* Réglage de qualité : petit menu natif, accessible, par-dessus la vitre. */
@@ -590,8 +629,10 @@
     bottom: calc(var(--sa-b) + 3px);
     text-wrap: balance;
     margin: 0;
-    font-size: 0.62rem;
-    line-height: 1.3;
+    /* Police condensée du HUD : les crédits tiennent sur trois lignes au plus. */
+    font-family: var(--hud-font-titre, inherit);
+    font-size: 0.7rem;
+    line-height: 1.25;
     text-align: center;
     color: var(--poste-texte);
     opacity: 0.7;

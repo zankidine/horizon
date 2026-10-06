@@ -11,16 +11,17 @@ import {
   normaliserPointeur,
   type Vecteur,
 } from '../../lib/parallaxe'
+import type { NiveauQualite } from '../../core/qualite'
+import donneesHud from '../../data/hud.json'
+import { validerDonneesHud } from '../../lib/textes-hud'
 import { appStore } from '../../lib/stores/app.svelte'
 import {
   CREDITS_TEXTURES,
   EtatHublot,
   REGLAGES_QUALITE,
 } from '../hublot.svelte'
-import {
-  CHOIX_AMBIANCE,
-  CHOIX_PROFIL,
-} from '../preparation/preparation.svelte.ts'
+
+const TEXTES_HUD = validerDonneesHud(donneesHud).textes
 
 export { CREDITS_TEXTURES, REGLAGES_QUALITE }
 
@@ -69,19 +70,18 @@ export class EtatPoste {
     return this.#mouvementReduit.current
   }
 
+  /** Niveau de qualité réellement utilisé (réglage automatique compris). */
+  get niveauQualite(): NiveauQualite {
+    return this.hublot.niveau
+  }
+
   get copilote(): string {
     return appStore.copilote
   }
 
-  get libelleProfil(): string {
-    return CHOIX_PROFIL.find((o) => o.valeur === appStore.profile)?.titre ?? ''
-  }
-
-  get libelleAmbiance(): string {
-    return (
-      CHOIX_AMBIANCE.find((o) => o.valeur === appStore.ambianceCockpit)
-        ?.titre ?? ''
-    )
+  /** Texte des écrans du tableau de bord tant qu'ils n'ont pas de contenu. */
+  get texteVeille(): string {
+    return TEXTES_HUD.veille[appStore.profile]
   }
 
   /** Valeur de `transform` pour une couche à cette profondeur. */
