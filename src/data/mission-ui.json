@@ -1,0 +1,254 @@
+{
+  "suivant": {
+    "enfant": "Suivant",
+    "adulte": "Suivant"
+  },
+  "indice": {
+    "enfant": "Indice",
+    "adulte": "Indice"
+  },
+  "lire": {
+    "enfant": "Lire",
+    "adulte": "Lire"
+  },
+  "lireAria": {
+    "enfant": "Lire à voix haute",
+    "adulte": "Lire le message à voix haute"
+  },
+  "fermer": {
+    "enfant": "J'ai compris",
+    "adulte": "J'ai compris"
+  },
+  "valider": {
+    "enfant": "Valider",
+    "adulte": "Valider"
+  },
+  "continuer": {
+    "enfant": "Continuer",
+    "adulte": "Continuer"
+  },
+  "recommencer": {
+    "enfant": "Recommencer la mission",
+    "adulte": "Recommencer la mission"
+  },
+  "changerNiveau": {
+    "enfant": "Changer de niveau",
+    "adulte": "Changer de niveau"
+  },
+  "journal": {
+    "enfant": "Journal",
+    "adulte": "Journal"
+  },
+  "appris": {
+    "enfant": "J'ai appris",
+    "adulte": "J'ai appris"
+  },
+  "retourMission": {
+    "enfant": "Retour à la mission",
+    "adulte": "Retour à la mission"
+  },
+  "scene": {
+    "enfant": "Scène {numero} sur {total}",
+    "adulte": "Scène {numero} sur {total}"
+  },
+  "etoiles": {
+    "enfant": "Étoiles : {etoiles} sur {max}",
+    "adulte": "Étoiles : {etoiles} sur {max}"
+  },
+  "objectif": {
+    "enfant": "Objectif",
+    "adulte": "Objectif"
+  },
+  "locuteurControle": {
+    "enfant": "Contrôle de mission",
+    "adulte": "Contrôle de mission"
+  },
+  "locuteurNarrateur": {
+    "enfant": "Récit",
+    "adulte": "Récit"
+  },
+  "retourIndice": {
+    "enfant": "Indice",
+    "adulte": "Indice"
+  },
+  "retourSolution": {
+    "enfant": "Solution",
+    "adulte": "Solution"
+  },
+  "retourAssistance": {
+    "enfant": "Coup de pouce",
+    "adulte": "Coup de pouce"
+  },
+  "retourRappel": {
+    "enfant": "Petit rappel",
+    "adulte": "Petit rappel"
+  },
+  "assistance": {
+    "enfant": "Ton copilote freine un peu pour toi, pour te poser en douceur.",
+    "adulte": "Le copilote assiste le freinage pour tenir la vitesse dans la zone."
+  },
+  "saisieEtiquette": {
+    "enfant": "Ta réponse",
+    "adulte": "Ta réponse"
+  },
+  "saisieInvalide": {
+    "enfant": "Écris un nombre, par exemple 384 400.",
+    "adulte": "Saisir un nombre, par exemple 384 400 ou 384,4."
+  },
+  "choisirReponse": {
+    "enfant": "Choisis la bonne réponse :",
+    "adulte": "Choisis la bonne réponse :"
+  },
+  "actionConsigne": {
+    "enfant": "Touche les interrupteurs.",
+    "adulte": "Actionner les interrupteurs."
+  },
+  "ordreImpose": {
+    "enfant": "Dans l'ordre : 1, puis 2, puis 3.",
+    "adulte": "Dans l'ordre indiqué par les numéros."
+  },
+  "ordreLibre": {
+    "enfant": "Dans l'ordre que tu veux.",
+    "adulte": "Dans un ordre quelconque."
+  },
+  "interrupteurAllume": {
+    "enfant": "allumé",
+    "adulte": "activé"
+  },
+  "interrupteurEteint": {
+    "enfant": "éteint",
+    "adulte": "désactivé"
+  },
+  "observationConsigne": {
+    "enfant": "Choisis ce que tu fais, et sur quoi.",
+    "adulte": "Choisir le mode, puis la cible."
+  },
+  "modeReperer": {
+    "enfant": "Repérer",
+    "adulte": "Repérer"
+  },
+  "modeScanner": {
+    "enfant": "Scanner",
+    "adulte": "Scanner"
+  },
+  "observationBouton": {
+    "enfant": "{mode} : {astre}",
+    "adulte": "{mode} : {astre}"
+  },
+  "timingPousser": {
+    "enfant": "POUSSÉE",
+    "adulte": "POUSSÉE"
+  },
+  "timingAttente": {
+    "enfant": "Attends le voyant vert…",
+    "adulte": "Attendre que la fenêtre de tir s’ouvre…"
+  },
+  "timingOuvert": {
+    "enfant": "Maintenant ! Touche POUSSÉE !",
+    "adulte": "Fenêtre ouverte : déclencher la poussée."
+  },
+  "timingFenetreRestante": {
+    "enfant": "Temps restant : {secondes}",
+    "adulte": "Temps restant : {secondes}"
+  },
+  "voyageExplication": {
+    "enfant": "Le vaisseau avance tout seul. Regarde la route et lis les messages.",
+    "adulte": "Voyage en cours : le vaisseau suit sa trajectoire. Les jalons s’affichent au passage."
+  },
+  "voyageProgression": {
+    "enfant": "Voyage : {pourcent}",
+    "adulte": "Voyage : {pourcent}"
+  },
+  "voyageDistanceRestante": {
+    "enfant": "Distance restante : {distance}",
+    "adulte": "Distance restante : {distance}"
+  },
+  "voyageVitesse": {
+    "enfant": "Vitesse : {vitesse}",
+    "adulte": "Vitesse : {vitesse}"
+  },
+  "voyageJalons": {
+    "enfant": "Messages du voyage",
+    "adulte": "Messages du voyage"
+  },
+  "voyageAucunJalon": {
+    "enfant": "Le premier message arrive bientôt…",
+    "adulte": "Le premier message arrive bientôt…"
+  },
+  "descenteConsigne": {
+    "enfant": "Garde ta vitesse dans la zone verte. Touche MOTEUR pour freiner.",
+    "adulte": "Garder la vitesse de descente dans la zone au contact. MOTEUR freine."
+  },
+  "descenteAltitude": {
+    "enfant": "Altitude : {altitude}",
+    "adulte": "Altitude : {altitude}"
+  },
+  "descenteVitesse": {
+    "enfant": "Vitesse : {vitesse}",
+    "adulte": "Vitesse : {vitesse}"
+  },
+  "descenteZone": {
+    "enfant": "Zone de réussite : jusqu’à {max}",
+    "adulte": "Zone de réussite : jusqu’à {max}"
+  },
+  "descenteDansZone": {
+    "enfant": "Vitesse parfaite !",
+    "adulte": "Vitesse dans la zone."
+  },
+  "descenteTropRapide": {
+    "enfant": "Trop vite : touche MOTEUR !",
+    "adulte": "Trop rapide : activer le moteur."
+  },
+  "moteurAllume": {
+    "enfant": "MOTEUR allumé",
+    "adulte": "MOTEUR allumé"
+  },
+  "moteurEteint": {
+    "enfant": "MOTEUR éteint",
+    "adulte": "MOTEUR éteint"
+  },
+  "repriseTitre": {
+    "enfant": "On reprend ta mission : scène {numero} sur {total}.",
+    "adulte": "Reprise de la mission : scène {numero} sur {total}."
+  },
+  "finTitre": {
+    "enfant": "Mission accomplie !",
+    "adulte": "Mission accomplie."
+  },
+  "finBilan": {
+    "enfant": "Étoiles gagnées : {etoiles} sur {max}.",
+    "adulte": "Étoiles gagnées : {etoiles} sur {max}."
+  },
+  "finAppris": {
+    "enfant": "Ce que tu as découvert",
+    "adulte": "Ce que vous avez appris"
+  },
+  "finJournal": {
+    "enfant": "Ton journal de bord",
+    "adulte": "Journal de bord"
+  },
+  "journalTitre": {
+    "enfant": "Journal de bord",
+    "adulte": "Journal de bord"
+  },
+  "journalVide": {
+    "enfant": "Le journal se remplit au fil de la mission.",
+    "adulte": "Le journal se remplit au fil de la mission."
+  },
+  "apprisTitre": {
+    "enfant": "J'ai appris",
+    "adulte": "J'ai appris"
+  },
+  "apprisVide": {
+    "enfant": "Ici, tu retrouveras ce que tu découvres avec les indices.",
+    "adulte": "Les notions travaillées avec les indices apparaissent ici."
+  },
+  "voixAbsente": {
+    "enfant": "Pas de voix française sur cet appareil : le texte reste à lire à l’écran.",
+    "adulte": "Aucune voix française locale disponible : le texte reste affiché."
+  },
+  "panneauMission": {
+    "enfant": "Panneau de mission",
+    "adulte": "Panneau de mission"
+  }
+}
