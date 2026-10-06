@@ -448,8 +448,8 @@
         "adulte": "Journal de bord : saut"
       },
       "texte": {
-        "enfant": "Un saut d'exemple de {sautTerre} sur Terre monte à {hauteurSaut} sur la Lune.",
-        "adulte": "Saut d'exemple de {sautTerre} sur Terre : {hauteurSaut} sur la Lune, rapport des gravités {rapportGravites}."
+        "enfant": "Un saut d'exemple de {sautTerre} sur Terre monte à {hauteurSaut} sur la Lune. C'est un ordre de grandeur : en combinaison, on saute un peu moins haut.",
+        "adulte": "Saut d'exemple de {sautTerre} sur Terre : {hauteurSaut} sur la Lune, rapport des gravités {rapportGravites}. Ordre de grandeur : en combinaison, on saute un peu moins haut."
       }
     },
     {
@@ -1377,8 +1377,8 @@
         "adulte": "Saut effectué."
       },
       "texte": {
-        "enfant": "{copilote} : waouh ! Ton saut monte à {hauteurSaut}, soit {rapportGravites} fois plus haut que sur Terre !",
-        "adulte": "Saut à {hauteurSaut}, soit {rapportGravites} fois la hauteur terrestre (exemple de jeu)."
+        "enfant": "{copilote} : waouh ! Ton saut monte à {hauteurSaut}, soit {rapportGravites} fois plus haut que sur Terre ! C'est un ordre de grandeur : en combinaison, on saute un peu moins haut.",
+        "adulte": "Saut à {hauteurSaut}, soit {rapportGravites} fois la hauteur terrestre (exemple de jeu). Ordre de grandeur : en combinaison, on saute un peu moins haut."
       },
       "suivant": "s10-6",
       "effetsEntree": [

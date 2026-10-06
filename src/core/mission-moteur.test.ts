@@ -752,6 +752,7 @@ describe('scène 10 : sortie, saut, échantillon', () => {
     expect(moteur.vue().etape?.id).toBe('s10-5')
     const { evenements } = jouer(moteur)
     expect(norm(textesDe(evenements).find((t) => t.includes('Saut à'))!)).toContain('242,5 cm')
+    expect(norm(textesDe(evenements).find((t) => t.includes('Saut à'))!)).toContain('en combinaison, on saute un peu moins haut')
   })
 
   it('l’échantillon est présenté comme un objet de jeu, sans composition inventée', () => {
