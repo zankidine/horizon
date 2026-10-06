@@ -47,6 +47,41 @@
         "enfant": "Le grand voyage",
         "adulte": "Transit Terre-Lune"
       }
+    },
+    {
+      "id": "face-cachee",
+      "titre": {
+        "enfant": "Derrière la Lune",
+        "adulte": "Insertion en orbite lunaire"
+      }
+    },
+    {
+      "id": "site",
+      "titre": {
+        "enfant": "Où se poser ?",
+        "adulte": "Choix du site d'alunissage"
+      }
+    },
+    {
+      "id": "alunissage",
+      "titre": {
+        "enfant": "Alunissage",
+        "adulte": "Descente et alunissage"
+      }
+    },
+    {
+      "id": "sortie",
+      "titre": {
+        "enfant": "Sur la Lune",
+        "adulte": "Sortie sur la surface"
+      }
+    },
+    {
+      "id": "debriefing",
+      "titre": {
+        "enfant": "Retour sur la mission",
+        "adulte": "Débriefing"
+      }
     }
   ],
   "valeurs": {
@@ -119,6 +154,191 @@
       },
       "format": "heures",
       "approximatif": true
+    },
+    "orbiteLunaire": {
+      "expr": {
+        "ref": "ALTITUDE_ORBITE_LUNAIRE_KM"
+      },
+      "format": "km"
+    },
+    "rayonLune": {
+      "expr": {
+        "ref": "RAYON_LUNE_KM"
+      },
+      "format": "km"
+    },
+    "periode": {
+      "expr": {
+        "calcul": "periodeOrbiteLunaireS"
+      },
+      "format": "secondes",
+      "approximatif": true
+    },
+    "partCachee": {
+      "expr": {
+        "calcul": "fractionOrbiteCacheePourcent"
+      },
+      "format": "pourcent",
+      "approximatif": true
+    },
+    "dureeCachee": {
+      "expr": {
+        "calcul": "dureeOrbiteCacheeS"
+      },
+      "format": "secondes",
+      "approximatif": true
+    },
+    "planeiteAlpha": {
+      "expr": {
+        "ref": "SITES_PLANEITE_POURCENT.alpha"
+      },
+      "format": "pourcent"
+    },
+    "planeiteBeta": {
+      "expr": {
+        "ref": "SITES_PLANEITE_POURCENT.beta"
+      },
+      "format": "pourcent"
+    },
+    "planeiteGamma": {
+      "expr": {
+        "ref": "SITES_PLANEITE_POURCENT.gamma"
+      },
+      "format": "pourcent"
+    },
+    "lumiereAlpha": {
+      "expr": {
+        "ref": "SITES_LUMIERE_POURCENT.alpha"
+      },
+      "format": "pourcent"
+    },
+    "lumiereBeta": {
+      "expr": {
+        "ref": "SITES_LUMIERE_POURCENT.beta"
+      },
+      "format": "pourcent"
+    },
+    "lumiereGamma": {
+      "expr": {
+        "ref": "SITES_LUMIERE_POURCENT.gamma"
+      },
+      "format": "pourcent"
+    },
+    "altitudeDescente": {
+      "expr": {
+        "ref": "DESCENTE_ALTITUDE_DEPART_M"
+      },
+      "format": "m"
+    },
+    "zoneMin": {
+      "expr": {
+        "ref": "DESCENTE_ZONE_VITESSE_MIN_MS"
+      },
+      "format": "m/s"
+    },
+    "zoneMax": {
+      "expr": {
+        "ref": "DESCENTE_ZONE_VITESSE_MAX_MS"
+      },
+      "format": "m/s"
+    },
+    "graviteLune": {
+      "expr": {
+        "calcul": "graviteLuneMs2"
+      },
+      "format": "nombre"
+    },
+    "graviteTerre": {
+      "expr": {
+        "calcul": "graviteTerreMs2"
+      },
+      "format": "nombre"
+    },
+    "rapportGravites": {
+      "expr": {
+        "calcul": "rapportGravitesTerreLune"
+      },
+      "format": "nombre",
+      "approximatif": true
+    },
+    "sautTerre": {
+      "expr": {
+        "ref": "SAUT_TERRE_EXEMPLE_CM"
+      },
+      "format": "cm"
+    },
+    "hauteurSaut": {
+      "expr": {
+        "calcul": "hauteurSautLuneCm"
+      },
+      "format": "cm",
+      "approximatif": true
+    },
+    "oxygene": {
+      "expr": {
+        "ref": "COMBINAISON_OXYGENE_POURCENT"
+      },
+      "format": "pourcent"
+    },
+    "pression": {
+      "expr": {
+        "ref": "COMBINAISON_PRESSION_KPA"
+      },
+      "format": "kpa"
+    },
+    "batterie": {
+      "expr": {
+        "ref": "COMBINAISON_BATTERIE_POURCENT"
+      },
+      "format": "pourcent"
+    },
+    "apolloTrajet": {
+      "expr": {
+        "ref": "APOLLO_11_TRAJET_H"
+      },
+      "format": "heures",
+      "approximatif": true
+    },
+    "apolloVitesseMoyenne": {
+      "expr": {
+        "ref": "APOLLO_11_VITESSE_MOYENNE_KM_H"
+      },
+      "format": "km/h",
+      "approximatif": true
+    },
+    "apolloOrbiteBasse": {
+      "expr": {
+        "ref": "APOLLO_11_ORBITE_LUNAIRE_BASSE_KM"
+      },
+      "format": "km",
+      "approximatif": true
+    },
+    "apolloOrbiteHaute": {
+      "expr": {
+        "ref": "APOLLO_11_ORBITE_LUNAIRE_HAUTE_KM"
+      },
+      "format": "km",
+      "approximatif": true
+    },
+    "apolloSurface": {
+      "expr": {
+        "ref": "APOLLO_11_SURFACE_H"
+      },
+      "format": "heures",
+      "approximatif": true
+    },
+    "apolloSortie": {
+      "expr": {
+        "ref": "APOLLO_11_SORTIE_H"
+      },
+      "format": "heures"
+    },
+    "apolloEchantillons": {
+      "expr": {
+        "ref": "APOLLO_11_ECHANTILLONS_KG"
+      },
+      "format": "kg",
+      "approximatif": true
     }
   },
   "journal": [
@@ -175,6 +395,72 @@
       "texte": {
         "enfant": "Nous sommes arrivés près de la Lune, après avoir calculé la distance avec {copilote}.",
         "adulte": "Arrivée à proximité de la Lune. Distance Terre-Lune retrouvée par le calcul vitesse × durée."
+      }
+    },
+    {
+      "id": "insertion",
+      "titre": {
+        "enfant": "Nous sommes en orbite autour de la Lune",
+        "adulte": "Journal de bord : insertion en orbite lunaire"
+      },
+      "texte": {
+        "enfant": "Un petit freinage nous a fait entrer dans l'orbite de la Lune, à {orbiteLunaire} au-dessus du sol.",
+        "adulte": "Insertion en orbite lunaire par une poussée de freinage, à {orbiteLunaire} d'altitude."
+      }
+    },
+    {
+      "id": "face-cachee",
+      "titre": {
+        "enfant": "Derrière la Lune, sans radio",
+        "adulte": "Journal de bord : coupure radio"
+      },
+      "texte": {
+        "enfant": "Derrière la Lune, la radio ne passe plus : environ {partCachee} de chaque tour est caché. C'est un ordre de grandeur.",
+        "adulte": "Derrière la Lune, le disque lunaire bloque la liaison radio : {partCachee} de l'orbite, soit {dureeCachee} par tour (ordre de grandeur)."
+      }
+    },
+    {
+      "id": "site",
+      "titre": {
+        "enfant": "Le site choisi",
+        "adulte": "Journal de bord : site d'entraînement"
+      },
+      "texte": {
+        "enfant": "J'ai comparé trois sites d'entraînement inventés pour le jeu : leur sol et leur lumière.",
+        "adulte": "Comparaison de trois sites d'entraînement fictifs (valeurs de jeu) selon la planéité et la lumière."
+      }
+    },
+    {
+      "id": "alunissage",
+      "titre": {
+        "enfant": "Posés sur la Lune",
+        "adulte": "Journal de bord : alunissage"
+      },
+      "texte": {
+        "enfant": "Nous nous sommes posés doucement. Sur la Lune la gravité est {graviteLune} m/s², contre {graviteTerre} m/s² sur Terre.",
+        "adulte": "Alunissage réussi. Gravité de surface : {graviteLune} m/s² sur la Lune, {graviteTerre} m/s² sur Terre (astres.json)."
+      }
+    },
+    {
+      "id": "saut",
+      "titre": {
+        "enfant": "Un saut sur la Lune",
+        "adulte": "Journal de bord : saut"
+      },
+      "texte": {
+        "enfant": "Un saut d'exemple de {sautTerre} sur Terre monte à {hauteurSaut} sur la Lune. C'est un ordre de grandeur : en combinaison, on saute un peu moins haut.",
+        "adulte": "Saut d'exemple de {sautTerre} sur Terre : {hauteurSaut} sur la Lune, rapport des gravités {rapportGravites}. Ordre de grandeur : en combinaison, on saute un peu moins haut."
+      }
+    },
+    {
+      "id": "echantillon",
+      "titre": {
+        "enfant": "Un échantillon",
+        "adulte": "Journal de bord : échantillon"
+      },
+      "texte": {
+        "enfant": "J'ai récolté un échantillon. C'est un objet du jeu, pas un vrai caillou.",
+        "adulte": "Échantillon récolté : objet de jeu, sans composition réelle (simulation)."
       }
     }
   ],
@@ -310,7 +596,11 @@
         "enfant": "Voici l'ordre : la batterie, l'air, puis le moteur. Je les allume pour toi, tu le sauras la prochaine fois !",
         "adulte": "Ordre de mise sous tension : batterie, support-vie, moteur. Séquence exécutée par le copilote."
       },
-      "suivant": "d1-compte"
+      "suivant": "d1-compte",
+      "appris": {
+        "enfant": "Tu as découvert qu'on allume les systèmes dans un bon ordre : la batterie d'abord, puis l'air, puis le moteur.",
+        "adulte": "Les systèmes se mettent en route dans un ordre précis : batterie, air, puis moteur."
+      }
     },
     {
       "id": "d1-compte",
@@ -395,7 +685,11 @@
         "enfant": "Le scanner a visé la Terre pour toi. Il lit des informations sur la planète.",
         "adulte": "Scan de la Terre lancé par le copilote."
       },
-      "suivant": "l1-reperer"
+      "suivant": "l1-reperer",
+      "appris": {
+        "enfant": "Tu as découvert que le scanner lit des informations sur une planète.",
+        "adulte": "Le scanner permet de lire les informations d'un astre."
+      }
     },
     {
       "id": "l1-reperer",
@@ -426,7 +720,11 @@
         "enfant": "Voilà la Lune : c'est elle que nous allons rejoindre. Je l'ai repérée pour toi.",
         "adulte": "Repérage de la Lune effectué par le copilote."
       },
-      "suivant": "l2-poussee"
+      "suivant": "l2-poussee",
+      "appris": {
+        "enfant": "Tu as découvert comment repérer la Lune parmi les astres.",
+        "adulte": "Repérer un astre consiste à le trouver et à le viser."
+      }
     },
     {
       "id": "l2-poussee",
@@ -464,7 +762,11 @@
         "enfant": "Je m'en occupe : poussée ! Le moteur nous donne {gain} de plus pour partir vers la Lune.",
         "adulte": "Poussée déclenchée par le copilote : gain de vitesse de {gain} pour l'injection translunaire."
       },
-      "suivant": "v1-voyage"
+      "suivant": "v1-voyage",
+      "appris": {
+        "enfant": "Tu as découvert qu'il faut pousser au bon moment pour partir vers la Lune.",
+        "adulte": "L'injection translunaire se déclenche dans une fenêtre de tir précise."
+      }
     },
     {
       "id": "v1-voyage",
@@ -575,22 +877,650 @@
         "enfant": "La distance, c'est la vitesse fois la durée : cela donne {reponse}. C'est la distance de la Terre à la Lune !",
         "adulte": "Distance = vitesse × durée = {reponse}, soit la distance Terre-Lune."
       },
-      "suivant": "v3-fin"
+      "suivant": "v3-fin",
+      "appris": {
+        "enfant": "Tu as découvert qu'une distance, c'est la vitesse multipliée par la durée.",
+        "adulte": "Distance = vitesse × durée."
+      }
     },
     {
       "id": "v3-fin",
       "type": "dialogue",
       "scene": "voyage",
       "locuteur": "copilote",
-      "fin": true,
+      "objectif": {
+        "enfant": "Bravo, nous voilà près de la Lune !",
+        "adulte": "Arrivée à proximité de la Lune."
+      },
+      "texte": {
+        "enfant": "Bravo ! Nous sommes près de la Lune. Il reste à nous mettre en orbite, puis à nous poser !",
+        "adulte": "Nous sommes à proximité de la Lune. Prochaines étapes : insertion en orbite lunaire, puis alunissage."
+      },
+      "suivant": "s7-1"
+    },
+    {
+      "id": "s7-1",
+      "type": "dialogue",
+      "scene": "face-cachee",
+      "locuteur": "controle",
+      "objectif": {
+        "enfant": "Prépare-toi à freiner pour entrer en orbite lunaire.",
+        "adulte": "Préparer l'insertion en orbite lunaire."
+      },
+      "texte": {
+        "enfant": "Contrôle : vous arrivez près de la Lune. Pour y rester, il faut freiner un peu, sinon vous passeriez tout droit.",
+        "adulte": "Contrôle : approche de la Lune. Une poussée de freinage est nécessaire pour se faire capturer en orbite."
+      },
+      "suivant": "s7-2"
+    },
+    {
+      "id": "s7-2",
+      "type": "timing",
+      "scene": "face-cachee",
+      "etoile": true,
+      "journal": "insertion",
+      "effetsSortie": [
+        "poussee",
+        "vibration"
+      ],
+      "objectif": {
+        "enfant": "Quand le voyant devient vert, appuie sur POUSSÉE pour freiner !",
+        "adulte": "Déclencher la poussée de freinage dans la fenêtre."
+      },
+      "rappel": {
+        "enfant": "Attends le voyant vert, puis appuie sur POUSSÉE.",
+        "adulte": "Attendre l'ouverture de la fenêtre, puis déclencher la poussée."
+      },
+      "consigne": {
+        "enfant": "Appuie sur POUSSÉE quand le voyant est vert.",
+        "adulte": "Poussée à déclencher pendant que la fenêtre est ouverte."
+      },
+      "indices": [
+        {
+          "enfant": "Ne te presse pas : attends que le voyant soit vert.",
+          "adulte": "Ne pas anticiper l'ouverture de la fenêtre."
+        },
+        {
+          "enfant": "Appuie quand le voyant est vert, pas avant et pas après.",
+          "adulte": "Déclencher entre l'ouverture et la fermeture de la fenêtre."
+        }
+      ],
+      "solution": {
+        "enfant": "Je freine pour toi ! Nous voilà en orbite, à {orbiteLunaire} de la Lune.",
+        "adulte": "Poussée déclenchée par le copilote : insertion en orbite à {orbiteLunaire} d'altitude."
+      },
+      "appris": {
+        "enfant": "Tu as découvert qu'il faut freiner pour qu'une planète ou la Lune nous garde en orbite.",
+        "adulte": "Sans freinage, le vaisseau passerait la Lune sans être capturé en orbite."
+      },
+      "suivant": "s7-3"
+    },
+    {
+      "id": "s7-3",
+      "type": "dialogue",
+      "scene": "face-cachee",
+      "locuteur": "copilote",
+      "objectif": {
+        "enfant": "Plus de radio : la Lune cache la Terre.",
+        "adulte": "Coupure radio : la Lune masque la Terre."
+      },
+      "texte": {
+        "enfant": "{copilote} : nous passons derrière la Lune ! La Lune est entre nous et la Terre, et la radio va tout droit : elle ne peut pas traverser la Lune. Plus de contact pendant {dureeCachee} à chaque tour (ordre de grandeur).",
+        "adulte": "Passage derrière la Lune : la liaison radio se propage en ligne droite et le disque lunaire la bloque. Coupure de {dureeCachee} par orbite (ordre de grandeur), à {orbiteLunaire} d'altitude."
+      },
+      "suivant": "s7-4",
+      "effetsEntree": [
+        "coupure-radio"
+      ]
+    },
+    {
+      "id": "s7-4",
+      "type": "calcul",
+      "scene": "face-cachee",
+      "etoile": true,
+      "journal": "face-cachee",
+      "formatReponse": "pourcent",
+      "objectif": {
+        "enfant": "Trouve quelle part de l'orbite est cachée derrière la Lune, en pourcentage.",
+        "adulte": "Calculer la fraction de l'orbite cachée derrière la Lune, en %."
+      },
+      "rappel": {
+        "enfant": "Un tour de Lune dure {periode}. Quelle part est cachée ?",
+        "adulte": "Période orbitale {periode}. Fraction cachée ?"
+      },
+      "question": {
+        "enfant": "Un tour autour de la Lune dure {periode}. Quelle part du tour passe derrière la Lune, en pourcentage ?",
+        "adulte": "Période {periode}, altitude {orbiteLunaire}. Quelle fraction de l'orbite est cachée, en pourcentage ?"
+      },
+      "reponse": {
+        "calcul": "fractionOrbiteCacheePourcent"
+      },
+      "indices": [
+        {
+          "enfant": "Pense à un cercle : la Lune cache la Terre pendant une partie du tour, moins de la moitié.",
+          "adulte": "Fraction cachée = 2 × arcsin(R / (R + h)) / (2π), avec R = {rayonLune} et h = {orbiteLunaire}."
+        },
+        {
+          "enfant": "C'est plus d'un quart du tour, mais moins de la moitié.",
+          "adulte": "Moins de la moitié de l'orbite est cachée ; calculer avec la formule."
+        },
+        {
+          "enfant": "Essaie : c'est proche de {reponse}.",
+          "adulte": "Valeur attendue : {reponse}."
+        }
+      ],
+      "solution": {
+        "enfant": "Un peu moins de la moitié du tour est cachée : {reponse}. La Lune nous cache à la Terre pendant tout ce temps.",
+        "adulte": "La fraction cachée vaut 2 × arcsin(R / (R + h)) / (2π) = {reponse} de l'orbite."
+      },
+      "appris": {
+        "enfant": "Tu as découvert que, derrière la Lune, une bonne partie de chaque tour est hors de portée de la radio.",
+        "adulte": "Une bonne partie de chaque orbite lunaire est hors de vue de la Terre : la radio est coupée pendant ce temps."
+      },
+      "suivant": "s7-5"
+    },
+    {
+      "id": "s7-5",
+      "type": "dialogue",
+      "scene": "face-cachee",
+      "locuteur": "controle",
+      "objectif": {
+        "enfant": "La radio revient : bravo !",
+        "adulte": "Liaison radio rétablie."
+      },
+      "texte": {
+        "enfant": "Contrôle : on vous entend de nouveau ! Vous êtes sortis de derrière la Lune.",
+        "adulte": "Contrôle : signal retrouvé, sortie de la face cachée."
+      },
+      "suivant": "s8-1",
+      "effetsEntree": [
+        "radio-retablie"
+      ]
+    },
+    {
+      "id": "s8-1",
+      "type": "dialogue",
+      "scene": "site",
+      "locuteur": "controle",
+      "objectif": {
+        "enfant": "Compare les trois sites.",
+        "adulte": "Comparer les trois sites d'entraînement."
+      },
+      "texte": {
+        "enfant": "Voici trois sites d'entraînement, inventés pour le jeu. Alpha : planéité {planeiteAlpha}, lumière {lumiereAlpha}. Bêta : planéité {planeiteBeta}, lumière {lumiereBeta}. Gamma : planéité {planeiteGamma}, lumière {lumiereGamma}. La planéité dit à quel point le sol est plat, la lumière dit la part du séjour au soleil.",
+        "adulte": "Trois sites d'entraînement fictifs (valeurs de jeu). Alpha : planéité {planeiteAlpha}, lumière {lumiereAlpha}. Bêta : planéité {planeiteBeta}, lumière {lumiereBeta}. Gamma : planéité {planeiteGamma}, lumière {lumiereGamma}. Planéité : régularité du sol ; lumière : part du séjour éclairée."
+      },
+      "suivant": "s8-2"
+    },
+    {
+      "id": "s8-2",
+      "type": "choix",
+      "scene": "site",
+      "journal": "site",
+      "objectif": {
+        "enfant": "Choisis ton site d'entraînement.",
+        "adulte": "Choisir un site d'entraînement."
+      },
+      "rappel": {
+        "enfant": "Alpha, Bêta ou Gamma ? Regarde le sol et la lumière.",
+        "adulte": "Alpha, Bêta ou Gamma : comparer planéité et lumière."
+      },
+      "question": {
+        "enfant": "Quel site d'entraînement choisis-tu ?",
+        "adulte": "Quel site d'entraînement retenez-vous ?"
+      },
+      "options": [
+        {
+          "id": "alpha",
+          "texte": {
+            "enfant": "Alpha : le sol le plus plat",
+            "adulte": "Alpha : planéité maximale"
+          },
+          "suivant": "s8-3a"
+        },
+        {
+          "id": "beta",
+          "texte": {
+            "enfant": "Bêta : le plus de lumière",
+            "adulte": "Bêta : lumière maximale"
+          },
+          "suivant": "s8-3b"
+        },
+        {
+          "id": "gamma",
+          "texte": {
+            "enfant": "Gamma : plat et lumineux",
+            "adulte": "Gamma : compromis planéité et lumière"
+          },
+          "suivant": "s8-3c"
+        }
+      ]
+    },
+    {
+      "id": "s8-3a",
+      "type": "dialogue",
+      "scene": "site",
+      "locuteur": "copilote",
+      "objectif": {
+        "enfant": "Site Alpha choisi.",
+        "adulte": "Site Alpha retenu."
+      },
+      "texte": {
+        "enfant": "{copilote} : Alpha a le sol le plus plat. En revanche il y fait plus sombre : on y verra moins bien. Très bien, on s'y entraîne !",
+        "adulte": "Alpha : sol le plus régulier, mais éclairement plus faible. Choix accepté, entraînement sur Alpha."
+      },
+      "suivant": "s9-1"
+    },
+    {
+      "id": "s8-3b",
+      "type": "dialogue",
+      "scene": "site",
+      "locuteur": "copilote",
+      "objectif": {
+        "enfant": "Site Bêta choisi.",
+        "adulte": "Site Bêta retenu."
+      },
+      "texte": {
+        "enfant": "{copilote} : Bêta est le plus lumineux, mais le sol y est moins plat : il faudra bien regarder où on se pose. Très bien, on s'y entraîne !",
+        "adulte": "Bêta : meilleur éclairement, mais sol moins régulier. Choix accepté, entraînement sur Bêta."
+      },
+      "suivant": "s9-1"
+    },
+    {
+      "id": "s8-3c",
+      "type": "dialogue",
+      "scene": "site",
+      "locuteur": "copilote",
+      "objectif": {
+        "enfant": "Site Gamma choisi.",
+        "adulte": "Site Gamma retenu."
+      },
+      "texte": {
+        "enfant": "{copilote} : Gamma est plat et bien éclairé : un très bon compromis. Très bien, on s'y entraîne !",
+        "adulte": "Gamma : sol régulier et bon éclairement, bon compromis. Choix accepté, entraînement sur Gamma."
+      },
+      "suivant": "s9-1"
+    },
+    {
+      "id": "s9-1",
+      "type": "dialogue",
+      "scene": "alunissage",
+      "locuteur": "controle",
+      "objectif": {
+        "enfant": "Prépare-toi à freiner pour te poser doucement.",
+        "adulte": "Préparer la descente motorisée."
+      },
+      "texte": {
+        "enfant": "Contrôle : la descente commence à {altitudeDescente} du sol. La gravité de la Lune est {graviteLune} m/s², celle de la Terre {graviteTerre} m/s² : on tombe plus doucement, mais il faut quand même freiner. Pour te poser, garde une vitesse entre {zoneMin} et {zoneMax} au moment de toucher le sol (valeurs de jeu).",
+        "adulte": "Descente depuis {altitudeDescente}. Gravité de surface : {graviteLune} m/s² (Lune), {graviteTerre} m/s² (Terre). Vitesse de toucher à tenir dans la zone de {zoneMin} à {zoneMax} (valeurs de jeu)."
+      },
+      "suivant": "s9-2"
+    },
+    {
+      "id": "s9-2",
+      "type": "descente",
+      "scene": "alunissage",
+      "etoile": true,
+      "journal": "alunissage",
+      "astre": "lune",
+      "effetsEntree": [
+        "descente"
+      ],
+      "effetsSortie": [
+        "poussee",
+        "poussiere"
+      ],
+      "altitudeDepart": {
+        "ref": "DESCENTE_ALTITUDE_DEPART_M"
+      },
+      "vitesseZone": {
+        "min": {
+          "ref": "DESCENTE_ZONE_VITESSE_MIN_MS"
+        },
+        "max": {
+          "ref": "DESCENTE_ZONE_VITESSE_MAX_MS"
+        }
+      },
+      "poussee": {
+        "ref": "DESCENTE_POUSSEE_FACTEUR_G"
+      },
+      "objectif": {
+        "enfant": "Pose-toi doucement : touche le sol dans la zone verte.",
+        "adulte": "Toucher le sol avec une vitesse dans la zone de réussite."
+      },
+      "rappel": {
+        "enfant": "Appuie sur MOTEUR pour freiner avant d'arriver au sol.",
+        "adulte": "Utiliser le moteur pour freiner avant le contact."
+      },
+      "consigne": {
+        "enfant": "Garde ta vitesse dans la zone verte. Appuie sur MOTEUR pour freiner.",
+        "adulte": "Garder la vitesse de descente dans la zone, entre {zoneMin} et {zoneMax} au contact. Le moteur freine."
+      },
+      "indices": [
+        {
+          "enfant": "Commence à freiner un peu avant d'arriver : le moteur ralentit la chute.",
+          "adulte": "Anticiper le freinage : la gravité accélère la chute."
+        },
+        {
+          "enfant": "Freine quand le sol se rapproche, puis relâche quand ta vitesse est dans la zone verte.",
+          "adulte": "Freiner à l'approche du sol, relâcher dans la zone."
+        }
+      ],
+      "solution": {
+        "enfant": "Je freine à ta place : nous nous posons en douceur. Retiens qu'il faut commencer à freiner tôt.",
+        "adulte": "Rattrapage assisté : le copilote a freiné et posé le module. Il faut anticiper le freinage."
+      },
+      "appris": {
+        "enfant": "Tu as découvert qu'il faut freiner assez tôt pour se poser doucement, même avec la faible gravité de la Lune.",
+        "adulte": "Même avec une gravité faible, il faut anticiper le freinage pour toucher le sol à vitesse douce."
+      },
+      "suivant": "s9-3"
+    },
+    {
+      "id": "s9-3",
+      "type": "dialogue",
+      "scene": "alunissage",
+      "locuteur": "copilote",
+      "objectif": {
+        "enfant": "Nous sommes posés !",
+        "adulte": "Alunissage terminé."
+      },
+      "texte": {
+        "enfant": "{copilote} : nous sommes posés sur la Lune ! La poussière retombe doucement.",
+        "adulte": "Alunissage effectué. Poussière en retombée."
+      },
+      "suivant": "s10-1"
+    },
+    {
+      "id": "s10-1",
+      "type": "dialogue",
+      "scene": "sortie",
+      "locuteur": "controle",
+      "objectif": {
+        "enfant": "Vérifie ta combinaison.",
+        "adulte": "Contrôler la combinaison."
+      },
+      "texte": {
+        "enfant": "Contrôle : avant de sortir, vérifie ta combinaison, point par point. Les valeurs sont celles d'une simulation, pas une vraie combinaison.",
+        "adulte": "Contrôle : vérification de la combinaison avant la sortie. Valeurs de simulation, non réelles."
+      },
+      "suivant": "s10-2"
+    },
+    {
+      "id": "s10-2",
+      "type": "action",
+      "scene": "sortie",
+      "etoile": true,
+      "ordre": "impose",
+      "objectif": {
+        "enfant": "Vérifie l'oxygène, la pression, puis la batterie.",
+        "adulte": "Contrôler : oxygène, pression, batterie."
+      },
+      "rappel": {
+        "enfant": "Touche l'oxygène, puis la pression, puis la batterie.",
+        "adulte": "Valider l'oxygène, la pression puis la batterie."
+      },
+      "interrupteurs": [
+        {
+          "id": "oxygene",
+          "libelle": {
+            "enfant": "Oxygène : {oxygene} (simulation)",
+            "adulte": "Oxygène : {oxygene} (simulation)"
+          }
+        },
+        {
+          "id": "pression",
+          "libelle": {
+            "enfant": "Pression : {pression} (simulation)",
+            "adulte": "Pression : {pression} (simulation)"
+          }
+        },
+        {
+          "id": "batterie",
+          "libelle": {
+            "enfant": "Batterie : {batterie} (simulation)",
+            "adulte": "Batterie : {batterie} (simulation)"
+          }
+        }
+      ],
+      "indices": [
+        {
+          "enfant": "On commence par l'air qu'on respire : l'oxygène.",
+          "adulte": "Commencer par l'oxygène."
+        },
+        {
+          "enfant": "Ensuite la pression, et enfin la batterie.",
+          "adulte": "Puis la pression, puis la batterie."
+        }
+      ],
+      "solution": {
+        "enfant": "Je vérifie pour toi : oxygène, pression, batterie. Tout est bon (simulation).",
+        "adulte": "Contrôle effectué par le copilote : oxygène, pression, batterie conformes (simulation)."
+      },
+      "appris": {
+        "enfant": "Tu as découvert qu'on vérifie toujours l'air, la pression et la batterie avant de sortir.",
+        "adulte": "Avant une sortie, on contrôle systématiquement l'oxygène, la pression et la batterie."
+      },
+      "suivant": "s10-3"
+    },
+    {
+      "id": "s10-3",
+      "type": "dialogue",
+      "scene": "sortie",
+      "locuteur": "copilote",
+      "objectif": {
+        "enfant": "Fais ton premier pas.",
+        "adulte": "Effectuer le premier pas."
+      },
+      "texte": {
+        "enfant": "{copilote} : c'est le moment ! Pose doucement un pied sur la Lune. Premier pas !",
+        "adulte": "Ouverture du sas. Premier pas sur la surface lunaire."
+      },
+      "suivant": "s10-4",
+      "effetsSortie": [
+        "pas"
+      ]
+    },
+    {
+      "id": "s10-4",
+      "type": "calcul",
+      "scene": "sortie",
+      "etoile": true,
+      "journal": "saut",
+      "formatReponse": "cm",
+      "objectif": {
+        "enfant": "Calcule la hauteur de ton saut sur la Lune, en centimètres.",
+        "adulte": "Calculer la hauteur du saut sur la Lune, en centimètres."
+      },
+      "rappel": {
+        "enfant": "Compare la gravité de la Terre à celle de la Lune.",
+        "adulte": "Comparer g_Terre et g_Lune."
+      },
+      "question": {
+        "enfant": "Sur Terre, un saut d'exemple monte à {sautTerre}. La gravité est {graviteTerre} m/s² sur Terre et {graviteLune} m/s² sur la Lune. Jusqu'où montes-tu sur la Lune, en centimètres ?",
+        "adulte": "Saut d'exemple sur Terre : {sautTerre}. Gravités : {graviteTerre} m/s² (Terre), {graviteLune} m/s² (Lune). Avec la même vitesse de départ, quelle hauteur sur la Lune, en centimètres ?"
+      },
+      "reponse": {
+        "calcul": "hauteurSautLuneCm"
+      },
+      "indices": [
+        {
+          "enfant": "Plus la gravité est faible, plus on monte haut.",
+          "adulte": "Hauteur inversement proportionnelle à la gravité."
+        },
+        {
+          "enfant": "Divise la gravité de la Terre par celle de la Lune. Tu obtiens {rapportGravites}.",
+          "adulte": "h_Lune = h_Terre × g_Terre / g_Lune, rapport {rapportGravites}."
+        },
+        {
+          "enfant": "Multiplie ce nombre par la hauteur du saut sur Terre.",
+          "adulte": "Multiplier h_Terre par le rapport des gravités."
+        }
+      ],
+      "solution": {
+        "enfant": "Sur la Lune on monte {rapportGravites} fois plus haut : cela fait {reponse}.",
+        "adulte": "h_Lune = h_Terre × g_Terre / g_Lune = {reponse}."
+      },
+      "appris": {
+        "enfant": "Tu as découvert que, sur la Lune, un même saut monte beaucoup plus haut parce que la gravité est plus faible.",
+        "adulte": "À même vitesse de départ, la hauteur d'un saut varie à l'inverse de la gravité."
+      },
+      "suivant": "s10-5"
+    },
+    {
+      "id": "s10-5",
+      "type": "dialogue",
+      "scene": "sortie",
+      "locuteur": "copilote",
+      "objectif": {
+        "enfant": "Admire ton saut.",
+        "adulte": "Saut effectué."
+      },
+      "texte": {
+        "enfant": "{copilote} : waouh ! Ton saut monte à {hauteurSaut}, soit {rapportGravites} fois plus haut que sur Terre ! C'est un ordre de grandeur : en combinaison, on saute un peu moins haut.",
+        "adulte": "Saut à {hauteurSaut}, soit {rapportGravites} fois la hauteur terrestre (exemple de jeu). Ordre de grandeur : en combinaison, on saute un peu moins haut."
+      },
+      "suivant": "s10-6",
+      "effetsEntree": [
+        "saut"
+      ]
+    },
+    {
+      "id": "s10-6",
+      "type": "action",
+      "scene": "sortie",
+      "etoile": true,
+      "journal": "echantillon",
+      "ordre": "impose",
+      "objectif": {
+        "enfant": "Récolte un échantillon : prends la pelle, puis remplis le sac.",
+        "adulte": "Récolter un échantillon : pelle puis sac."
+      },
+      "rappel": {
+        "enfant": "Touche la pelle, puis le sac.",
+        "adulte": "Utiliser la pelle, puis le sac."
+      },
+      "interrupteurs": [
+        {
+          "id": "pelle",
+          "libelle": {
+            "enfant": "Prendre la pelle",
+            "adulte": "Prendre la pelle"
+          }
+        },
+        {
+          "id": "sac",
+          "libelle": {
+            "enfant": "Remplir le sac d'échantillon",
+            "adulte": "Remplir le sac d'échantillon"
+          }
+        }
+      ],
+      "indices": [
+        {
+          "enfant": "Il faut d'abord la pelle pour creuser un peu.",
+          "adulte": "D'abord l'outil de prélèvement."
+        }
+      ],
+      "solution": {
+        "enfant": "Je m'en occupe : pelle, puis sac. L'échantillon est un objet de jeu.",
+        "adulte": "Prélèvement effectué par le copilote : échantillon de jeu."
+      },
+      "appris": {
+        "enfant": "Tu as découvert qu'on récolte un échantillon avec un outil, puis on le range avec soin.",
+        "adulte": "Un échantillon se prélève avec un outil, puis se range soigneusement."
+      },
+      "suivant": "s10-7"
+    },
+    {
+      "id": "s10-7",
+      "type": "dialogue",
+      "scene": "sortie",
+      "locuteur": "copilote",
+      "objectif": {
+        "enfant": "Échantillon récolté.",
+        "adulte": "Échantillon récolté."
+      },
+      "texte": {
+        "enfant": "{copilote} : échantillon récolté ! C'est un objet du jeu : on ne dit pas de quoi il est fait.",
+        "adulte": "Échantillon récolté (objet de jeu, composition non précisée)."
+      },
+      "suivant": "s11-1"
+    },
+    {
+      "id": "s11-1",
+      "type": "dialogue",
+      "scene": "debriefing",
+      "locuteur": "controle",
+      "objectif": {
+        "enfant": "Regarde ton bilan.",
+        "adulte": "Bilan de mission."
+      },
+      "texte": {
+        "enfant": "Contrôle : bravo, mission réussie ! Tu as gagné {etoiles} étoiles sur {etoilesMax}. Ton journal de bord garde tout ce que tu as découvert.",
+        "adulte": "Contrôle : mission accomplie. {etoiles} étoiles sur {etoilesMax}. Le journal de bord regroupe les notes de mission et les points appris."
+      },
+      "suivant": "s11-2"
+    },
+    {
+      "id": "s11-2",
+      "type": "dialogue",
+      "scene": "debriefing",
+      "locuteur": "narrateur",
+      "objectif": {
+        "enfant": "Dans la vraie vie : le voyage d'Apollo 11.",
+        "adulte": "Réalité : le trajet d'Apollo 11."
+      },
+      "texte": {
+        "enfant": "Dans la vraie vie… Apollo 11 a mis {apolloTrajet} pour aller de la Terre à la Lune, soit {apolloVitesseMoyenne} en moyenne (calcul à partir des durées de la NASA). Le vrai vaisseau ralentit en s'éloignant de la Terre. Dans notre jeu, sa vitesse reste constante pour faire simple.",
+        "adulte": "Dans la vraie vie : le trajet d'Apollo 11 a duré {apolloTrajet} (fin de l'injection translunaire à l'insertion lunaire, durées NASA, Apollo 11 Mission Overview), soit {apolloVitesseMoyenne} en vitesse moyenne calculée. La vitesse réelle diminue quand on s'éloigne de la Terre ; dans le jeu elle reste constante (licence de jeu)."
+      },
+      "suivant": "s11-3"
+    },
+    {
+      "id": "s11-3",
+      "type": "dialogue",
+      "scene": "debriefing",
+      "locuteur": "narrateur",
+      "objectif": {
+        "enfant": "Dans la vraie vie : l'orbite et l'alunissage.",
+        "adulte": "Réalité : orbite et alunissage."
+      },
+      "texte": {
+        "enfant": "Dans la vraie vie… Apollo 11 a tourné autour de la Lune à une altitude comprise entre {apolloOrbiteBasse} et {apolloOrbiteHaute}. Pour entrer en orbite, le moteur a fonctionné derrière la Lune, sans contact avec la Terre. Puis le module Eagle s'est posé dans la mer de la Tranquillité.",
+        "adulte": "Dans la vraie vie : orbite lunaire d'Apollo 11 entre {apolloOrbiteBasse} et {apolloOrbiteHaute} d'altitude. Les manœuvres d'insertion ont eu lieu derrière la Lune, hors de contact avec les stations terrestres. Le module Eagle s'est posé dans la mer de la Tranquillité (NASA)."
+      },
+      "suivant": "s11-4"
+    },
+    {
+      "id": "s11-4",
+      "type": "dialogue",
+      "scene": "debriefing",
+      "locuteur": "narrateur",
+      "objectif": {
+        "enfant": "Dans la vraie vie : sur la Lune.",
+        "adulte": "Réalité : sur la surface lunaire."
+      },
+      "texte": {
+        "enfant": "Dans la vraie vie… Armstrong et Aldrin sont restés {apolloSurface} sur la Lune. Leur sortie a duré plus de {apolloSortie}, et ils ont rapporté {apolloEchantillons} de roches et de sol.",
+        "adulte": "Dans la vraie vie : séjour de {apolloSurface} sur la Lune, sortie de plus de {apolloSortie}, {apolloEchantillons} de roches et de sol rapportés (NASA, NSSDCA)."
+      },
+      "suivant": "s11-5"
+    },
+    {
+      "id": "s11-5",
+      "type": "dialogue",
+      "scene": "debriefing",
+      "locuteur": "copilote",
       "objectif": {
         "enfant": "Bravo, mission terminée !",
         "adulte": "Fin de la mission."
       },
       "texte": {
-        "enfant": "Bravo ! Nous sommes près de la Lune. Tu es un vrai explorateur !",
-        "adulte": "Mission accomplie : nous sommes à proximité de la Lune. Bon travail."
-      }
+        "enfant": "{copilote} : merci pour ce beau voyage. Tu es un vrai explorateur !",
+        "adulte": "Fin de la mission. Bon travail."
+      },
+      "fin": true
     }
   ]
 }

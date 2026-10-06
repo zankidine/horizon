@@ -2,13 +2,17 @@ import { describe, it, expect } from 'vitest'
 import donnees from '../data/missions/mission1.json'
 import {
   DELAI_RAPPEL_S_NIVEAU,
+  DESCENTE_POUSSEE_FACTEUR_G,
+  DESCENTE_ZONE_VITESSE_MAX_MS,
   DISTANCE_TERRE_LUNE_KM,
   DUREE_VOYAGE_LUNE_VISEE_S,
   INDICES_MAX_NIVEAU,
   TIMING_OUVERTURE_S,
   TOLERANCE_CALCUL_NIVEAU,
   TOLERANCE_DUREE_VOYAGE,
+  VOYAGE_VITESSE_CONSTANTE,
 } from './constants'
+import { fractionOrbiteCacheePourcent, graviteSurfaceMs2, hauteurSautLuneCm } from './mission-calculs'
 import { creerMoteur, type EvenementMission, type MissionVue, type MoteurMission } from './mission-moteur'
 import { type Niveau } from './niveaux'
 import { chargerProgression, sauvegarderProgression, type Stockage } from './progression'
@@ -56,7 +60,11 @@ function jouer(moteur: MoteurMission, joueur: Joueur = {}) {
         moteur.agir({ type: 'choisir', option: vue.actions[0].options![0].id })
         break
       case 'calcul':
-        moteur.agir({ type: 'repondre', valeur: fauter ? 1 : DISTANCE_TERRE_LUNE_KM })
+        moteur.agir({ type: 'repondre', valeur: fauter ? 1 : reponseVoulue(id) })
+        break
+      case 'descente':
+        moteur.agir({ type: 'moteur', actif: !fauter && freinerMaintenant(vue) })
+        moteur.avancer(IMAGE)
         break
       case 'action': {
         const interrupteurs = vue.actions[0].interrupteurs!
@@ -84,6 +92,28 @@ function jouer(moteur: MoteurMission, joueur: Joueur = {}) {
   return { evenements, dureeVoyageS }
 }
 
+/** Bonne réponse de chaque étape de calcul (calculée par le code, jamais écrite à la main). */
+function reponseVoulue(id: string): number {
+  switch (id) {
+    case 's7-4':
+      return fractionOrbiteCacheePourcent()
+    case 's10-4':
+      return hauteurSautLuneCm()
+    default:
+      return DISTANCE_TERRE_LUNE_KM
+  }
+}
+
+/**
+ * Joueur de la descente : freine quand la distance de freinage (v² − vmax²) / 2a
+ * ne laisse plus que quelques mètres de marge.
+ */
+function freinerMaintenant(vue: MissionVue): boolean {
+  const d = vue.descente!
+  const freinage = (DESCENTE_POUSSEE_FACTEUR_G - 1) * graviteSurfaceMs2('lune')
+  return d.altitudeM <= (d.vitesseMs ** 2 - DESCENTE_ZONE_VITESSE_MAX_MS ** 2) / (2 * freinage) + 3
+}
+
 function observationVoulue(id: string) {
   return id === 'o2-scanner'
     ? ({ type: 'observer', cible: 'terre', mode: 'scanner' } as const)
@@ -91,18 +121,30 @@ function observationVoulue(id: string) {
 }
 
 describe('parcours complet de la mission 1 sans erreur, à chaque niveau', () => {
-  it.each(NIVEAUX)('niveau %i : six scènes, cinq étoiles, tout le journal, aucune aide', (niveau) => {
+  it.each(NIVEAUX)('niveau %i : onze scènes, onze étoiles, tout le journal, aucune aide', (niveau) => {
     const moteur = nouveau(niveau)
     const { evenements } = jouer(moteur)
     const vue = moteur.vue()
     expect(vue.terminee).toBe(true)
     expect(vue.etoiles).toBe(vue.etoilesMax)
-    expect(vue.etoilesMax).toBe(5)
-    expect(vue.journal).toEqual(['decollage', 'orbite', 'poussee', 'radio', 'arrivee'])
-    expect(evenements.filter((e) => e.type === 'scene').map((e) => (e as { numero: number }).numero)).toEqual([1, 2, 3, 4, 5, 6])
-    for (const aide of ['indice', 'solution', 'rappel']) expect(types(evenements)).not.toContain(aide)
+    expect(vue.etoilesMax).toBe(11)
+    expect(vue.journal).toEqual([
+      'decollage',
+      'orbite',
+      'poussee',
+      'radio',
+      'arrivee',
+      'insertion',
+      'face-cachee',
+      'site',
+      'alunissage',
+      'saut',
+      'echantillon',
+    ])
+    expect(evenements.filter((e) => e.type === 'scene').map((e) => (e as { numero: number }).numero)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+    for (const aide of ['indice', 'solution', 'rappel', 'appris']) expect(types(evenements)).not.toContain(aide)
     expect(types(evenements)[evenements.length - 1]).toBe('mission-terminee')
-    expect(moteur.etat()).toMatchObject({ terminee: true, etape: null, etoiles: 5, tentatives: {} })
+    expect(moteur.etat()).toMatchObject({ terminee: true, etape: null, etoiles: 11, tentatives: {}, appris: [] })
   })
 })
 
@@ -122,8 +164,8 @@ describe('parcours avec erreurs : jamais d’échec définitif', () => {
     expect(indices).toBe(attendus)
     expect(evenements.filter((e) => e.type === 'solution')).toHaveLength(4)
     // Une étape qui a eu sa solution ne rapporte pas d'étoile ; l'étape « repérer la Lune » n'a pas fauté.
-    expect(vue.etoiles).toBe(1)
-    expect(vue.journal).toHaveLength(5)
+    expect(vue.etoiles).toBe(vue.etoilesMax - Object.keys(erreurs).length)
+    expect(vue.journal).toHaveLength(11)
     expect(Object.keys(moteur.etat().tentatives).sort()).toEqual(Object.keys(erreurs).sort())
   })
 
@@ -133,7 +175,7 @@ describe('parcours avec erreurs : jamais d’échec définitif', () => {
     const etat = moteur.etat()
     expect(etat.tentatives['o2-scanner']).toBe(1)
     expect(etat.etapesEtoilees).toContain('o2-scanner')
-    expect(etat.etoiles).toBe(5)
+    expect(etat.etoiles).toBe(11)
   })
 
   it('la solution du calcul est expliquée avec la bonne réponse', () => {
@@ -363,22 +405,22 @@ describe('MissionVue', () => {
     expect(dialogue.texte).not.toContain('{')
   })
 
-  it('suit la progression par scène : « scène 3 sur 6 », 2 scènes terminées', () => {
+  it('suit la progression par scène : « scène 3 sur 11 », 2 scènes terminées', () => {
     const moteur = nouveau(1)
     jouer(moteur, { jusqua: 'd1-compte' })
     const vue = moteur.vue()
-    expect(vue.scene).toMatchObject({ numero: 3, total: 6, id: 'decollage' })
-    expect(vue.progression).toEqual({ scenesTerminees: 2, scenesTotal: 6, ratio: 2 / 6 })
+    expect(vue.scene).toMatchObject({ numero: 3, total: 11, id: 'decollage' })
+    expect(vue.progression).toEqual({ scenesTerminees: 2, scenesTotal: 11, ratio: 2 / 11, apprentissages: 0 })
   })
 
-  it('commence à la scène 1 avec 0 scène terminée, et finit à 6 sur 6', () => {
+  it('commence à la scène 1 avec 0 scène terminée, et finit à 11 sur 11', () => {
     const moteur = nouveau(2)
-    expect(moteur.vue().scene).toMatchObject({ numero: 1, total: 6 })
+    expect(moteur.vue().scene).toMatchObject({ numero: 1, total: 11 })
     expect(moteur.vue().progression.scenesTerminees).toBe(0)
     jouer(moteur)
     const fin = moteur.vue()
     expect(fin).toMatchObject({ terminee: true, scene: null, etape: null, actions: [], objectif: '' })
-    expect(fin.progression).toEqual({ scenesTerminees: 6, scenesTotal: 6, ratio: 1 })
+    expect(fin.progression).toEqual({ scenesTerminees: 11, scenesTotal: 11, ratio: 1, apprentissages: 0 })
   })
 
   it('liste les actions possibles de chaque étape', () => {
@@ -486,7 +528,7 @@ describe('reprise après sauvegarde', () => {
     // La mission se termine ; les étoiles déjà gagnées ne sont pas comptées deux fois.
     jouer(repris)
     expect(repris.vue().terminee).toBe(true)
-    expect(repris.vue().etoiles).toBe(5)
+    expect(repris.vue().etoiles).toBe(11)
   })
 
   it('chargerProgression + creerMoteur : le chemin complet que prendra l’interface', () => {
@@ -551,5 +593,313 @@ describe('événements', () => {
     b.agir({ type: 'continuer' })
     b.agir({ type: 'choisir', option: 'explique' })
     expect(b.vue().etape?.id).toBe('p3-explication')
+  })
+})
+
+// --- Fin de la mission 1 (étape 6c) : scènes 7 à 11 -------------------------------
+
+const textesDe = (evenements: EvenementMission[]) =>
+  evenements.flatMap((e) => ('texte' in e ? [e.texte] : []))
+
+describe('scène 7 : face cachée', () => {
+  it('la radio se coupe, puis revient, dans cet ordre', () => {
+    const { evenements } = jouer(nouveau(3))
+    const effets = evenements.flatMap((e) => (e.type === 'effet' ? [e.nom] : []))
+    expect(effets.indexOf('coupure-radio')).toBeGreaterThan(-1)
+    expect(effets.indexOf('radio-retablie')).toBeGreaterThan(effets.indexOf('coupure-radio'))
+  })
+
+  it('le texte donne la durée calculée, marquée « ordre de grandeur » (niveau 3 : environ 46 minutes)', () => {
+    const { evenements } = jouer(nouveau(3))
+    const texte = norm(textesDe(evenements).find((t) => t.includes('Coupure de'))!)
+    expect(texte).toMatch(/Coupure de 46[,.]\d+ minutes par orbite \(ordre de grandeur\)/)
+  })
+
+  it('niveau 1 : « environ » devant la valeur arrondie, jamais « quelques minutes »', () => {
+    const { evenements } = jouer(nouveau(1))
+    const texte = norm(textesDe(evenements).find((t) => t.includes('Plus de contact'))!)
+    expect(texte).toContain('environ 46 minutes')
+    expect(norm(textesDe(evenements).join(' '))).not.toContain('quelques minutes')
+  })
+
+  it('le calcul de la part cachée accepte la réponse du code et refuse une réponse fausse', () => {
+    const moteur = nouveau(4)
+    jouer(moteur, { jusqua: 's7-4' })
+    moteur.retirerEvenements()
+    moteur.agir({ type: 'repondre', valeur: 50 })
+    expect(moteur.retirerEvenements().find((e) => e.type === 'reponse')).toMatchObject({ correcte: false })
+    moteur.agir({ type: 'repondre', valeur: fractionOrbiteCacheePourcent() })
+    expect(moteur.vue().etape?.id).toBe('s7-5')
+  })
+})
+
+describe('scène 8 : choix du site (fictif)', () => {
+  it.each(['alpha', 'beta', 'gamma'])('le site %s mène à la descente', (site) => {
+    const moteur = nouveau(2)
+    jouer(moteur, { jusqua: 's8-2' })
+    moteur.agir({ type: 'choisir', option: site })
+    expect(types(moteur.retirerEvenements())).toContain('choix')
+    moteur.agir({ type: 'continuer' })
+    expect(moteur.vue().etape?.id).toBe('s9-1')
+  })
+
+  it('les trois sites sont présentés comme fictifs, avec planéité et lumière calculées', () => {
+    const moteur = nouveau(3)
+    const { evenements } = jouer(moteur, { jusqua: 's8-1' })
+    const texte = norm(textesDe(evenements).find((t) => t.includes('Alpha : planéité'))!)
+    expect(texte).toContain('fictifs')
+    expect(texte).toContain('Alpha : planéité 95 %, lumière 40 %')
+    expect(texte).toContain('Bêta : planéité 60 %, lumière 95 %')
+    expect(texte).toContain('Gamma : planéité 90 %, lumière 85 %')
+  })
+})
+
+describe('scène 9 : descente assistée', () => {
+  /** Va jusqu'à la descente et la laisse tomber sans freiner. */
+  function chuteLibre(niveau: Niveau) {
+    const moteur = nouveau(niveau)
+    jouer(moteur, { jusqua: 's9-2' })
+    moteur.retirerEvenements()
+    const evenements: EvenementMission[] = []
+    for (let i = 0; i < 20_000 && moteur.vue().etape?.id === 's9-2'; i++) {
+      moteur.avancer(IMAGE)
+      evenements.push(...moteur.retirerEvenements())
+      if (evenements.some((e) => e.type === 'contact')) break
+    }
+    return { moteur, evenements }
+  }
+
+  it('sans freiner, la vitesse de toucher vient de la gravité lunaire : √(0,3² + 2 g h) ≈ 19,7 m/s (niveau 4)', () => {
+    // g = 1,62 m/s², h = 120 m : 2 g h = 388,8 ; + 0,09 = 388,89 ; racine = 19,72 m/s.
+    const { evenements } = chuteLibre(4)
+    const contact = evenements.find((e) => e.type === 'contact') as { vitesseMs: number; dansLaZone: boolean }
+    expect(contact.vitesseMs).toBeCloseTo(19.72, 0)
+    expect(contact.dansLaZone).toBe(false)
+  })
+
+  it('niveau 1 : le copilote freine toujours, la descente reste dans la zone sans aucune action', () => {
+    const { moteur, evenements } = chuteLibre(1)
+    expect(evenements).toContainEqual(expect.objectContaining({ type: 'contact', dansLaZone: true }))
+    expect(evenements.find((e) => e.type === 'contact')).toMatchObject({ vitesseMs: expect.any(Number) })
+    expect(types(evenements)).toContain('assistance')
+    expect(moteur.vue().etoiles).toBe(moteur.etat().etapesEtoilees.length)
+    expect(moteur.etat().etapesEtoilees).toContain('s9-2')
+  })
+
+  it.each([2, 3, 4] as const)('niveau %i : sans freiner, trop vite : un indice et on recommence, pas d’échec', (niveau) => {
+    const { moteur, evenements } = chuteLibre(niveau)
+    expect(evenements.find((e) => e.type === 'contact')).toMatchObject({ dansLaZone: false })
+    expect(types(evenements)).toContain('indice')
+    expect(moteur.vue().etape?.id).toBe('s9-2')
+    expect(moteur.vue().descente!.altitudeM).toBeGreaterThan(100) // une nouvelle descente a commencé
+    expect(moteur.vue().terminee).toBe(false)
+  })
+
+  it('après les indices, le rattrapage assisté pose le vaisseau, explique, et ne donne pas d’étoile', () => {
+    const moteur = nouveau(4)
+    const { evenements } = jouer(moteur, { erreurs: { 's9-2': 1_000_000 } }) // le joueur ne freine jamais
+    expect(moteur.vue().terminee).toBe(true)
+    expect(evenements.filter((e) => e.type === 'solution').some((e) => /frein/.test((e as { texte: string }).texte))).toBe(true)
+    expect(moteur.etat().etapesEtoilees).not.toContain('s9-2')
+    expect(moteur.etat().appris).toContain('s9-2')
+  })
+
+  it('le joueur qui freine à temps réussit sans aide à tous les niveaux et gagne l’étoile', () => {
+    for (const niveau of NIVEAUX) {
+      const moteur = nouveau(niveau)
+      const { evenements } = jouer(moteur)
+      expect(evenements.filter((e) => e.type === 'contact')).toEqual([
+        expect.objectContaining({ dansLaZone: true }),
+      ])
+      expect(moteur.etat().etapesEtoilees).toContain('s9-2')
+    }
+  })
+
+  it('la vue donne altitude, vitesse et zone en m et m/s', () => {
+    const moteur = nouveau(3)
+    jouer(moteur, { jusqua: 's9-2' })
+    expect(moteur.vue().descente).toMatchObject({
+      altitudeM: 120,
+      zone: { min: 0.3, max: 2 },
+      moteur: false,
+      statut: 'dans-la-zone',
+    })
+    moteur.agir({ type: 'moteur', actif: true })
+    expect(moteur.vue().descente?.moteur).toBe(true)
+    expect(types(moteur.retirerEvenements())).toContain('moteur')
+  })
+})
+
+describe('scène 10 : sortie, saut, échantillon', () => {
+  it('la combinaison affiche des valeurs marquées « simulation »', () => {
+    const moteur = nouveau(2)
+    jouer(moteur, { jusqua: 's10-2' })
+    const libelles = moteur.vue().actions[0].interrupteurs!.map((i) => norm(i.libelle))
+    expect(libelles).toEqual([
+      'Oxygène : 98 % (simulation)',
+      'Pression : 30 kPa (simulation)',
+      'Batterie : 100 % (simulation)',
+    ])
+  })
+
+  it('le saut : 40 cm sur Terre donnent environ 242 cm sur la Lune (niveau 3), calculé avec astres.json', () => {
+    const moteur = nouveau(3)
+    jouer(moteur, { jusqua: 's10-4' })
+    expect(norm(moteur.vue().question!)).toContain('40 cm')
+    moteur.retirerEvenements()
+    moteur.agir({ type: 'repondre', valeur: 40 })
+    moteur.agir({ type: 'repondre', valeur: 40 * (9.82 / 1.62) })
+    expect(moteur.vue().etape?.id).toBe('s10-5')
+    const { evenements } = jouer(moteur)
+    expect(norm(textesDe(evenements).find((t) => t.includes('Saut à'))!)).toContain('242,5 cm')
+    expect(norm(textesDe(evenements).find((t) => t.includes('Saut à'))!)).toContain('en combinaison, on saute un peu moins haut')
+  })
+
+  it('l’échantillon est présenté comme un objet de jeu, sans composition inventée', () => {
+    const { evenements } = jouer(nouveau(3))
+    const texte = norm(textesDe(evenements).join(' '))
+    expect(texte).toContain('objet de jeu')
+    expect(texte).not.toMatch(/basalte|silicate|minéral|oxyde/i)
+  })
+})
+
+describe('scène 11 : débriefing et « Dans la vraie vie… »', () => {
+  it('affiche les étoiles gagnées, sur le maximum', () => {
+    const { evenements } = jouer(nouveau(3))
+    expect(norm(textesDe(evenements).find((t) => t.includes('étoiles sur'))!)).toContain('11 étoiles sur 11')
+  })
+
+  it('les chiffres d’Apollo 11 viennent des constantes NASA (niveau 3)', () => {
+    const { evenements } = jouer(nouveau(3))
+    const vraie = norm(textesDe(evenements).filter((t) => t.startsWith('Dans la vraie vie')).join(' '))
+    expect(vraie).toContain('3,042 jours') // 75 h 50 − (2 h 44 + 5 min 48 s) = 73,0033 h = 3,0418 jours
+    expect(vraie).toContain('5 266 km/h')
+    expect(vraie).toContain('99,78 km')
+    expect(vraie).toContain('113,5 km')
+    expect(vraie).toContain('21,6 heures')
+    expect(vraie).toContain('21,55 kg')
+    expect(vraie).toContain('mer de la Tranquillité')
+    expect(vraie).toContain("diminue quand on s'éloigne de la Terre")
+  })
+
+  it('niveau 1 : le vrai vaisseau « ralentit en s’éloignant de la Terre »', () => {
+    const { evenements } = jouer(nouveau(1))
+    expect(norm(textesDe(evenements).join(' '))).toContain("ralentit en s'éloignant de la Terre")
+  })
+
+  it('niveau 1 : valeurs rondes avec « environ »', () => {
+    const { evenements } = jouer(nouveau(1))
+    const vraie = norm(textesDe(evenements).filter((t) => t.startsWith('Dans la vraie vie')).join(' '))
+    expect(vraie).toContain('mis environ 3 jours')
+    expect(vraie).not.toContain('environ environ')
+    expect(vraie).toContain('environ 5 300 km/h')
+    expect(vraie).toContain('environ 22 kg')
+  })
+})
+
+describe('licence de jeu : vitesse constante pendant le voyage', () => {
+  it('la vitesse du vaisseau ne change pas entre le départ et l’arrivée', () => {
+    expect(VOYAGE_VITESSE_CONSTANTE).toBe(true)
+    const moteur = nouveau(2)
+    jouer(moteur, { jusqua: 'v1-voyage' })
+    const depart = moteur.vue().voyage!.vitesseKmS
+    const vitesses = new Set<number>([depart])
+    while (moteur.vue().etape?.id === 'v1-voyage') {
+      moteur.avancer(IMAGE)
+      vitesses.add(moteur.vaisseau()!.vitesseKmS)
+    }
+    expect([...vitesses]).toEqual([depart])
+  })
+})
+
+describe('« J’ai appris » : étape terminée après un indice ou la solution', () => {
+  it('un indice puis la bonne réponse : une entrée « J’ai appris », positive, dans la vue', () => {
+    const moteur = nouveau(2)
+    jouer(moteur, { jusqua: 'o2-scanner' })
+    moteur.retirerEvenements()
+    moteur.agir({ type: 'observer', cible: 'lune', mode: 'scanner' }) // erreur : un indice
+    moteur.agir({ type: 'observer', cible: 'terre', mode: 'scanner' })
+    const evenements = moteur.retirerEvenements()
+    const appris = evenements.find((e) => e.type === 'appris') as { etape: string; texte: string }
+    expect(appris.etape).toBe('o2-scanner')
+    expect(appris.texte).toMatch(/^Tu as découvert/)
+    const vue = moteur.vue()
+    expect(vue.apprentissages).toEqual([{ etape: 'o2-scanner', texte: appris.texte }])
+    expect(vue.progression.apprentissages).toBe(1)
+    expect(moteur.etat().appris).toEqual(['o2-scanner'])
+  })
+
+  it('la solution donnée compte aussi', () => {
+    const moteur = nouveau(4)
+    const { evenements } = jouer(moteur, { erreurs: { 'v2-calcul': 9 } })
+    expect(evenements.filter((e) => e.type === 'appris')).toHaveLength(1)
+    expect(moteur.vue().apprentissages.map((a) => a.etape)).toEqual(['v2-calcul'])
+  })
+
+  it('sans aide, aucune entrée', () => {
+    const moteur = nouveau(2)
+    jouer(moteur)
+    expect(moteur.vue().apprentissages).toEqual([])
+    expect(moteur.vue().progression.apprentissages).toBe(0)
+  })
+
+  it('tous les textes « J’ai appris » sont courts, positifs et sans reproche', () => {
+    for (const etape of mission.etapes) {
+      if (!etape.appris) continue
+      for (const texte of [etape.appris.enfant, etape.appris.adulte]) {
+        expect(texte.length).toBeLessThan(140)
+        expect(texte).not.toMatch(/erreur|faute|raté|échec|mauvais|dommage|aurais dû/i)
+      }
+      expect(etape.appris.enfant).toMatch(/^Tu as découvert/)
+    }
+  })
+
+  it('est sauvegardé et relu : une reprise le garde, une étape inconnue est ignorée', () => {
+    const moteur = nouveau(2)
+    jouer(moteur, { jusqua: 'l1-reperer', erreurs: { 'o2-scanner': 1 } })
+    const etat = JSON.parse(JSON.stringify(moteur.etat()))
+    const repris = creerMoteur(mission, { niveau: 2, progression: { ...etat, appris: [...etat.appris, 'inconnue', 'p1-accueil'] } })
+    expect(repris.vue().apprentissages.map((a) => a.etape)).toEqual(['o2-scanner'])
+  })
+
+  it('une étape rejouée après reprise ne duplique pas l’entrée', () => {
+    const moteur = nouveau(2)
+    jouer(moteur, { jusqua: 'l1-reperer', erreurs: { 'o2-scanner': 1 } })
+    const repris = creerMoteur(mission, { niveau: 2, progression: moteur.etat() })
+    jouer(repris, { erreurs: { 'o2-scanner': 1 } })
+    expect(repris.etat().appris.filter((id) => id === 'o2-scanner')).toHaveLength(1)
+  })
+})
+
+describe('textes de la mission 1 : aucun nombre écrit en dur, aucun marqueur oublié', () => {
+  it('aucun chiffre dans les textes des étapes, des scènes et du journal (tout vient du code)', () => {
+    const textes: string[] = []
+    const ajouter = (t: { enfant: string; adulte: string }) => textes.push(t.enfant, t.adulte)
+    ajouter(mission.titre)
+    mission.scenes.forEach((s) => ajouter(s.titre))
+    mission.journal.forEach((j) => (ajouter(j.titre), ajouter(j.texte)))
+    for (const e of mission.etapes) {
+      ajouter(e.objectif)
+      if (e.rappel) ajouter(e.rappel)
+      if (e.appris) ajouter(e.appris)
+      if ('texte' in e && e.type === 'dialogue') ajouter(e.texte)
+      if ('question' in e) ajouter(e.question)
+      if ('consigne' in e) ajouter(e.consigne)
+      if ('indices' in e) e.indices.forEach(ajouter)
+      if ('solution' in e) ajouter(e.solution)
+      if ('options' in e) e.options.forEach((o) => ajouter(o.texte))
+      if ('interrupteurs' in e) e.interrupteurs.forEach((i) => ajouter(i.libelle))
+      if ('jalons' in e) e.jalons.forEach((j) => ajouter(j.texte))
+    }
+    // Seuls chiffres permis : le nom « Apollo 11 » et le « 2 » et le « 2π » de la formule de l'aide.
+    const sansNoms = textes.map((t) => t.replace(/Apollo 11/g, 'Apollo').replace(/2 × arcsin\(R \/ \(R \+ h\)\) \/ \(2π\)/g, 'formule'))
+    expect(sansNoms.filter((t) => /\d/.test(t))).toEqual([])
+  })
+
+  it('aucun texte émis, aux quatre niveaux, ne garde un {marqueur}', () => {
+    for (const niveau of NIVEAUX) {
+      const { evenements } = jouer(nouveau(niveau), { erreurs: { 's7-4': 9, 's10-4': 9, 's9-2': 9, 's10-2': 9 } })
+      expect(textesDe(evenements).filter((t) => /[{}]/.test(t))).toEqual([])
+    }
   })
 })

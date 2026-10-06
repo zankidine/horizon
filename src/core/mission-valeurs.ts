@@ -2,6 +2,7 @@ import { formaterDuree, formaterGrandeur, formaterNombre } from '../lib/format-f
 import * as constantes from './constants'
 import { paliers, profilDepuisNiveau, type Niveau } from './niveaux'
 import { heuresEnSecondes, arrondirSignificatif } from './units'
+import { resoudreCalcul } from './mission-calculs'
 import type { DefValeur, Expr } from './mission-types'
 
 /**
@@ -34,12 +35,22 @@ export function evaluer(expr: Expr): number {
     if (valeur === undefined) throw new RangeError(`Constante inconnue : « ${expr.ref} »`)
     return valeur
   }
+  if ('calcul' in expr) {
+    const valeur = resoudreCalcul(expr.calcul)
+    if (valeur === undefined) throw new RangeError(`Calcul inconnu : « ${expr.calcul} »`)
+    return valeur
+  }
   if ('produit' in expr) return expr.produit.reduce((total, e) => total * evaluer(e), 1)
   if ('somme' in expr) return expr.somme.reduce((total, e) => total + evaluer(e), 0)
   const [dividende, diviseur] = expr.quotient
   const d = evaluer(diviseur)
   if (d === 0) throw new RangeError('Division par zéro dans une expression')
   return evaluer(dividende) / d
+}
+
+/** Nombre arrondi suivi de son unité, séparés par une espace insécable. */
+function avecUnite(valeur: number, chiffres: number, unite: string): string {
+  return `${formaterNombre(arrondirSignificatif(valeur, chiffres))}\u00a0${unite}`
 }
 
 /**
@@ -54,6 +65,15 @@ export function formaterValeur(valeur: number, def: Pick<DefValeur, 'format' | '
     case 'km/h':
     case 'km/s':
       return environ + formaterGrandeur({ valeur: arrondirSignificatif(valeur, chiffres), unite: def.format })
+    case 'm':
+    case 'cm':
+    case 'm/s':
+    case 'kg':
+      return environ + avecUnite(valeur, chiffres, def.format)
+    case 'pourcent':
+      return environ + avecUnite(valeur, chiffres, '%')
+    case 'kpa':
+      return environ + avecUnite(valeur, chiffres, 'kPa')
     case 'heures':
       return environ + formaterDuree(heuresEnSecondes(valeur), chiffres)
     case 'secondes':

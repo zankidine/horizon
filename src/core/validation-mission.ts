@@ -9,14 +9,16 @@ import {
   type Etape,
   type Mission,
 } from './mission-types'
+import { resoudreCalcul } from './mission-calculs'
 import { marqueursDe, resoudreRef } from './mission-valeurs'
+import { trouverAstre, graviteMs2 } from './astres-donnees'
 import { ErreurValidation, estObjet, verifierTexteProfil, PROFILS } from './validation'
 
 const FORMAT_ID = /^[a-z0-9-]+$/
 const FORMAT_NOM_VALEUR = /^[a-zA-Z]\w*$/
 
 /** Marqueurs fournis par le moteur dans tous les textes. */
-const MARQUEURS_MOTEUR = ['copilote'] as const
+const MARQUEURS_MOTEUR = ['copilote', 'etoiles', 'etoilesMax'] as const
 /** Marqueur ajouté dans les textes d'aide d'un calcul. */
 const MARQUEUR_REPONSE = 'reponse'
 /** Marqueurs ajoutés dans les textes d'un jalon de voyage. */
@@ -31,12 +33,12 @@ const ASTRES_CONNUS = Object.keys(ASTRES)
 /** Vérifie une expression : références connues, structure, aucun nombre écrit en dur. */
 function verifierExpr(brut: unknown, chemin: string, problemes: string[]): void {
   if (!estObjet(brut)) {
-    problemes.push(`${chemin} : expression { ref } | { produit } | { quotient } | { somme } attendue (pas de nombre écrit en dur)`)
+    problemes.push(`${chemin} : expression { ref } | { produit } | { quotient } | { somme } | { calcul } attendue (pas de nombre écrit en dur)`)
     return
   }
   const cles = Object.keys(brut)
   if (cles.length !== 1) {
-    problemes.push(`${chemin} : une seule clé attendue (ref, produit, quotient ou somme)`)
+    problemes.push(`${chemin} : une seule clé attendue (ref, produit, quotient, somme ou calcul)`)
     return
   }
   const [cle] = cles
@@ -44,6 +46,10 @@ function verifierExpr(brut: unknown, chemin: string, problemes: string[]): void 
   if (cle === 'ref') {
     if (typeof valeur !== 'string' || resoudreRef(valeur) === undefined) {
       problemes.push(`${chemin}.ref : la constante « ${String(valeur)} » n'existe pas dans constants.ts (nombre ou table de nombres)`)
+    }
+  } else if (cle === 'calcul') {
+    if (typeof valeur !== 'string' || resoudreCalcul(valeur) === undefined) {
+      problemes.push(`${chemin}.calcul : le calcul « ${String(valeur)} » n'existe pas dans mission-calculs.ts`)
     }
   } else if (cle === 'produit' || cle === 'somme') {
     if (!Array.isArray(valeur) || valeur.length < 2) {
@@ -58,7 +64,7 @@ function verifierExpr(brut: unknown, chemin: string, problemes: string[]): void 
       valeur.forEach((e: unknown, i) => verifierExpr(e, `${chemin}.quotient[${i}]`, problemes))
     }
   } else {
-    problemes.push(`${chemin} : clé « ${cle} » inconnue (ref, produit, quotient ou somme)`)
+    problemes.push(`${chemin} : clé « ${cle} » inconnue (ref, produit, quotient, somme ou calcul)`)
   }
 }
 
@@ -124,6 +130,12 @@ function verifierEtape(brut: Record<string, unknown>, chemin: string, ctx: Conte
   }
   if (brut.journal !== undefined && (typeof brut.journal !== 'string' || !ctx.journal.has(brut.journal))) {
     problemes.push(`${chemin}.journal : entrée de journal inconnue « ${String(brut.journal)} »`)
+  }
+  const aAide = ['calcul', 'action', 'timing', 'observation', 'descente'].includes(String(brut.type))
+  if (aAide && brut.appris === undefined) {
+    problemes.push(`${chemin}.appris : texte « J'ai appris » attendu (étape avec aide)`)
+  } else if (brut.appris !== undefined) {
+    verifierTexte(brut.appris, `${chemin}.appris`, ctx)
   }
   if (brut.etoile !== undefined && typeof brut.etoile !== 'boolean') problemes.push(`${chemin}.etoile : booléen attendu`)
 
@@ -213,6 +225,27 @@ function verifierEtape(brut: Record<string, unknown>, chemin: string, ctx: Conte
           }
         })
       }
+      break
+    }
+    case 'descente': {
+      verifierTexte(brut.consigne, `${chemin}.consigne`, ctx)
+      if (typeof brut.astre !== 'string' || !ASTRES_CONNUS.includes(brut.astre)) {
+        problemes.push(`${chemin}.astre : astre inconnu « ${String(brut.astre)} »`)
+      } else {
+        const donnees = trouverAstre(brut.astre)
+        if (!donnees || graviteMs2(donnees) === null) {
+          problemes.push(`${chemin}.astre : pas de gravité de surface dans astres.json pour « ${brut.astre} »`)
+        }
+      }
+      verifierExpr(brut.altitudeDepart, `${chemin}.altitudeDepart`, problemes)
+      verifierExpr(brut.poussee, `${chemin}.poussee`, problemes)
+      if (!estObjet(brut.vitesseZone)) {
+        problemes.push(`${chemin}.vitesseZone : { min, max } attendu`)
+      } else {
+        verifierExpr(brut.vitesseZone.min, `${chemin}.vitesseZone.min`, problemes)
+        verifierExpr(brut.vitesseZone.max, `${chemin}.vitesseZone.max`, problemes)
+      }
+      verifierAide(brut, chemin, ctx)
       break
     }
     case 'observation':

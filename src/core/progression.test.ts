@@ -28,6 +28,7 @@ const exemple: EtatProgression = {
   etape: 'o2-scanner',
   tentatives: { 'c2-interrupteurs': 2 },
   journal: ['decollage', 'orbite'],
+  appris: [],
   etapesEtoilees: ['c2-interrupteurs'],
   etoiles: 1,
   terminee: false,
@@ -40,6 +41,7 @@ describe('progression : état', () => {
       etape: 'p1-accueil',
       tentatives: {},
       journal: [],
+      appris: [],
       etapesEtoilees: [],
       etoiles: 0,
       terminee: false,
@@ -47,7 +49,8 @@ describe('progression : état', () => {
   })
 
   it('le nombre d’étoiles possibles vient de la mission', () => {
-    expect(etoilesMax(mission)).toBe(5)
+    expect(etoilesMax(mission)).toBe(mission.etapes.filter((e) => e.etoile === true).length)
+    expect(etoilesMax(mission)).toBe(11)
   })
 
   it('relit exactement ce qui a été sérialisé', () => {

@@ -77,6 +77,16 @@ describe('paliers : aide', () => {
   })
 })
 
+describe('paliers : descente assistée', () => {
+  it('l’assistance diminue avec le niveau : marge croissante, puis aucune aide au niveau 4', () => {
+    const marges = IDS.map((n) => paliers(n).aide.margeAssistanceDescente)
+    expect(marges[3]).toBeNull()
+    const nombres = marges.slice(0, 3) as number[]
+    for (let i = 1; i < nombres.length; i++) expect(nombres[i]).toBeGreaterThan(nombres[i - 1])
+    expect(nombres[0]).toBeGreaterThanOrEqual(1) // jamais sous la vitesse maximale de la zone
+  })
+})
+
 describe('compatibilité avec comparer()', () => {
   it('comparer reste utilisable avec le profil dérivé du niveau', () => {
     expect(comparer(384_400, profilDepuisNiveau(1))[0].approximatif).toBe(true)

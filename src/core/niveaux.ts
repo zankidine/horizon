@@ -3,6 +3,7 @@ import {
   CHIFFRES_SIGNIFICATIFS_NIVEAU,
   COMPARAISONS_IMAGEES_NIVEAU,
   DELAI_RAPPEL_S_NIVEAU,
+  DESCENTE_MARGE_ASSISTANCE_NIVEAU,
   INDICES_MAX_NIVEAU,
   TIMING_FENETRE_S_NIVEAU,
   TOLERANCE_CALCUL_NIVEAU,
@@ -56,6 +57,12 @@ export interface AideNiveau {
   fenetreTimingS: number
   /** Secondes d'inactivité avant un rappel doux de l'objectif. */
   delaiRappelS: number
+  /**
+   * Descente assistée : le copilote freine quand la vitesse dépasse la vitesse
+   * maximale de la zone multipliée par ce nombre (1 = toujours dans la zone) ;
+   * null = pas d'aide pendant la descente.
+   */
+  margeAssistanceDescente: number | null
 }
 
 export interface Paliers {
@@ -89,6 +96,7 @@ export function paliers(niveau: Niveau): Paliers {
       indicesMax: INDICES_MAX_NIVEAU[niveau],
       fenetreTimingS: TIMING_FENETRE_S_NIVEAU[niveau],
       delaiRappelS: DELAI_RAPPEL_S_NIVEAU[niveau],
+      margeAssistanceDescente: DESCENTE_MARGE_ASSISTANCE_NIVEAU[niveau],
     },
   }
 }
