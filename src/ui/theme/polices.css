@@ -1,0 +1,27 @@
+/*
+ * Polices du HUD, hébergées dans public/fonts (latin avec accents français).
+ * Licence SIL OFL : voir assets.json. Repli système défini dans tokens.css.
+ */
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/rajdhani-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Rajdhani';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/rajdhani-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Share Tech Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/share-tech-mono-400.woff2') format('woff2');
+}

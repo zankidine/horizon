@@ -1,4 +1,5 @@
 import { mount } from 'svelte'
+import './ui/theme/polices.css'
 import './ui/theme/tokens.css'
 import './app.css'
 import App from './App.svelte'

@@ -83,6 +83,48 @@
       "licence_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
       "mention_requise": "Please give credit for this item to: NASA's Scientific Visualization Studio",
       "credit": "Lune : NASA Scientific Visualization Studio"
+    },
+    {
+      "chemin": "public/fonts/rajdhani-500.woff2",
+      "type": "police",
+      "description": "Rajdhani Medium, titres condensés du HUD",
+      "source": "Google Fonts (Rajdhani, v17), fichier TTF officiel réduit au latin avec accents français (U+0020-007E, U+00A0-00FF, Œ œ Ÿ, ’ “ ” – — … € ≈ −), converti en woff2 avec fonttools (pyftsubset), hébergé dans le projet",
+      "url": "https://fonts.google.com/specimen/Rajdhani",
+      "auteur": "Indian Type Foundry",
+      "licence": "SIL Open Font License 1.1 (usage, modification et redistribution libres, y compris dans une application ; nom réservé non utilisé)",
+      "licence_url": "https://openfontlicense.org/open-font-license-official-text/",
+      "mention_requise": "Conserver la mention de copyright « Copyright (c) 2014 Indian Type Foundry » ; aucune obligation d'affichage, crédit ajouté par courtoisie",
+      "credit": "Police Rajdhani : Indian Type Foundry (SIL OFL)",
+      "fichier_source": "https://fonts.gstatic.com/s/rajdhani/v17/LDI2apCSOBg7S-QT7pb0EMOs.ttf",
+      "sha256_source": "7377b0a3421b01dae185fc1262ea34a45f6ba226155f531e9e72f5262b56d802"
+    },
+    {
+      "chemin": "public/fonts/rajdhani-700.woff2",
+      "type": "police",
+      "description": "Rajdhani Bold, titres condensés du HUD",
+      "source": "Google Fonts (Rajdhani, v17), fichier TTF officiel réduit au latin avec accents français (U+0020-007E, U+00A0-00FF, Œ œ Ÿ, ’ “ ” – — … € ≈ −), converti en woff2 avec fonttools (pyftsubset), hébergé dans le projet",
+      "url": "https://fonts.google.com/specimen/Rajdhani",
+      "auteur": "Indian Type Foundry",
+      "licence": "SIL Open Font License 1.1 (usage, modification et redistribution libres, y compris dans une application ; nom réservé non utilisé)",
+      "licence_url": "https://openfontlicense.org/open-font-license-official-text/",
+      "mention_requise": "Conserver la mention de copyright « Copyright (c) 2014 Indian Type Foundry » ; aucune obligation d'affichage, crédit ajouté par courtoisie",
+      "credit": "Police Rajdhani : Indian Type Foundry (SIL OFL)",
+      "fichier_source": "https://fonts.gstatic.com/s/rajdhani/v17/LDI2apCSOBg7S-QT7pa8FsOs.ttf",
+      "sha256_source": "8b2fbb04ed3af38ea941d7351fc5bcf917d239d0bfb64c9bb8916510d8774495"
+    },
+    {
+      "chemin": "public/fonts/share-tech-mono-400.woff2",
+      "type": "police",
+      "description": "Share Tech Mono, chiffres du HUD",
+      "source": "Google Fonts (Share Tech Mono, v16), fichier TTF officiel réduit au latin avec accents français (mêmes plages que Rajdhani), converti en woff2 avec fonttools (pyftsubset), hébergé dans le projet",
+      "url": "https://fonts.google.com/specimen/Share+Tech+Mono",
+      "fichier_source": "https://fonts.gstatic.com/s/sharetechmono/v16/J7aHnp1uDWRBEqV98dVQztYldFc7pA.ttf",
+      "sha256_source": "5f6b57538a1a35469a038dc3073003cebc4c101ad7b3c219e9555a3b3c0a81d2",
+      "auteur": "Carrois Type Design, Ralph du Carrois",
+      "licence": "SIL Open Font License 1.1 (usage, modification et redistribution libres, y compris dans une application ; nom réservé non utilisé)",
+      "licence_url": "https://openfontlicense.org/open-font-license-official-text/",
+      "mention_requise": "Conserver la mention de copyright « Copyright (c) 2012, Carrois Type Design, Ralph du Carrois » ; aucune obligation d'affichage, crédit ajouté par courtoisie",
+      "credit": "Police Share Tech Mono : Carrois Type Design (SIL OFL)"
     }
   ]
 }
