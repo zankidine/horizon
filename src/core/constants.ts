@@ -302,3 +302,39 @@ export const CATEGORIES_AJOUTEES_NIVEAU: Readonly<
   3: ['temperature', 'gravite'],
   4: ['atmosphere', 'orbite'],
 }
+
+// ===========================================================================
+// Astres (étape 4b)
+// ===========================================================================
+
+/**
+ * Température de 0 °C en kelvins (valeur exacte).
+ * Source : définition du kelvin et du degré Celsius, brochure SI du BIPM (9e éd., 2019).
+ */
+export const KELVIN_ZERO_CELSIUS = 273.15
+
+/**
+ * Pascals dans un bar (valeur exacte).
+ * Source : définition du bar, 1 bar = 10⁵ Pa, brochure SI du BIPM (9e éd., 2019), tableau 8.
+ */
+export const PASCAL_PAR_BAR = 100_000
+
+/** Pascals dans un millibar : 1 mbar = 10⁻³ bar, déduit de la constante précédente. */
+export const PASCAL_PAR_MILLIBAR = PASCAL_PAR_BAR / 1000
+
+/** Pascals dans un kilopascal. Source : préfixe « kilo » = 10³, brochure SI du BIPM. */
+export const PASCAL_PAR_KPA = 1000
+
+/**
+ * Facteurs des unités composées des fiches NASA : « 10^24 kg » et « 10^6 km ».
+ * Source : écriture des fiches (nssdc.gsfc.nasa.gov/planetary/factsheet).
+ */
+export const KG_PAR_1E24_KG = 1e24
+export const KM_PAR_1E6_KM = 1e6
+
+/**
+ * Écart toléré, en kilomètres, entre un diamètre de astres.json et celui de
+ * constants.ts : les fiches NASA donnent un rayon au dixième de km, constants.ts
+ * un diamètre arrondi au km. Source : choix de jeu.
+ */
+export const TOLERANCE_CONCORDANCE_DIAMETRE_KM = 1
