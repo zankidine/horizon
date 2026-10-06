@@ -12,6 +12,7 @@ import {
   nettoyerNomCopilote,
 } from '../../lib/preferences'
 import { suggestions } from '../../data/copilotes.json'
+import { initialiser } from '../../lib/audio'
 
 /**
  * Ancien choix enfant/adulte. Plus utilisé par la préparation ; gardé exporté
@@ -68,6 +69,8 @@ export class EtatPreparation {
   decoller(): void {
     if (!this.nomValide) return
     appStore.copilote = this.nom
+    // Premier geste du joueur : l'audio ne peut démarrer qu'ici (voix du copilote, « Lire »).
+    initialiser()
     appStore.partir()
   }
 }

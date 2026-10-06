@@ -11,11 +11,14 @@
   import { EtatEcran } from './ecran.svelte.ts'
   import { moteur } from './moteur.svelte.ts'
   import PanneauCible from './PanneauCible.svelte'
-  import PanneauCopilote from './PanneauCopilote.svelte'
   import PanneauSystemes from './PanneauSystemes.svelte'
   import PanneauTrajet from './PanneauTrajet.svelte'
   import Verre from './Verre.svelte'
   import { appStore } from '../../lib/stores/app.svelte'
+  import { paliers } from '../../core/niveaux'
+  import { panneauxUtiles } from '../../lib/mission-panneaux'
+  import { EtatMission } from '../mission/mission.svelte'
+  import PanneauMission from '../mission/PanneauMission.svelte'
 
   /** Grandeurs montrées selon le niveau de connaissance : tout par défaut. */
   let { categoriesVisibles }: { categoriesVisibles?: readonly Categorie[] } =
@@ -23,6 +26,12 @@
 
   const ecran = new EtatEcran()
   const hud = ecran.hud
+  /** La mission : un seul panneau, grand, qui montre l'étape en cours. */
+  const mission = new EtatMission()
+  /** Les catégories d'information suivent le niveau (paliers) sauf si la page en impose. */
+  const categories = $derived(categoriesVisibles ?? paliers(mission.niveau).categories)
+  /** Seuls les panneaux utiles à l'étape restent ouverts ; les autres se replient. */
+  const utiles = $derived(panneauxUtiles(mission.typeEtape))
   const boite = $derived({ largeur: ecran.largeur, hauteur: ecran.hauteur })
   const reticule = $derived(ecran.ancreReticule)
   const nomCible = $derived(hud.t(hud.textes.cibles[ecran.cible]))
@@ -31,13 +40,17 @@
   )
 
   onMount(() => {
+    mission.demarrer()
     ecran.demarrer()
     hud.demarrerAllumage()
     if (import.meta.env.DEV) {
       void import('../dev/monter-stats').then((m) => m.monterPanneauStats())
     }
   })
-  onDestroy(() => ecran.arreter())
+  onDestroy(() => {
+    mission.arreter()
+    ecran.arreter()
+  })
 
   // Qualité, mouvement réduit et ambiance : le moteur de graphes s'y adapte.
   $effect(() => {
@@ -57,7 +70,7 @@
   // Une fenêtre ouverte rend le reste inerte : focus et clavier restent dans la fenêtre.
   const fenetreOuverte = $derived(hud.fenetreVisible)
 
-  const TIROIRS_HAUT: readonly IdPanneau[] = ['systemes', 'cible']
+  const TIROIRS_HAUT: readonly IdPanneau[] = ['systemes', 'cible', 'trajet']
 </script>
 
 <svelte:window
@@ -80,11 +93,11 @@
 
 {#snippet contenuFenetre(id: IdSysteme)}
   {#if id === 'systemes'}
-    <PanneauSystemes {ecran} {categoriesVisibles} dansFenetre />
+    <PanneauSystemes {ecran} categoriesVisibles={categories} dansFenetre />
   {:else if id === 'cible'}
-    <PanneauCible {ecran} {categoriesVisibles} dansFenetre />
+    <PanneauCible {ecran} categoriesVisibles={categories} dansFenetre />
   {:else if id === 'trajet'}
-    <PanneauTrajet {ecran} {categoriesVisibles} dansFenetre />
+    <PanneauTrajet {ecran} categoriesVisibles={categories} dansFenetre />
   {/if}
 {/snippet}
 
@@ -155,26 +168,34 @@
     {/if}
 
     {#if ecran.miseEnPage === 'paysage'}
-      <aside
-        class="zone colonne gauche"
-        class:cache={hud.masque}
-        inert={hud.masque}
-      >
-        <PanneauSystemes {ecran} {categoriesVisibles} avecPied={false} />
-        <PanneauTrajet {ecran} {categoriesVisibles} />
-      </aside>
-      <aside
-        class="zone colonne droite"
-        class:cache={hud.masque}
-        inert={hud.masque}
-      >
-        <PanneauCible {ecran} {categoriesVisibles} />
-      </aside>
+      {#if utiles.includes('trajet') || utiles.includes('systemes')}
+        <aside
+          class="zone colonne gauche"
+          class:cache={hud.masque}
+          inert={hud.masque}
+        >
+          {#if utiles.includes('systemes')}
+            <PanneauSystemes {ecran} categoriesVisibles={categories} avecPied={false} />
+          {/if}
+          {#if utiles.includes('trajet')}
+            <PanneauTrajet {ecran} categoriesVisibles={categories} />
+          {/if}
+        </aside>
+      {/if}
+      {#if utiles.includes('cible')}
+        <aside
+          class="zone colonne droite"
+          class:cache={hud.masque}
+          inert={hud.masque}
+        >
+          <PanneauCible {ecran} categoriesVisibles={categories} />
+        </aside>
+      {/if}
       <div class="zone chips-zone" class:cache={hud.masque} inert={hud.masque}>
         {#each hud.idsPanneaux as id (id)}{@render chip(id)}{/each}
       </div>
     {:else}
-      {#if ecran.miseEnPage === 'compact'}
+      {#if ecran.miseEnPage === 'compact' && utiles.includes('cible')}
         <!-- Petit panneau cible : nom, distance, avancement du scan. -->
         <section
           class="zone mini-cible"
@@ -192,25 +213,9 @@
       {/if}
     {/if}
 
-    <div class="zone bas" class:cache={hud.masque} inert={hud.masque}>
-      {#if ecran.miseEnPage === 'paysage'}
-        <PanneauCopilote {ecran} />
-      {:else}
-        <p class="copilote-ligne">
-          <span class="invisible">{hud.t(hud.textes.copilote.prefixe)}</span>
-          <strong>{ecran.copilote}</strong> : {hud.t(
-            hud.textes.copilote.message
-          )}
-        </p>
-        <PanneauCopilote {ecran} actionsSeules>
-          {#snippet chips()}
-            {#if ecran.miseEnPage === 'compact'}
-              {#each TIROIRS_HAUT as id (id)}{@render chip(id)}{/each}
-            {/if}
-            {@render chip('trajet')}
-          {/snippet}
-        </PanneauCopilote>
-      {/if}
+    <!-- Le panneau de mission reste visible même quand le HUD est masqué : jamais d'écran vide. -->
+    <div class="bas">
+      <PanneauMission {mission} />
     </div>
   </div>
 
@@ -290,8 +295,9 @@
 
   .rangee-haut {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: var(--pad);
+    gap: 0.75rem;
     min-width: 0;
   }
 
@@ -347,7 +353,8 @@
 
   .chips {
     display: flex;
-    gap: var(--esp-2);
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
   /* --- Paysage : colonnes à gauche et à droite, centre libre ------------------ */
@@ -387,13 +394,19 @@
     align-self: end;
     display: flex;
     flex-wrap: wrap;
-    gap: var(--esp-2);
+    gap: 0.75rem;
+  }
+
+  /* Le panneau de mission ne suit pas le décalage « tête » : ses boutons ne bougent jamais. */
+  .bas {
+    min-width: 0;
+    min-height: 0;
   }
 
   .ecran[data-mise-en-page='paysage'] .bas {
     grid-area: bas;
     justify-self: center;
-    width: min(100%, 34rem);
+    width: min(100%, 46rem);
   }
 
   /* --- Portrait : boutons de fenêtres en haut et en bas, centre libre ------- */
@@ -446,40 +459,8 @@
 
   .ecran[data-mise-en-page='compact'] .bas {
     grid-row: 3;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--pad);
-  }
-
-  .copilote-ligne {
-    box-sizing: border-box;
-    margin: 0 0 0.3rem;
-    padding: var(--esp-1) var(--esp-3);
-    border: var(--hud-epaisseur) solid var(--hud-bordure);
-    border-radius: var(--hud-rayon);
-    background: var(--hud-fond);
-    color: var(--hud-texte);
-    font-size: var(--txt-s);
-    font-weight: 500;
-    line-height: 1.2;
-    pointer-events: auto;
-  }
-
-  .ecran[data-mise-en-page='compact'] .copilote-ligne {
-    flex: 0 1 18rem;
-    min-width: 5rem;
-    margin: 0;
-  }
-
-  .ecran[data-mise-en-page='compact'] .bas :global(.actions) {
-    flex: none;
-    flex-wrap: nowrap;
-  }
-
-  .ecran[data-mise-en-page='portrait'] .bas {
-    display: grid;
-    gap: var(--esp-1);
+    justify-self: center;
+    width: min(100%, 46rem);
   }
 
   @media (prefers-reduced-motion: reduce) {

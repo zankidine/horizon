@@ -59,11 +59,12 @@
 
   .alerte {
     position: absolute;
-    top: 62%;
+    /* Sous la barre haute : le panneau de mission occupe le bas de l'écran. */
+    top: calc(var(--haut) + 2.5rem);
     left: 50%;
     width: max-content;
     max-width: calc(100% - 2 * var(--pad));
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
   }
 
   .vide {
