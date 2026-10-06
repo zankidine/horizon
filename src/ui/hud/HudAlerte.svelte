@@ -1,29 +1,33 @@
 <script lang="ts">
-  let { visible, message }: { visible: boolean; message: string } = $props()
+  // Zone toujours présente : les lecteurs d'écran annoncent le message
+  // (poliment) dès qu'il apparaît, sans interrompre ce qu'ils lisent.
+  let { message }: { message: string } = $props()
 </script>
 
-{#if visible}
-  <div class="alerte" role="alert">
-    <span class="pastille" aria-hidden="true"></span>
-    {message}
-  </div>
-{/if}
+<div class="zone" role="status" aria-live="polite" aria-atomic="true">
+  {#if message}
+    <div class="alerte">
+      <span class="pastille" aria-hidden="true"></span>
+      {message}
+    </div>
+  {/if}
+</div>
 
 <style>
   .alerte {
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: var(--esp-3);
     max-width: 100%;
-    padding: 0.5rem 0.9rem;
-    border: calc(var(--hud-epaisseur) * 1.5) solid var(--hud-alerte);
+    padding: var(--esp-2) var(--esp-4);
+    border: var(--trait-epais) solid var(--hud-alerte);
     border-radius: var(--hud-rayon);
-    background: color-mix(in srgb, var(--hud-alerte) 24%, rgb(10 4 4 / 0.85));
+    background: var(--hud-fond-alerte);
     box-shadow: 0 0 16px color-mix(in srgb, var(--hud-alerte) 55%, transparent);
     color: var(--hud-texte);
     font-family: var(--hud-font-titre);
-    font-size: max(14px, 1rem);
+    font-size: var(--txt-m);
     font-weight: 700;
     letter-spacing: 0.04em;
     animation: entrer 220ms ease-out both;

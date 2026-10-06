@@ -113,6 +113,54 @@ export function positionFenetre(
   return { x: x === 0 ? 0 : x, y: y === 0 ? 0 : y }
 }
 
+/** Marges des zones sûres (encoches, barre système) en pixels. */
+export interface ZonesSures {
+  haut: number
+  droite: number
+  bas: number
+  gauche: number
+}
+
+export interface CadreFenetre {
+  x: number
+  y: number
+  largeur: number
+  /** Hauteur maximale : au-delà, le contenu défile dans la fenêtre, jamais la page. */
+  hauteurMax: number
+}
+
+const positif = (valeur: number): number =>
+  fini(valeur) ? Math.max(0, valeur) : 0
+
+/**
+ * Cadre d'une fenêtre : centrée dans la zone utile du viewport (zones sûres et
+ * marge retirées), jamais plus large ni plus haute que cette zone. `hauteur`
+ * est la hauteur réelle de la fenêtre (déjà bornée par `hauteurMax`).
+ */
+export function cadrerFenetre(
+  viewport: Boite,
+  sures: ZonesSures,
+  voulue: { largeur: number; hauteur: number },
+  marge = 0
+): CadreFenetre {
+  const m = positif(marge)
+  const gauche = positif(sures.gauche) + m
+  const haut = positif(sures.haut) + m
+  const utileL = Math.max(
+    0,
+    positif(viewport.largeur) - gauche - positif(sures.droite) - m
+  )
+  const utileH = Math.max(
+    0,
+    positif(viewport.hauteur) - haut - positif(sures.bas) - m
+  )
+  const largeur = Math.min(positif(voulue.largeur), utileL)
+  const hauteur = Math.min(positif(voulue.hauteur), utileH)
+  const x = gauche + (utileL - largeur) / 2
+  const y = haut + (utileH - hauteur) / 2
+  return { x, y, largeur, hauteurMax: utileH }
+}
+
 // ---------------------------------------------------------------------------
 // Animation des valeurs (compteur)
 // ---------------------------------------------------------------------------

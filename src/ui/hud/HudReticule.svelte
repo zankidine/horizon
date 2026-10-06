@@ -76,7 +76,7 @@
     overflow: visible;
     fill: none;
     stroke: var(--hud-ligne);
-    stroke-width: calc(var(--hud-epaisseur) * 1.5);
+    stroke-width: var(--trait-epais);
     stroke-linecap: round;
     stroke-linejoin: round;
     filter: drop-shadow(0 0 4px var(--hud-halo));
@@ -102,14 +102,13 @@
     top: -0.9rem;
     box-sizing: border-box;
     max-width: 12rem;
-    padding: 0.15rem 0.5rem;
-    border: var(--hud-epaisseur) solid
-      color-mix(in srgb, var(--hud-ligne) 60%, transparent);
-    border-radius: calc(var(--hud-rayon) * 0.6);
+    padding: var(--esp-1) var(--esp-2);
+    border: var(--hud-epaisseur) solid var(--hud-bordure);
+    border-radius: var(--hud-rayon-petit);
     background: var(--hud-fond);
     color: var(--hud-texte);
     font-family: var(--hud-font-titre);
-    font-size: max(14px, 0.95rem);
+    font-size: var(--txt-m);
     font-weight: 700;
     letter-spacing: 0.04em;
     white-space: nowrap;

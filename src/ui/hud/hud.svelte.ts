@@ -3,15 +3,10 @@
  * inertie), séquence d'allumage, panneaux repliables, fenêtre système,
  * masquage. Les composants .svelte ne font qu'afficher.
  */
-import {
-  distanceDestinationKm,
-  validerDestinations,
-} from '../../core/destinations'
+import { tick } from 'svelte'
 import type { TexteProfil } from '../../core/validation'
 import type { NiveauQualite } from '../../core/qualite'
-import donneesDestinations from '../../data/destinations.json'
 import donneesHud from '../../data/hud.json'
-import { formaterNombre, remplir } from '../../lib/format-fr'
 import {
   decalageTete,
   elementsAllumes,
@@ -19,61 +14,56 @@ import {
   fenetreVisible,
   INERTIE_TETE_MS,
   PAS_ALLUMAGE_MS,
-  type Ancre,
 } from '../../lib/hud'
+import type { MiseEnPage } from '../../lib/miseEnPage'
 import type { Vecteur } from '../../lib/parallaxe'
 import { appStore } from '../../lib/stores/app.svelte'
 import { validerDonneesHud } from '../../lib/textes-hud'
 import { EtatFenetreSysteme } from './fenetre.svelte.ts'
 
 const DONNEES = validerDonneesHud(donneesHud)
-const DESTINATIONS = validerDestinations(donneesDestinations)
 
+/** Fenêtres encore vides : le contenu viendra avec leurs écrans. */
 export const IDS_SYSTEME = ['navigation', 'scan', 'communications'] as const
-export type IdSysteme = (typeof IDS_SYSTEME)[number]
+/** Fenêtres qui montrent un panneau : accessibles par un bouton en bas. */
+export const IDS_PANNEAUX = ['systemes', 'cible', 'trajet'] as const
+export type IdPanneau = (typeof IDS_PANNEAUX)[number]
+export type IdSysteme = (typeof IDS_SYSTEME)[number] | IdPanneau
 
 /** Rangs de la séquence d'allumage, dans l'ordre d'apparition. */
 export const RANGS = {
-  cap: 0,
-  statut: 1,
+  haut: 0,
+  systemes: 1,
   cible: 2,
-  copilote: 3,
-  icones: 4,
+  trajet: 3,
+  copilote: 4,
   reticule: 5,
 } as const
-/** Largeur de vitre à partir de laquelle les icônes portent leur nom. */
-const LARGEUR_LIBELLES_PX = 880
 
 const TOTAL_ELEMENTS = Object.keys(RANGS).length
 
-/** Ce que le HUD lit du poste qui l'héberge. */
+/** Ce que le HUD lit de l'écran qui l'héberge. */
 export interface ContexteHud {
-  readonly disposition: 'paysage' | 'portrait'
+  readonly miseEnPage: MiseEnPage
   readonly regard: Vecteur
   readonly mouvementReduit: boolean
   readonly niveauQualite: NiveauQualite
-  readonly alerte: boolean
-  readonly copilote: string
+  /** Message d'alerte en cours, ou chaîne vide. */
+  readonly alerte: string
+  /** Taille de l'écran en pixels CSS. */
+  readonly largeur: number
+  readonly hauteur: number
 }
-
-/** Centre de la fenêtre, un peu au-dessus du milieu : l'équipage occupe le bas de la vitre. */
-const ANCRE_FENETRE: Ancre = { x: 0.5, y: 0.4 }
 
 export class EtatHud {
   readonly textes = DONNEES.textes
   readonly demo = DONNEES.demo
   readonly idsSysteme = IDS_SYSTEME
+  readonly idsPanneaux = IDS_PANNEAUX
   readonly inertieMs = INERTIE_TETE_MS
-  readonly ancreFenetre = ANCRE_FENETRE
-
-  /** Taille de la vitre, mesurée par le composant (pixels CSS). */
-  largeur = $state(0)
-  hauteur = $state(0)
 
   masque = $state(false)
   allumes = $state(0)
-  /** Panneaux repliables : choix explicites ; sinon ouverts en paysage seulement. */
-  #ouverts = $state<Record<string, boolean>>({})
 
   systeme = $state<IdSysteme>('navigation')
   readonly fenetre = new EtatFenetreSysteme()
@@ -85,36 +75,27 @@ export class EtatHud {
   constructor(contexte: ContexteHud) {
     this.#contexte = contexte
     this.fenetre.surFermee = () => {
-      this.#declencheur?.focus()
+      const declencheur = this.#declencheur
       this.#declencheur = null
+      // Le reste de l'écran est inerte tant que la fenêtre est là : on attend qu'il se réveille.
+      void tick().then(() => declencheur?.focus())
     }
   }
 
-  get disposition(): 'paysage' | 'portrait' {
-    return this.#contexte.disposition
+  get largeur(): number {
+    return this.#contexte.largeur
+  }
+
+  get hauteur(): number {
+    return this.#contexte.hauteur
+  }
+
+  get miseEnPage(): MiseEnPage {
+    return this.#contexte.miseEnPage
   }
 
   get mouvementReduit(): boolean {
     return this.#contexte.mouvementReduit
-  }
-
-  /** Ancre du réticule : en portrait, la vitre est petite, il reste hors des panneaux. */
-  get ancreReticule(): Ancre {
-    return this.demo.ancreReticule[this.disposition]
-  }
-
-  /** En portrait, l'étiquette du réticule n'a pas la place : le panneau « cible » la porte. */
-  get etiquetteReticuleVisible(): boolean {
-    return this.disposition === 'paysage'
-  }
-
-  /** Les noms sous les icônes ne tiennent que sur une vitre assez large. */
-  get libellesIcones(): boolean {
-    return this.largeur >= LARGEUR_LIBELLES_PX
-  }
-
-  get prefixeCopilote(): string {
-    return this.t(this.textes.copilote.prefixe)
   }
 
   /** Le flou d'arrière-plan coûte cher : coupé au niveau « bas ». */
@@ -122,12 +103,8 @@ export class EtatHud {
     return this.#contexte.niveauQualite !== 'bas'
   }
 
-  get alerte(): boolean {
+  get alerte(): string {
     return this.#contexte.alerte
-  }
-
-  get copilote(): string {
-    return this.#contexte.copilote || 'Sans nom'
   }
 
   /** Décalage de la couche « tête », avec son inertie (transition CSS). */
@@ -139,37 +116,23 @@ export class EtatHud {
     return `translate3d(${x}px, ${y}px, 0)`
   }
 
+  /** Titre d'une fenêtre : le nom du panneau ou du système. */
+  titreFenetre(id: IdSysteme): string {
+    switch (id) {
+      case 'systemes':
+        return this.t(this.textes.ecran.tiroirSystemes)
+      case 'cible':
+        return this.t(this.textes.ecran.tiroirCible)
+      case 'trajet':
+        return this.t(this.textes.ecran.tiroirTrajet)
+      default:
+        return this.t(this.textes.icones[id])
+    }
+  }
+
   /** Texte à afficher selon le profil. */
   t(texte: TexteProfil): string {
     return texte[appStore.profile]
-  }
-
-  // --- Données de démonstration, en attendant l'état réel du vaisseau -------
-
-  get cap(): number {
-    return this.demo.cap
-  }
-
-  /** Nom de la destination visée, selon le profil. */
-  get nomCible(): string {
-    const destination = DESTINATIONS.find((d) => d.id === this.demo.destination)
-    return destination ? this.t(destination.nom) : ''
-  }
-
-  /** Distance de la destination, calculée à partir de constants.ts. */
-  get distanceKm(): number {
-    const destination = DESTINATIONS.find((d) => d.id === this.demo.destination)
-    return (destination && distanceDestinationKm(destination)) || 0
-  }
-
-  get texteDistance(): string {
-    return remplir(this.t(this.textes.cible.distance), {
-      valeur: `${formaterNombre(this.distanceKm)} km`,
-    })
-  }
-
-  get texteReticule(): string {
-    return remplir(this.t(this.textes.cible.reticule), { nom: this.nomCible })
   }
 
   // --- Séquence d'allumage ---------------------------------------------------
@@ -194,16 +157,6 @@ export class EtatHud {
     if (this.allumes < TOTAL_ELEMENTS) {
       this.#minuteurAllumage = setInterval(avancer, PAS_ALLUMAGE_MS / 2)
     }
-  }
-
-  // --- Panneaux repliables -----------------------------------------------------
-
-  estOuvert(id: string): boolean {
-    return this.#ouverts[id] ?? this.disposition === 'paysage'
-  }
-
-  basculerPanneau(id: string): void {
-    this.#ouverts[id] = !this.estOuvert(id)
   }
 
   // --- Masquer l'interface -----------------------------------------------------

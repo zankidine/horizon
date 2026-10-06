@@ -6,18 +6,21 @@
     etiquette,
     valeur,
     variante = 'barre',
+    avertir = true,
     children,
   }: {
     etiquette: string
     /** Entre 0 et 1. */
     valeur: number
     variante?: 'barre' | 'arc'
+    /** Colore la jauge en alerte quand elle est presque vide (faux pour un avancement). */
+    avertir?: boolean
     /** Texte au centre de l'arc. */
     children?: Snippet
   } = $props()
 
   const fraction = $derived(fractionJauge(valeur))
-  const niveau = $derived(niveauJauge(fraction))
+  const niveau = $derived(avertir ? niveauJauge(fraction) : 'normal')
 
   const RAYON = 26
   const arc = $derived(arcJauge(fraction, RAYON))
@@ -74,7 +77,7 @@
     overflow: hidden;
     border: var(--hud-epaisseur) solid
       color-mix(in srgb, var(--hud-ligne) 55%, transparent);
-    border-radius: 999px;
+    border-radius: var(--hud-rayon);
     background: rgb(0 0 0 / 0.35);
   }
 
@@ -128,7 +131,7 @@
     inset: 0;
     display: grid;
     place-items: center;
-    font-size: max(14px, 0.9rem);
+    font-size: var(--txt-s);
   }
 
   @media (prefers-reduced-motion: reduce) {

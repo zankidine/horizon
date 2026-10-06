@@ -16,7 +16,7 @@
     position: absolute;
     width: 0.8rem;
     height: 0.8rem;
-    border: calc(var(--hud-epaisseur) * 2) solid var(--hud-ligne);
+    border: var(--trait-epais) solid var(--hud-ligne);
     filter: drop-shadow(0 0 3px var(--hud-halo));
   }
 

@@ -2,8 +2,8 @@
   import type { Snippet } from 'svelte'
   import {
     fenetreVisible,
-    positionFenetre,
-    type Ancre,
+    cadrerFenetre,
+    type ZonesSures,
     type Boite,
     type EtatFenetre,
   } from '../../lib/hud'
@@ -18,7 +18,6 @@
     libelleFermer,
     etat,
     duree,
-    ancre,
     boite,
     marge = 8,
     flou = false,
@@ -34,8 +33,6 @@
     etat: EtatFenetre
     /** Durée de l'animation, en ms. */
     duree: number
-    /** Centre de la fenêtre, en fractions de la vitre. */
-    ancre: Ancre
     /** Taille de la vitre en pixels. */
     boite: Boite
     marge?: number
@@ -44,13 +41,62 @@
     children?: Snippet
   } = $props()
 
-  let largeur = $state(0)
   let hauteur = $state(0)
   let racine = $state<HTMLElement>()
 
-  const position = $derived(
-    positionFenetre(ancre, boite, { largeur, hauteur }, marge)
+  // Sonde invisible : le navigateur résout env(safe-area-inset-*) et rem pour nous.
+  let sonde = $state<HTMLElement>()
+  let sures = $state<ZonesSures>({ haut: 0, droite: 0, bas: 0, gauche: 0 })
+  let remPx = $state(16)
+
+  function lireSonde(): void {
+    if (!sonde) return
+    const style = getComputedStyle(sonde)
+    sures = {
+      haut: parseFloat(style.paddingTop) || 0,
+      droite: parseFloat(style.paddingRight) || 0,
+      bas: parseFloat(style.paddingBottom) || 0,
+      gauche: parseFloat(style.paddingLeft) || 0,
+    }
+    remPx = parseFloat(style.fontSize) || 16
+  }
+
+  $effect(() => {
+    void boite.largeur
+    void boite.hauteur
+    lireSonde()
+  })
+
+  /** Largeur souhaitée : 34 rem, ramenée à la zone utile. */
+  const cadre = $derived(
+    cadrerFenetre(boite, sures, { largeur: 34 * remPx, hauteur }, marge)
   )
+
+  const TABULABLES =
+    'a[href], button:not([disabled]), select, input, textarea, [tabindex]:not([tabindex="-1"])'
+
+  /** Focus piégé : Tab et Maj+Tab bouclent dans la fenêtre. */
+  function piegerFocus(evenement: KeyboardEvent): void {
+    if (evenement.key !== 'Tab' || !racine) return
+    const elements = [
+      ...racine.querySelectorAll<HTMLElement>(TABULABLES),
+    ].filter((e) => e.offsetParent !== null)
+    if (elements.length === 0) {
+      evenement.preventDefault()
+      racine.focus()
+      return
+    }
+    const premier = elements[0]
+    const dernier = elements[elements.length - 1]
+    const actif = document.activeElement
+    if (evenement.shiftKey && (actif === premier || actif === racine)) {
+      evenement.preventDefault()
+      dernier.focus()
+    } else if (!evenement.shiftKey && actif === dernier) {
+      evenement.preventDefault()
+      premier.focus()
+    }
+  }
 
   // À chaque ouverture, le focus entre dans la fenêtre : le clavier peut la fermer.
   $effect(() => {
@@ -61,25 +107,37 @@
     if (evenement.key === 'Escape') {
       evenement.stopPropagation()
       onfermer()
+      return
     }
+    piegerFocus(evenement)
   }
 </script>
 
+<div class="sonde" bind:this={sonde} aria-hidden="true"></div>
+
 {#if fenetreVisible(etat)}
+  <!-- Clic à l'extérieur : le voile referme la fenêtre. -->
+  <div
+    class="voile"
+    class:ferme={etat === 'fermeture'}
+    style:--duree="{duree}ms"
+    aria-hidden="true"
+    onpointerdown={onfermer}
+  ></div>
   <div
     {id}
     class="fenetre"
     class:flou
     role="dialog"
-    aria-modal="false"
+    aria-modal="true"
     aria-labelledby="{id}-entete {id}-titre"
     tabindex="-1"
     data-etat={etat}
     style:--duree="{duree}ms"
-    style:transform="translate({position.x}px, {position.y}px)"
-    style:--marge="{marge}px"
+    style:transform="translate({cadre.x}px, {cadre.y}px)"
+    style:width="{cadre.largeur}px"
+    style:max-height="{cadre.hauteurMax}px"
     bind:this={racine}
-    bind:clientWidth={largeur}
     bind:clientHeight={hauteur}
     onkeydown={surTouche}
   >
@@ -105,19 +163,53 @@
 
 <style>
   .fenetre {
-    --epaisseur: calc(var(--hud-epaisseur) * 1.5);
+    --epaisseur: var(--trait-epais);
 
     position: absolute;
     top: 0;
     left: 0;
     box-sizing: border-box;
-    width: min(34rem, calc(100% - 2 * var(--marge)));
     display: grid;
     grid-template-rows: minmax(0, 1fr);
-    max-height: calc(100% - 2 * var(--marge));
     color: var(--hud-texte);
-    font-size: max(14px, var(--hud-taille));
+    font-size: var(--txt-m);
     pointer-events: auto;
+  }
+
+  /* Mesure les zones sûres et le rem : invisible, sans effet sur la mise en page. */
+  .sonde {
+    position: absolute;
+    width: 0;
+    height: 0;
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
+      env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+    font-size: 1rem;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .voile {
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 0.35);
+    pointer-events: auto;
+    animation: voile-entrer var(--duree) ease-out both;
+  }
+
+  .voile.ferme {
+    animation: voile-sortir var(--duree) ease-in both;
+  }
+
+  @keyframes voile-entrer {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes voile-sortir {
+    to {
+      opacity: 0;
+    }
   }
 
   .fenetre:focus-visible {
@@ -148,7 +240,7 @@
       'entete fermer'
       'titre fermer';
     align-items: center;
-    padding: 0.4rem 0.5rem 0.4rem 0.9rem;
+    padding: var(--esp-2) var(--esp-2) var(--esp-2) var(--esp-4);
     border-bottom: var(--hud-epaisseur) solid
       color-mix(in srgb, var(--hud-ligne) 45%, transparent);
   }
@@ -161,7 +253,7 @@
     grid-area: entete;
     margin: 0;
     font-family: var(--hud-font-titre);
-    font-size: max(14px, 0.85rem);
+    font-size: var(--txt-s);
     font-weight: 700;
     letter-spacing: 0.28em;
     color: var(--hud-ligne);
@@ -171,7 +263,7 @@
     grid-area: titre;
     margin: 0;
     font-family: var(--hud-font-titre);
-    font-size: 1.25em;
+    font-size: var(--txt-l);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -182,23 +274,23 @@
     header {
       grid-template-columns: auto minmax(0, 1fr) auto;
       grid-template-areas: 'entete titre fermer';
-      column-gap: 0.8rem;
-      padding-block: 0.15rem;
+      column-gap: var(--esp-3);
+      padding-block: var(--esp-1);
     }
 
     .titre {
-      font-size: 1.1em;
+      font-size: var(--txt-m);
     }
 
     .corps {
-      padding-block: 0.5rem 0.6rem;
+      padding-block: var(--esp-2) var(--esp-3);
     }
   }
 
   .corps {
     min-height: 0;
     overflow: auto;
-    padding: 0.8rem 0.9rem 1rem;
+    padding: var(--esp-3) var(--esp-4) var(--esp-4);
   }
 
   /* Cadre : quatre traits qui grandissent depuis un coin (transform seulement). */
