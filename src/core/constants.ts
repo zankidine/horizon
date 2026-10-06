@@ -108,3 +108,29 @@ export const VITESSE_VOITURE_KM_H = 100
  * aged 20-79 years », Age and Ageing 26 (1997) : environ 1,4 m/s, soit 5 km/h.
  */
 export const VITESSE_MARCHE_KM_H = 5
+
+// ===========================================================================
+// Navigation (étape 3b)
+// ===========================================================================
+
+/** Vitesses de croisière que le joueur peut choisir pour le vaisseau. */
+export type VitesseCroisiere = 'lente' | 'normale' | 'rapide'
+
+/**
+ * Vitesses de croisière du vaisseau, en kilomètres par heure.
+ * Source : valeurs FICTIVES, choisies pour le jeu (aucun engin réel ne
+ * voyage à ces vitesses). Elles donnent pour la Lune des trajets d'environ
+ * 19 heures, 4 heures et 23 minutes, faciles à comparer entre eux.
+ */
+export const VITESSES_CROISIERE_KM_H: Readonly<Record<VitesseCroisiere, number>> = {
+  lente: 20_000,
+  normale: 100_000,
+  rapide: 1_000_000,
+}
+
+/**
+ * Durée du trajet aller d'Apollo 11 vers la Lune, en jours.
+ * Source : NASA, Apollo 11 Mission Overview (nasa.gov) : lancement le
+ * 16 juillet 1969, mise en orbite lunaire le 19 juillet, soit environ 3 jours.
+ */
+export const APOLLO_11_DUREE_TRAJET_JOURS = 3
