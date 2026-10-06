@@ -1,13 +1,13 @@
 <script lang="ts">
   import {
     CHOIX_AMBIANCE,
-    CHOIX_PROFIL,
     EtatPreparation,
     LONGUEUR_MAX_COPILOTE,
     NOMS_SUGGERES,
   } from './preparation.svelte.ts'
 
   const etat = new EtatPreparation()
+  import SelecteurNiveau from '../niveaux/SelecteurNiveau.svelte'
 </script>
 
 <main class="preparation">
@@ -19,24 +19,7 @@
   >
     <h1>Préparation de mission</h1>
 
-    <fieldset>
-      <legend>Qui explore aujourd'hui ?</legend>
-      <div class="choix">
-        {#each CHOIX_PROFIL as option (option.valeur)}
-          <label class="carte">
-            <input
-              type="radio"
-              name="profil"
-              value={option.valeur}
-              checked={etat.profil === option.valeur}
-              onchange={() => etat.choisirProfil(option.valeur)}
-            />
-            <span class="titre">{option.titre}</span>
-            <span class="detail">{option.detail}</span>
-          </label>
-        {/each}
-      </div>
-    </fieldset>
+    <SelecteurNiveau legende="Quel explorateur es-tu ?" />
 
     <fieldset>
       <legend>Quelle ambiance pour le vaisseau ?</legend>

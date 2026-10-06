@@ -245,3 +245,96 @@ export const DEMO_PASSAGE_RAYONS = 3
  */
 export const DEMO_DISTANCE_CHANGEMENT_KM = 80_000
 export const DEMO_DUREE_MAX_CIBLE_S = 45
+
+// ===========================================================================
+// Niveaux (étape 4a)
+// ===========================================================================
+
+/**
+ * Chiffres significatifs affichés à chaque niveau de connaissance (1 Découverte,
+ * 2 Explorateur, 3 Navigateur, 4 Expert). Source : choix pédagogique. Les niveaux
+ * 1 et 3 gardent les valeurs des anciens profils enfant (2) et adulte (4).
+ */
+export const CHIFFRES_SIGNIFICATIFS_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, number>> = {
+  1: 2,
+  2: 3,
+  3: 4,
+  4: 5,
+}
+
+/**
+ * Comparaisons imagées (« 30 diamètres de la Terre ») visibles à chaque niveau.
+ * Source : choix pédagogique. L'expert lit directement les grandeurs.
+ */
+export const COMPARAISONS_IMAGEES_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, boolean>> = {
+  1: true,
+  2: true,
+  3: true,
+  4: false,
+}
+
+/** Formules de calcul visibles à chaque niveau. Source : choix pédagogique. */
+export const FORMULES_VISIBLES_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, boolean>> = {
+  1: false,
+  2: false,
+  3: true,
+  4: true,
+}
+
+/** Notation scientifique (3,844 × 10⁵ km) à chaque niveau. Source : choix pédagogique. */
+export const NOTATION_SCIENTIFIQUE_NIVEAU: Readonly<Record<1 | 2 | 3 | 4, boolean>> = {
+  1: false,
+  2: false,
+  3: false,
+  4: true,
+}
+
+/**
+ * Catégories d'information ajoutées à chaque niveau : un niveau voit ses propres
+ * catégories et celles de tous les niveaux inférieurs. Source : choix pédagogique,
+ * du plus concret (distance, vitesse, temps) au plus abstrait (atmosphère, orbite).
+ */
+export const CATEGORIES_AJOUTEES_NIVEAU: Readonly<
+  Record<1 | 2 | 3 | 4, readonly string[]>
+> = {
+  1: ['distance', 'vitesse', 'temps'],
+  2: ['lumiere', 'radio'],
+  3: ['temperature', 'gravite'],
+  4: ['atmosphere', 'orbite'],
+}
+
+// ===========================================================================
+// Astres (étape 4b)
+// ===========================================================================
+
+/**
+ * Température de 0 °C en kelvins (valeur exacte).
+ * Source : définition du kelvin et du degré Celsius, brochure SI du BIPM (9e éd., 2019).
+ */
+export const KELVIN_ZERO_CELSIUS = 273.15
+
+/**
+ * Pascals dans un bar (valeur exacte).
+ * Source : définition du bar, 1 bar = 10⁵ Pa, brochure SI du BIPM (9e éd., 2019), tableau 8.
+ */
+export const PASCAL_PAR_BAR = 100_000
+
+/** Pascals dans un millibar : 1 mbar = 10⁻³ bar, déduit de la constante précédente. */
+export const PASCAL_PAR_MILLIBAR = PASCAL_PAR_BAR / 1000
+
+/** Pascals dans un kilopascal. Source : préfixe « kilo » = 10³, brochure SI du BIPM. */
+export const PASCAL_PAR_KPA = 1000
+
+/**
+ * Facteurs des unités composées des fiches NASA : « 10^24 kg » et « 10^6 km ».
+ * Source : écriture des fiches (nssdc.gsfc.nasa.gov/planetary/factsheet).
+ */
+export const KG_PAR_1E24_KG = 1e24
+export const KM_PAR_1E6_KM = 1e6
+
+/**
+ * Écart toléré, en kilomètres, entre un diamètre de astres.json et celui de
+ * constants.ts : les fiches NASA donnent un rayon au dixième de km, constants.ts
+ * un diamètre arrondi au km. Source : choix de jeu.
+ */
+export const TOLERANCE_CONCORDANCE_DIAMETRE_KM = 1

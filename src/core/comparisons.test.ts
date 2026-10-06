@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { DISTANCE_TERRE_LUNE_KM, DIAMETRE_TERRE_KM } from './constants'
-import { comparer, MAX_COMPARAISONS } from './comparisons'
+import { CHIFFRES_SIGNIFICATIFS, comparer, MAX_COMPARAISONS } from './comparisons'
 
 const UN_MILLIARD_KM = 1_000_000_000
 
@@ -75,5 +75,19 @@ describe('comparer : arrondi', () => {
     const distanceKm = 59.6 * (DISTANCE_TERRE_LUNE_KM / 1.2822)
     const lumiere = comparer(distanceKm, 'enfant').find((c) => c.type === 'temps-lumiere')
     expect(lumiere).toMatchObject({ valeur: 1, unite: 'minute' })
+  })
+})
+
+describe('comparer avec un nombre de chiffres demandé', () => {
+  it('garde la valeur par défaut du profil sans le troisième argument', () => {
+    expect(comparer(DISTANCE_TERRE_LUNE_KM, 'adulte')).toEqual(
+      comparer(DISTANCE_TERRE_LUNE_KM, 'adulte', CHIFFRES_SIGNIFICATIFS.adulte)
+    )
+  })
+
+  it('arrondit valeur et formule au nombre de chiffres demandé', () => {
+    const [terre] = comparer(DISTANCE_TERRE_LUNE_KM, 'adulte', 5)
+    expect(terre.valeur).toBe(30.168)
+    expect(terre.formule?.resultat.valeur).toBe(30.168)
   })
 })
