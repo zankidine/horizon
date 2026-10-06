@@ -1,24 +1,20 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte'
-  import HudAlerte from './HudAlerte.svelte'
+  import { onMount } from 'svelte'
   import HudBoussole from './HudBoussole.svelte'
   import HudBouton from './HudBouton.svelte'
-  import HudFenetreSysteme from './HudFenetreSysteme.svelte'
   import HudIcone from './HudIcone.svelte'
   import HudJauge from './HudJauge.svelte'
   import HudPanneau from './HudPanneau.svelte'
   import HudReticule from './HudReticule.svelte'
   import HudValeur from './HudValeur.svelte'
-  import { EtatHud, RANGS, type ContexteHud } from './hud.svelte.ts'
+  import { RANGS, type EtatHud } from './hud.svelte.ts'
 
-  let { contexte }: { contexte: ContexteHud } = $props()
-
-  // svelte-ignore state_referenced_locally
-  const hud = new EtatHud(contexte)
+  // L'état est créé par le poste : les fenêtres, dans une autre couche, le partagent.
+  let { etat: hud }: { etat: EtatHud } = $props()
   const pourcent = (fraction: number): number => Math.round(fraction * 100)
+  const boite = $derived({ largeur: hud.largeur, hauteur: hud.hauteur })
 
   onMount(() => hud.demarrerAllumage())
-  onDestroy(() => hud.arreter())
 </script>
 
 <svelte:window onkeydown={(evenement) => hud.surTouche(evenement)} />
@@ -41,6 +37,23 @@
     {hud.t(hud.masque ? hud.textes.hud.afficher : hud.textes.hud.masquer)}
   </button>
 
+  <!-- (b) Couche « monde » : réticules ancrés à des points de la vitre. -->
+  <div
+    class="monde"
+    class:cache={hud.masque}
+    inert={hud.masque}
+    bind:clientWidth={hud.largeur}
+    bind:clientHeight={hud.hauteur}
+  >
+    <HudReticule
+      ancre={hud.ancreReticule}
+      {boite}
+      etiquette={hud.texteReticule}
+      etiquetteVisible={hud.etiquetteReticuleVisible}
+      allume={hud.estAllume(RANGS.reticule)}
+    />
+  </div>
+
   <!-- (a) Couche « tête » : fixée à la vitre, avec une très légère inertie. -->
   <div
     class="tete"
@@ -58,80 +71,101 @@
       />
     </div>
 
-    <div class="zone statut">
-      <HudPanneau
-        id="hud-statut"
-        titre={hud.t(hud.textes.statut.titre)}
-        resume="{pourcent(hud.demo.energie)} %"
-        allume={hud.estAllume(RANGS.statut)}
-        flou={hud.flou}
-        repliable={hud.disposition === 'portrait'}
-        ouvert={hud.estOuvert('statut')}
-        ontoggle={() => hud.basculerPanneau('statut')}
-      >
-        <div class="ligne">
-          <span>{hud.t(hud.textes.statut.energie)}</span>
-          <HudValeur
-            valeur={pourcent(hud.demo.energie)}
-            unite=" %"
-            mouvementReduit={hud.mouvementReduit}
-          />
-        </div>
-        <HudJauge
-          etiquette={hud.t(hud.textes.statut.energie)}
-          valeur={hud.demo.energie}
-        />
-        <div class="ligne">
-          <span>{hud.t(hud.textes.statut.bouclier)}</span>
-          <HudValeur
-            valeur={pourcent(hud.demo.bouclier)}
-            unite=" %"
-            mouvementReduit={hud.mouvementReduit}
-          />
-        </div>
-        <HudJauge
-          etiquette={hud.t(hud.textes.statut.bouclier)}
-          valeur={hud.demo.bouclier}
-        />
-        <div class="ligne arc">
-          <span>{hud.t(hud.textes.statut.propulsion)}</span>
-          <HudJauge
-            etiquette={hud.t(hud.textes.statut.propulsion)}
-            valeur={hud.demo.propulsion}
-            variante="arc"
-          >
-            <HudValeur
-              valeur={pourcent(hud.demo.propulsion)}
-              mouvementReduit={hud.mouvementReduit}
-            />
-          </HudJauge>
-        </div>
-      </HudPanneau>
-    </div>
+    <div class="pile">
+      <div class="zone statut" class:ouvert={hud.estOuvert('statut')}>
+        <HudPanneau
+          id="hud-statut"
+          titre={hud.t(hud.textes.statut.titre)}
+          resume="{pourcent(hud.demo.energie)} %"
+          allume={hud.estAllume(RANGS.statut)}
+          flou={hud.flou}
+          repliable={hud.disposition === 'portrait'}
+          ouvert={hud.estOuvert('statut')}
+          ontoggle={() => hud.basculerPanneau('statut')}
+        >
+          <div class="jauges">
+            <div class="barres">
+              {#each [{ id: 'energie', valeur: hud.demo.energie }, { id: 'bouclier', valeur: hud.demo.bouclier }] as jauge (jauge.id)}
+                <div class="barre">
+                  <p class="ligne">
+                    <span
+                      >{hud.t(
+                        hud.textes.statut[jauge.id as 'energie' | 'bouclier']
+                      )}</span
+                    >
+                    <HudValeur
+                      valeur={pourcent(jauge.valeur)}
+                      unite=" %"
+                      mouvementReduit={hud.mouvementReduit}
+                    />
+                  </p>
+                  <HudJauge
+                    etiquette={hud.t(
+                      hud.textes.statut[jauge.id as 'energie' | 'bouclier']
+                    )}
+                    valeur={jauge.valeur}
+                  />
+                </div>
+              {/each}
+              <!-- Étroit : propulsion en barre. -->
+              <div class="barre propulsion-barre">
+                <p class="ligne">
+                  <span>{hud.t(hud.textes.statut.propulsion)}</span>
+                  <HudValeur
+                    valeur={pourcent(hud.demo.propulsion)}
+                    unite=" %"
+                    mouvementReduit={hud.mouvementReduit}
+                  />
+                </p>
+                <HudJauge
+                  etiquette={hud.t(hud.textes.statut.propulsion)}
+                  valeur={hud.demo.propulsion}
+                />
+              </div>
+            </div>
+            <!-- Large : propulsion en arc. -->
+            <div class="propulsion-arc">
+              <HudJauge
+                etiquette={hud.t(hud.textes.statut.propulsion)}
+                valeur={hud.demo.propulsion}
+                variante="arc"
+              >
+                <HudValeur
+                  valeur={pourcent(hud.demo.propulsion)}
+                  mouvementReduit={hud.mouvementReduit}
+                />
+              </HudJauge>
+              <span class="legende">{hud.t(hud.textes.statut.propulsion)}</span>
+            </div>
+          </div>
+        </HudPanneau>
+      </div>
 
-    <div class="zone cible">
-      <HudPanneau
-        id="hud-cible"
-        titre={hud.t(hud.textes.cible.titre)}
-        resume={hud.nomCible}
-        allume={hud.estAllume(RANGS.cible)}
-        flou={hud.flou}
-        repliable={hud.disposition === 'portrait'}
-        ouvert={hud.estOuvert('cible')}
-        ontoggle={() => hud.basculerPanneau('cible')}
-      >
-        <p class="nom-cible">{hud.nomCible}</p>
-        <p class="detail">{hud.texteDistance}</p>
-      </HudPanneau>
+      <div class="zone cible" class:ouvert={hud.estOuvert('cible')}>
+        <HudPanneau
+          id="hud-cible"
+          titre={hud.t(hud.textes.cible.titre)}
+          resume={hud.nomCible}
+          allume={hud.estAllume(RANGS.cible)}
+          flou={hud.flou}
+          repliable={hud.disposition === 'portrait'}
+          ouvert={hud.estOuvert('cible')}
+          ontoggle={() => hud.basculerPanneau('cible')}
+        >
+          <p class="nom-cible">{hud.nomCible}</p>
+          <p class="detail">{hud.texteDistance}</p>
+        </HudPanneau>
+      </div>
     </div>
 
     <div class="zone copilote">
       <HudPanneau
         id="hud-copilote"
-        titre="{hud.t(hud.textes.copilote.titre)} · {hud.copilote}"
+        prefixe={hud.prefixeCopilote}
+        titre={hud.copilote}
         allume={hud.estAllume(RANGS.copilote)}
       >
-        <p class="detail">{hud.t(hud.textes.copilote.message)}</p>
+        <p class="detail court">{hud.t(hud.textes.copilote.message)}</p>
       </HudPanneau>
     </div>
 
@@ -139,7 +173,7 @@
       {#each hud.idsSysteme as id (id)}
         <HudBouton
           etiquette={hud.t(hud.textes.icones[id])}
-          libelleVisible={hud.disposition === 'paysage'}
+          libelleVisible={hud.libellesIcones}
           actif={hud.estSystemeOuvert(id)}
           controle="hud-systeme"
           onpresse={(declencheur) => hud.basculerSysteme(id, declencheur)}
@@ -149,52 +183,18 @@
       {/each}
     </div>
   </div>
-
-  <!-- (b) Couche « monde » : réticules et fenêtres, ancrés dans la vitre. -->
-  <div
-    class="monde"
-    class:cache={hud.masque}
-    inert={hud.masque}
-    bind:clientWidth={hud.largeur}
-    bind:clientHeight={hud.hauteur}
-  >
-    <HudReticule
-      ancre={hud.demo.ancreReticule}
-      boite={{ largeur: hud.largeur, hauteur: hud.hauteur }}
-      etiquette={hud.texteReticule}
-      allume={hud.estAllume(RANGS.reticule)}
-    />
-
-    <div class="alerte">
-      <HudAlerte
-        visible={hud.alerte}
-        message={hud.t(hud.textes.alerte.message)}
-      />
-    </div>
-
-    <HudFenetreSysteme
-      id="hud-systeme"
-      entete={hud.t(hud.textes.systeme.entete)}
-      titre={hud.t(hud.textes.icones[hud.systeme])}
-      libelleFermer={hud.t(hud.textes.systeme.fermer)}
-      etat={hud.fenetre.etat}
-      duree={hud.fenetre.duree}
-      ancre={hud.ancreFenetre}
-      boite={{ largeur: hud.largeur, hauteur: hud.hauteur }}
-      flou={hud.flou}
-      onfermer={() => hud.fermerSysteme()}
-    >
-      <p class="vide">{hud.t(hud.textes.systeme.vide)}</p>
-    </HudFenetreSysteme>
-  </div>
 </div>
 
 <style>
   /*
-   * La couche remplit la vitre (déjà à l'intérieur des zones sûres du poste).
+   * La couche remplit la vitre, déjà à l'intérieur des zones sûres du poste.
    * Elle ne reçoit aucun toucher : seuls panneaux, boutons et fenêtres le font.
    */
   .hud {
+    /* Les silhouettes de l'équipage montent dans le bas de la vitre. */
+    --tete: calc(var(--fig, 80px) * 0.75);
+    /* Colonnes latérales du paysage : elles s'arrêtent avant les silhouettes. */
+    --colonne: clamp(9rem, calc(27vw - var(--fig, 80px) / 2 - 44px), 15rem);
     --pad: clamp(8px, 2vmin, 16px);
     --haut: calc(44px + var(--pad));
 
@@ -234,18 +234,22 @@
     outline-offset: 2px;
   }
 
-  .tete,
-  .monde {
+  .monde,
+  .tete {
     position: absolute;
     inset: 0;
     transition: opacity 250ms ease-out;
+  }
+
+  .monde {
+    pointer-events: none;
   }
 
   .tete {
     box-sizing: border-box;
     display: grid;
     gap: calc(var(--pad) * 0.6);
-    padding: var(--haut) var(--pad) var(--pad);
+    padding: var(--pad);
     /* Inertie : le décalage rattrape le pointeur avec un léger retard. */
     transition:
       transform var(--inertie, 380ms) ease-out,
@@ -266,6 +270,11 @@
     grid-area: cap;
     justify-self: center;
     align-self: start;
+  }
+
+  /* Paysage : les deux panneaux sont des cases directes de la grille. */
+  .pile {
+    display: contents;
   }
 
   .statut {
@@ -295,44 +304,124 @@
     opacity: 1;
   }
 
-  /* Paysage : statut à gauche, cible à droite, copilote en bas. */
+  /* Paysage : statut à gauche, cible à droite, copilote en bas, cap en haut. */
   .hud[data-disposition='paysage'] .tete {
-    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr) minmax(0, 15rem);
+    grid-template-columns: var(--colonne) minmax(0, 1fr) var(--colonne);
     grid-template-rows: auto minmax(0, 1fr) auto;
     grid-template-areas:
       'statut cap cible'
       'statut . cible'
-      '. copilote icones';
-    padding-top: var(--pad);
+      'statut copilote icones';
   }
 
-  /* Les colonnes latérales commencent sous les commandes du haut. */
+  /* Les colonnes commencent sous les commandes du haut et défilent si la vitre est trop basse. */
   .hud[data-disposition='paysage'] .statut,
   .hud[data-disposition='paysage'] .cible {
     align-self: start;
+    max-height: calc(100% - var(--haut) + var(--pad));
     margin-top: calc(var(--haut) - var(--pad));
+    overflow-y: auto;
+    scrollbar-width: thin;
   }
 
-  /* Portrait : panneaux empilés et repliables. */
+  /* Vitre basse (téléphone en paysage) : texte à 14 px et panneaux resserrés. */
+  @container hud (max-height: 270px) {
+    .tete {
+      --hud-taille: 0.875rem;
+      gap: 4px;
+    }
+
+    .jauges,
+    .barres {
+      gap: 0.2rem;
+    }
+  }
+
+  /* Entre les deux montants de la vitre (à 33 % et 66 %). */
+  .hud[data-disposition='paysage'] .copilote {
+    justify-self: center;
+    width: min(100%, 31vw);
+  }
+
+  /* Portrait : panneaux empilés et repliables, au-dessus des silhouettes. */
   .hud[data-disposition='portrait'] .tete {
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
     grid-template-areas:
       'cap cap'
-      'statut statut'
-      'cible cible'
+      'pile pile'
       '. .'
       'copilote icones';
     align-items: start;
+    padding-top: var(--haut);
+    padding-bottom: calc(var(--pad) + var(--tete));
+  }
+
+  .hud[data-disposition='portrait'] .cap {
+    justify-self: start;
+  }
+
+  /* Deux boutons côte à côte ; un panneau ouvert prend toute la largeur. */
+  .hud[data-disposition='portrait'] .pile {
+    grid-area: pile;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    align-items: start;
+    max-height: 100%;
+    overflow-y: auto;
+    scrollbar-width: thin;
   }
 
   .hud[data-disposition='portrait'] .statut,
   .hud[data-disposition='portrait'] .cible {
-    max-width: 19rem;
+    grid-area: auto;
   }
 
-  .hud[data-disposition='portrait'] .copilote {
+  .hud[data-disposition='portrait'] .zone.ouvert {
+    grid-column: 1 / -1;
+  }
+
+  .hud[data-disposition='portrait'] .copilote,
+  .hud[data-disposition='portrait'] .icones {
     align-self: end;
+  }
+
+  /* Jauges : en étroit, trois barres ; en large, deux barres et un arc. */
+  .jauges {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .barres {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .barre {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .propulsion-arc {
+    display: none;
+  }
+
+  @container (min-width: 15rem) {
+    .jauges {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .propulsion-barre {
+      display: none;
+    }
+
+    .propulsion-arc {
+      display: grid;
+      justify-items: center;
+    }
   }
 
   .ligne {
@@ -340,11 +429,13 @@
     align-items: baseline;
     justify-content: space-between;
     gap: 0.6rem;
+    margin: 0;
     font-weight: 500;
+    line-height: 1.1;
   }
 
-  .ligne.arc {
-    align-items: center;
+  .legende {
+    font-weight: 500;
   }
 
   .nom-cible {
@@ -357,24 +448,16 @@
 
   .detail {
     margin: 0;
-    font-family: var(--hud-font-titre);
     font-weight: 500;
-    line-height: 1.25;
+    line-height: 1.2;
   }
 
-  .vide {
-    margin: 0;
-    font-weight: 500;
-  }
-
-  .alerte {
-    position: absolute;
-    top: var(--haut);
-    left: 50%;
-    z-index: 4;
-    width: max-content;
-    max-width: calc(100% - 2 * var(--pad));
-    transform: translateX(-50%);
+  .court {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -382,7 +465,6 @@
       transition: opacity 150ms linear;
     }
 
-    .tete,
     .monde,
     .icones {
       transition-duration: 150ms;

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, type Snippet } from 'svelte'
+  import type { Snippet } from 'svelte'
   import {
     fenetreVisible,
     positionFenetre,
@@ -52,8 +52,10 @@
     positionFenetre(ancre, boite, { largeur, hauteur }, marge)
   )
 
-  // À l'ouverture, le focus entre dans la fenêtre : le clavier peut la fermer.
-  onMount(() => racine?.focus())
+  // À chaque ouverture, le focus entre dans la fenêtre : le clavier peut la fermer.
+  $effect(() => {
+    if (etat === 'ouverture') racine?.focus()
+  })
 
   function surTouche(evenement: KeyboardEvent): void {
     if (evenement.key === 'Escape') {
@@ -173,6 +175,24 @@
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
+  }
+
+  /* Vitre basse : en-tête sur une seule ligne. */
+  @container hud (max-height: 270px) {
+    header {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas: 'entete titre fermer';
+      column-gap: 0.8rem;
+      padding-block: 0.15rem;
+    }
+
+    .titre {
+      font-size: 1.1em;
+    }
+
+    .corps {
+      padding-block: 0.5rem 0.6rem;
+    }
   }
 
   .corps {

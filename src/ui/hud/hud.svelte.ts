@@ -41,6 +41,9 @@ export const RANGS = {
   icones: 4,
   reticule: 5,
 } as const
+/** Largeur de vitre à partir de laquelle les icônes portent leur nom. */
+const LARGEUR_LIBELLES_PX = 880
+
 const TOTAL_ELEMENTS = Object.keys(RANGS).length
 
 /** Ce que le HUD lit du poste qui l'héberge. */
@@ -53,8 +56,8 @@ export interface ContexteHud {
   readonly copilote: string
 }
 
-/** Vitre claire au centre : la fenêtre s'y place par défaut. */
-const ANCRE_FENETRE: Ancre = { x: 0.5, y: 0.5 }
+/** Centre de la fenêtre, un peu au-dessus du milieu : l'équipage occupe le bas de la vitre. */
+const ANCRE_FENETRE: Ancre = { x: 0.5, y: 0.4 }
 
 export class EtatHud {
   readonly textes = DONNEES.textes
@@ -93,6 +96,25 @@ export class EtatHud {
 
   get mouvementReduit(): boolean {
     return this.#contexte.mouvementReduit
+  }
+
+  /** Ancre du réticule : en portrait, la vitre est petite, il reste hors des panneaux. */
+  get ancreReticule(): Ancre {
+    return this.demo.ancreReticule[this.disposition]
+  }
+
+  /** En portrait, l'étiquette du réticule n'a pas la place : le panneau « cible » la porte. */
+  get etiquetteReticuleVisible(): boolean {
+    return this.disposition === 'paysage'
+  }
+
+  /** Les noms sous les icônes ne tiennent que sur une vitre assez large. */
+  get libellesIcones(): boolean {
+    return this.largeur >= LARGEUR_LIBELLES_PX
+  }
+
+  get prefixeCopilote(): string {
+    return this.t(this.textes.copilote.prefixe)
   }
 
   /** Le flou d'arrière-plan coûte cher : coupé au niveau « bas ». */
@@ -192,6 +214,11 @@ export class EtatHud {
   }
 
   surTouche(evenement: KeyboardEvent): void {
+    // Échap ferme la fenêtre, où que soit le focus.
+    if (evenement.key === 'Escape' && this.fenetreVisible) {
+      this.fermerSysteme()
+      return
+    }
     const cible =
       evenement.target instanceof Element ? evenement.target.tagName : ''
     const touche = {

@@ -5,6 +5,7 @@
   let {
     id,
     titre,
+    prefixe = '',
     resume = '',
     allume = true,
     flou = false,
@@ -15,6 +16,8 @@
   }: {
     id: string
     titre: string
+    /** Début du nom lu par les lecteurs d'écran, non affiché. */
+    prefixe?: string
     /** Valeur clé, visible quand le panneau est replié. */
     resume?: string
     /** Séquence d'allumage : faux tant que le panneau n'est pas allumé. */
@@ -53,7 +56,9 @@
         </svg>
       </button>
     {:else}
-      <span class="titre">{titre}</span>
+      <span class="titre"
+        >{#if prefixe}<span class="invisible">{prefixe}</span>{/if}{titre}</span
+      >
     {/if}
   </h2>
 
@@ -78,6 +83,8 @@
     color: var(--hud-texte);
     font-size: max(14px, var(--hud-taille));
     pointer-events: auto;
+    /* Permet aux contenus de s'adapter à la largeur du panneau. */
+    container-type: inline-size;
     /* Séquence d'allumage : seulement opacité et transform. */
     opacity: 0;
     transform: translateY(6px) scale(0.98);
@@ -125,6 +132,15 @@
     }
   }
 
+  .invisible {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
   .entete {
     margin: 0;
     font-family: var(--hud-font-titre);
@@ -137,6 +153,7 @@
 
   .titre {
     padding: 0.4rem 0.7rem 0.15rem;
+    white-space: nowrap;
   }
 
   .entete > .titre {
@@ -208,6 +225,29 @@
     display: grid;
     gap: 0.4rem;
     padding: 0.2rem 0.7rem 0.6rem;
+  }
+
+  /* Panneau étroit replié : le titre seul. */
+  @container (max-width: 13rem) {
+    .resume {
+      display: none;
+    }
+  }
+
+  /* Vitre basse : en-tête et marges resserrés. */
+  @container hud (max-height: 270px) {
+    .entete {
+      letter-spacing: 0.06em;
+    }
+
+    .titre {
+      padding-top: 0.25rem;
+    }
+
+    .corps {
+      gap: 0.2rem;
+      padding-bottom: 0.4rem;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -20,7 +20,7 @@ export interface TextesHud {
     propulsion: TexteProfil
   }
   cible: { titre: TexteProfil; distance: TexteProfil; reticule: TexteProfil }
-  copilote: { titre: TexteProfil; message: TexteProfil }
+  copilote: { titre: TexteProfil; prefixe: TexteProfil; message: TexteProfil }
   alerte: { message: TexteProfil }
   systeme: { entete: TexteProfil; fermer: TexteProfil; vide: TexteProfil }
   icones: {
@@ -38,8 +38,8 @@ export interface DemoHud {
   bouclier: number
   propulsion: number
   destination: string
-  /** Position du réticule, en fractions de la vitre. */
-  ancreReticule: { x: number; y: number }
+  /** Position du réticule, en fractions de la vitre, selon la disposition. */
+  ancreReticule: Record<'paysage' | 'portrait', { x: number; y: number }>
 }
 
 export interface DonneesHud {
@@ -61,6 +61,7 @@ const TEXTES: Readonly<Record<string, readonly string[]>> = {
   'cible.distance': ['valeur'],
   'cible.reticule': ['nom'],
   'copilote.titre': [],
+  'copilote.prefixe': [],
   'copilote.message': [],
   'alerte.message': [],
   'systeme.entete': [],
@@ -123,13 +124,13 @@ export function validerDonneesHud(donnees: unknown): DonneesHud {
     if (typeof demo.destination !== 'string' || demo.destination === '') {
       problemes.push('demo.destination : identifiant attendu')
     }
-    const ancre = demo.ancreReticule
-    if (
-      !estObjet(ancre) ||
-      typeof ancre.x !== 'number' ||
-      typeof ancre.y !== 'number'
-    ) {
-      problemes.push('demo.ancreReticule : { x, y } attendu')
+    for (const disposition of ['paysage', 'portrait']) {
+      const ancre = lire(demo, `ancreReticule.${disposition}`)
+      if (!estObjet(ancre) || !fraction(ancre.x) || !fraction(ancre.y)) {
+        problemes.push(
+          `demo.ancreReticule.${disposition} : { x, y } entre 0 et 1 attendu`
+        )
+      }
     }
   }
 

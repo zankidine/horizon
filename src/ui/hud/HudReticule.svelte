@@ -6,6 +6,7 @@
     boite,
     etiquette,
     allume = true,
+    etiquetteVisible = true,
     marge = 24,
   }: {
     /** Position en fractions de la vitre (0 à 1). */
@@ -14,6 +15,8 @@
     boite: Boite
     etiquette: string
     allume?: boolean
+    /** Faux quand la vitre est trop petite pour l'étiquette. */
+    etiquetteVisible?: boolean
     /** Distance minimale au bord quand la cible sort du cadre. */
     marge?: number
   } = $props()
@@ -42,7 +45,7 @@
       </g>
     {/if}
   </svg>
-  {#if position.dansLeChamp}
+  {#if position.dansLeChamp && etiquetteVisible}
     <span class="etiquette">{etiquette}</span>
   {/if}
 </div>
