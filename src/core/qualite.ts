@@ -20,6 +20,8 @@ export interface ParametresQualite {
   ratioPixelsMax: number
   /** Nombre de points du ciel étoilé. */
   nombreEtoiles: number
+  /** Nombre de grains de poussière spatiale proches (sensation de vitesse). */
+  nombrePoussieres: number
   /** Variante de texture chargée (fichiers déjà redimensionnés). */
   tailleTexture: TailleTexture
   /** Segments en largeur des sphères (la hauteur en est la moitié). */
@@ -32,18 +34,21 @@ export const PARAMETRES_QUALITE: Readonly<
   bas: {
     ratioPixelsMax: 1.25,
     nombreEtoiles: 2000,
+    nombrePoussieres: 120,
     tailleTexture: '1k',
     segmentsSphere: 32,
   },
   moyen: {
     ratioPixelsMax: 1.5,
     nombreEtoiles: 4000,
+    nombrePoussieres: 250,
     tailleTexture: '2k',
     segmentsSphere: 48,
   },
   haut: {
     ratioPixelsMax: 2,
     nombreEtoiles: 8000,
+    nombrePoussieres: 400,
     tailleTexture: '4k',
     segmentsSphere: 64,
   },
