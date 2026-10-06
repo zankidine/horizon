@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import donnees from '../data/missions/mission1.json'
+import type { Expr } from './mission-types'
+import { evaluer } from './mission-valeurs'
 import { ErreurValidation } from './validation'
 import { validerMission } from './validation-mission'
 
@@ -23,16 +25,16 @@ function problemesDe(invalide: unknown): string {
 const etape = (m: ReturnType<typeof copie>, id: string) => m.etapes.find((e) => e.id === id)!
 
 describe('mission1.json', () => {
-  it('est valide : six scènes, un début, une seule étape finale', () => {
+  it('est valide : onze scènes, un début, une seule étape finale', () => {
     const mission = validerMission(donnees)
-    expect(mission.scenes).toHaveLength(6)
+    expect(mission.scenes).toHaveLength(11)
     expect(mission.etapes.find((e) => e.id === mission.debut)).toBeDefined()
     expect(mission.etapes.filter((e) => e.fin === true)).toHaveLength(1)
   })
 
   it('emploie les sept types d’étapes', () => {
     const types = new Set(validerMission(donnees).etapes.map((e) => e.type))
-    expect([...types].sort()).toEqual(['action', 'calcul', 'choix', 'dialogue', 'observation', 'timing', 'voyage'])
+    expect([...types].sort()).toEqual(['action', 'calcul', 'choix', 'descente', 'dialogue', 'observation', 'timing', 'voyage'])
   })
 
   it('ne contient que des références pour les valeurs calculables : aucun nombre sauf la part des jalons', () => {
@@ -124,7 +126,7 @@ describe('validerMission : graphe des étapes', () => {
 
   it('refuse une étape finale qui a une suite', () => {
     const m = copie()
-    etape(m, 'v3-fin').suivant = 'p1-accueil'
+    etape(m, 's11-5').suivant = 'p1-accueil'
     expect(problemesDe(m)).toContain('une étape finale n\'a pas de suite')
   })
 
@@ -259,5 +261,60 @@ describe('validerMission : structure, textes et aide', () => {
     etape(m, 'p1-accueil').suivant = 'x'
     etape(m, 'd1-compte').suivant = 'y'
     expect(problemesDe(m).split('\n').filter((l) => l.includes('n\'existe pas')).length).toBe(2)
+  })
+})
+
+describe('validerMission : calculs nommés, descente et « J’ai appris »', () => {
+  it('refuse un calcul inconnu ou hérité (toString), et accepte un calcul connu', () => {
+    const m = copie()
+    ;(m.valeurs.partCachee as { expr: unknown }).expr = { calcul: 'nExistePas' }
+    ;(m.valeurs.dureeCachee as { expr: unknown }).expr = { calcul: 'toString' }
+    const texte = problemesDe(m)
+    expect(texte).toContain('le calcul « nExistePas » n\'existe pas')
+    expect(texte).toContain('le calcul « toString » n\'existe pas')
+    const ok = copie()
+    expect(() => validerMission(ok)).not.toThrow()
+  })
+
+  it('refuse une descente sans gravité connue, avec un astre inconnu ou une zone mal formée', () => {
+    const m = copie()
+    const d = etape(m, 's9-2')
+    d.astre = 'soleil'
+    d.vitesseZone = { min: 0.3 }
+    const texte = problemesDe(m)
+    expect(texte).toContain('astre inconnu « soleil »')
+    expect(texte).toContain('vitesseZone.max')
+  })
+
+  it('refuse un nombre écrit en dur dans la descente', () => {
+    const m = copie()
+    etape(m, 's9-2').poussee = 2.5
+    expect(problemesDe(m)).toContain('pas de nombre écrit en dur')
+  })
+
+  it('exige un texte « J’ai appris » sur chaque étape qui a une aide', () => {
+    for (const id of ['s7-2', 's7-4', 's9-2', 's10-2', 's10-4', 's10-6', 'o2-scanner']) {
+      const m = copie()
+      delete etape(m, id).appris
+      expect(problemesDe(m)).toContain(`.appris : texte « J'ai appris » attendu`)
+    }
+  })
+
+  it('vérifie les marqueurs du texte « J’ai appris »', () => {
+    const m = copie()
+    etape(m, 's10-4').appris = { enfant: 'Tu as découvert {inconnu}.', adulte: 'Ok.' }
+    expect(problemesDe(m)).toContain('le marqueur {inconnu}')
+  })
+
+  it('accepte les marqueurs {etoiles} et {etoilesMax} fournis par le moteur', () => {
+    expect(() => validerMission(copie())).not.toThrow()
+    const m = copie()
+    m.valeurs.etoiles = { expr: { ref: 'MILE_KM' }, format: 'nombre' }
+    expect(problemesDe(m)).toContain('marqueur réservé')
+  })
+
+  it('la zone de réussite de la descente a un minimum inférieur au maximum (valeurs évaluées)', () => {
+    const d = etape(copie(), 's9-2') as unknown as { vitesseZone: { min: Expr; max: Expr } }
+    expect(evaluer(d.vitesseZone.min)).toBeLessThan(evaluer(d.vitesseZone.max))
   })
 })

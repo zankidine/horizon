@@ -19,6 +19,8 @@ export interface EtatProgression {
   tentatives: Record<string, number>
   /** Entrées du journal de bord débloquées, dans l'ordre. */
   journal: string[]
+  /** Étapes dont l'entrée « J'ai appris » est débloquée (étape terminée après un indice ou la solution). */
+  appris: string[]
   /** Étapes qui ont rapporté une étoile (une étape ne rapporte qu'une fois). */
   etapesEtoilees: string[]
   /** Nombre d'étoiles : toujours le nombre d'étapes étoilées. */
@@ -39,6 +41,7 @@ export function progressionInitiale(mission: Mission): EtatProgression {
     etape: mission.debut,
     tentatives: {},
     journal: [],
+    appris: [],
     etapesEtoilees: [],
     etoiles: 0,
     terminee: false,
@@ -69,6 +72,11 @@ export function lireEtatProgression(brut: unknown, mission: Mission): EtatProgre
   if (Array.isArray(brut.journal)) {
     for (const id of brut.journal) {
       if (typeof id === 'string' && entreesJournal.has(id) && !etat.journal.includes(id)) etat.journal.push(id)
+    }
+  }
+  if (Array.isArray(brut.appris)) {
+    for (const id of brut.appris) {
+      if (typeof id === 'string' && etapes.get(id)?.appris !== undefined && !etat.appris.includes(id)) etat.appris.push(id)
     }
   }
   if (Array.isArray(brut.etapesEtoilees)) {

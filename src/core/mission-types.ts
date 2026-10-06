@@ -5,7 +5,8 @@ import type { TexteProfil } from './validation'
  *
  * Règle : le JSON ne contient aucune valeur calculable. Un nombre vient du code
  * par une référence { "ref": "NOM_DE_CONSTANTE" } (constants.ts), éventuellement
- * combinée par une expression (produit, quotient, somme). Seules exceptions : la
+ * combinée par une expression (produit, quotient, somme), ou par un calcul
+ * nommé du code ({ "calcul": "fractionOrbiteCachee" }, mission-calculs.ts). Seules exceptions : la
  * part du trajet d'un jalon (0 à 1) et les identifiants.
  *
  * Textes : chaque texte existe en version « enfant » et « adulte ». Les niveaux 1
@@ -19,9 +20,23 @@ export type Expr =
   | { produit: Expr[] }
   | { quotient: [Expr, Expr] }
   | { somme: Expr[] }
+  | { calcul: string }
 
 /** Façon d'écrire une valeur dans un texte. */
-export const FORMATS_VALEUR = ['km', 'km/h', 'km/s', 'heures', 'secondes', 'nombre'] as const
+export const FORMATS_VALEUR = [
+  'km',
+  'km/h',
+  'km/s',
+  'm',
+  'cm',
+  'm/s',
+  'pourcent',
+  'kpa',
+  'kg',
+  'heures',
+  'secondes',
+  'nombre',
+] as const
 export type FormatValeur = (typeof FORMATS_VALEUR)[number]
 
 /** Valeur nommée, utilisable comme {nom} dans les textes de la mission. */
@@ -43,6 +58,7 @@ export const TYPES_ETAPE = [
   'timing',
   'voyage',
   'observation',
+  'descente',
 ] as const
 export type TypeEtape = (typeof TYPES_ETAPE)[number]
 
@@ -74,6 +90,11 @@ export interface EtapeBase {
   effetsSortie?: string[]
   /** Entrée du journal de bord débloquée à la fin de l'étape. */
   journal?: string
+  /**
+   * « J'ai appris » : court texte positif ajouté au journal quand l'étape se
+   * termine après un indice ou la solution (obligatoire pour une étape qui a une aide).
+   */
+  appris?: TexteProfil
   /** Une étoile est gagnée si l'étape est réussie sans avoir eu besoin de la solution expliquée. */
   etoile?: boolean
 }
@@ -162,6 +183,20 @@ export interface EtapeObservation extends EtapeBase, AideEtape {
   mode: ModeObservation
 }
 
+export interface EtapeDescente extends EtapeBase, AideEtape {
+  type: 'descente'
+  /** Ce que le joueur doit faire (garder la vitesse dans la zone). */
+  consigne: TexteProfil
+  /** Astre sur lequel on descend : sa gravité de surface vient de astres.json. */
+  astre: string
+  /** Altitude de départ, en mètres. */
+  altitudeDepart: Expr
+  /** Zone de réussite : vitesse de toucher entre min et max, en m/s. */
+  vitesseZone: { min: Expr; max: Expr }
+  /** Force du moteur, en multiples de la gravité de l'astre. */
+  poussee: Expr
+}
+
 export type Etape =
   | EtapeDialogue
   | EtapeChoix
@@ -170,6 +205,7 @@ export type Etape =
   | EtapeTiming
   | EtapeVoyage
   | EtapeObservation
+  | EtapeDescente
 
 export interface Scene {
   id: string

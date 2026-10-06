@@ -5,6 +5,7 @@ import type {
   Etape,
   EtapeAction,
   EtapeCalcul,
+  EtapeDescente,
   EtapeObservation,
   EtapeTiming,
   EtapeVoyage,
@@ -14,6 +15,7 @@ import type {
   TypeEtape,
   TypeJalon,
 } from './mission-types'
+import { graviteSurfaceMs2 } from './mission-calculs'
 import { evaluer, formaterValeur } from './mission-valeurs'
 import { paliers, type CategorieInfo, type Niveau, profilDepuisNiveau } from './niveaux'
 import {
@@ -44,6 +46,7 @@ export type ActionJoueur =
   | { type: 'basculer'; interrupteur: string }
   | { type: 'pousser' }
   | { type: 'observer'; cible: string; mode: ModeObservation }
+  | { type: 'moteur'; actif: boolean }
   | { type: 'demander-indice' }
 
 // --- Événements émis -----------------------------------------------------------
@@ -68,6 +71,10 @@ export type EvenementMission =
   | { type: 'radio'; texte: string; distanceKm: number; delaiSecondes: number }
   | { type: 'observation'; astre: string; mode: ModeObservation | 'jalon'; categories: readonly CategorieInfo[] }
   | { type: 'journal'; id: string; titre: string; texte: string }
+  | { type: 'appris'; etape: string; texte: string }
+  | { type: 'moteur'; actif: boolean }
+  | { type: 'assistance'; texte: string }
+  | { type: 'contact'; vitesseMs: number; dansLaZone: boolean }
   | { type: 'etoile'; etoiles: number; etoilesMax: number }
   | { type: 'rappel'; texte: string }
   | { type: 'progression'; etat: EtatProgression }
@@ -89,7 +96,7 @@ export interface MissionVue {
   /** Scène en cours : « scène 3 sur 6 ». */
   scene: { numero: number; total: number; id: string; titre: string } | null
   /** Progression de la mission : scenesTerminees sur scenesTotal (ratio de 0 à 1). */
-  progression: { scenesTerminees: number; scenesTotal: number; ratio: number }
+  progression: { scenesTerminees: number; scenesTotal: number; ratio: number; apprentissages: number }
   etape: { id: string; type: TypeEtape } | null
   /** Objectif courant, dans le texte du niveau. */
   objectif: string
@@ -100,12 +107,23 @@ export interface MissionVue {
   actions: ActionPossible[]
   /** Pendant un voyage : avancement et vitesse. */
   voyage: { part: number; distanceRestanteKm: number; vitesseKmS: number } | null
+  /** Pendant une descente : altitude, vitesse (descendante) et zone de réussite, en m et m/s. */
+  descente: {
+    altitudeM: number
+    vitesseMs: number
+    moteur: boolean
+    assistance: boolean
+    zone: { min: number; max: number }
+    statut: 'dans-la-zone' | 'trop-rapide'
+  } | null
   /** Pendant une poussée chronométrée : la fenêtre est-elle ouverte ? */
   fenetre: { etat: EtatFenetre; restanteS: number } | null
   etoiles: number
   etoilesMax: number
   /** Entrées du journal de bord débloquées. */
   journal: string[]
+  /** Entrées « J'ai appris » du journal (étapes terminées après un indice ou la solution), dans l'ordre. */
+  apprentissages: { etape: string; texte: string }[]
 }
 
 export interface OptionsMoteur {
@@ -140,6 +158,18 @@ interface EtatEtape {
   temps: number
   fenetre: EtatFenetre
   /** Voyage. */
+  /** Descente : état physique (altitude en m, vitesse descendante en m/s). */
+  descente?: {
+    g: number
+    k: number
+    altitudeDepart: number
+    vmin: number
+    vmax: number
+    altitude: number
+    vitesse: number
+    moteur: boolean
+    assiste: boolean
+  }
   voyage?: { total: number; part: number; arriveeKm: number; facteur: number; prochainJalon: number }
 }
 
@@ -228,6 +258,7 @@ export class MoteurMission {
         scenesTerminees: indexScene,
         scenesTotal: total,
         ratio: total === 0 ? 1 : indexScene / total,
+        apprentissages: this.#etat.appris.length,
       },
       etape: etape ? { id: etape.id, type: etape.type } : null,
       objectif: etape ? this.#texte(etape.objectif) : '',
@@ -239,10 +270,15 @@ export class MoteurMission {
       },
       actions: etape ? this.#actionsPossibles(etape) : [],
       voyage: this.#vueVoyage(etape),
+      descente: this.#vueDescente(etape),
       fenetre: etape?.type === 'timing' ? { etat: this.#e.fenetre, restanteS: this.#restanteFenetre(etape) } : null,
       etoiles: this.#etat.etoiles,
       etoilesMax,
       journal: [...this.#etat.journal],
+      apprentissages: this.#etat.appris.flatMap((id) => {
+        const e = this.#etapes.get(id)
+        return e?.appris ? [{ etape: id, texte: this.#texte(e.appris) }] : []
+      }),
     }
   }
 
@@ -282,6 +318,9 @@ export class MoteurMission {
       case 'observation':
         if (action.type === 'observer') this.#observer(etape, action.cible, action.mode)
         break
+      case 'descente':
+        if (action.type === 'moteur') this.#regler(etape, action.actif)
+        break
       case 'voyage':
         break
     }
@@ -301,6 +340,7 @@ export class MoteurMission {
       return
     }
     if (etape.type === 'timing') this.#avancerTiming(etape, pas)
+    if (etape.type === 'descente') this.#avancerDescente(etape, pas)
     if (this.#courante !== etape) return
     this.#e.inactiviteS += pas
     if (this.#e.inactiviteS >= paliers(this.#niveau).aide.delaiRappelS) {
@@ -317,6 +357,8 @@ export class MoteurMission {
     return modele.replace(/\{(\w+)\}/g, (marqueur, nom: string) => {
       if (nom in supplementaires) return supplementaires[nom]
       if (nom === 'copilote') return this.#nomCopilote
+      if (nom === 'etoiles') return formaterValeur(this.#etat.etoiles, { format: 'nombre' }, this.#niveau)
+      if (nom === 'etoilesMax') return formaterValeur(etoilesMaxDe(this.#mission), { format: 'nombre' }, this.#niveau)
       const def = this.#mission.valeurs[nom]
       return def ? formaterValeur(evaluer(def.expr), def, this.#niveau) : marqueur
     })
@@ -398,6 +440,9 @@ export class MoteurMission {
         break
       case 'observation':
         break
+      case 'descente':
+        this.#demarrerDescente(etape)
+        break
     }
     this.#emettreProgression()
   }
@@ -406,6 +451,7 @@ export class MoteurMission {
   #terminer(etape: Etape, suivant: string | undefined): void {
     for (const nom of etape.effetsSortie ?? []) this.#emettre({ type: 'effet', nom })
     if (etape.journal) this.#debloquerJournal(etape.journal)
+    this.#noterApprentissage(etape)
     if (etape.etoile === true && !this.#e.solution && !this.#etat.etapesEtoilees.includes(etape.id)) {
       this.#etat.etapesEtoilees.push(etape.id)
       this.#etat.etoiles = this.#etat.etapesEtoilees.length
@@ -420,6 +466,13 @@ export class MoteurMission {
       return
     }
     this.#entrer(suivant)
+  }
+
+  /** « J'ai appris » : l'étape s'est terminée après un indice ou la solution. */
+  #noterApprentissage(etape: Etape): void {
+    if (!etape.appris || (this.#e.indices === 0 && !this.#e.solution) || this.#etat.appris.includes(etape.id)) return
+    this.#etat.appris.push(etape.id)
+    this.#emettre({ type: 'appris', etape: etape.id, texte: this.#texte(etape.appris) })
   }
 
   #debloquerJournal(id: string): void {
@@ -444,7 +497,11 @@ export class MoteurMission {
   // --- Aide : indices puis solution, jamais d'échec ------------------------------
 
   #aide(etape: Etape): Pick<EtapeCalcul, 'indices' | 'solution'> | null {
-    return etape.type === 'calcul' || etape.type === 'action' || etape.type === 'timing' || etape.type === 'observation'
+    return etape.type === 'calcul' ||
+      etape.type === 'action' ||
+      etape.type === 'timing' ||
+      etape.type === 'observation' ||
+      etape.type === 'descente'
       ? etape
       : null
   }
@@ -570,6 +627,78 @@ export class MoteurMission {
     this.#emettre({ type: 'fenetre', etat: 'attente' })
   }
 
+  // --- Descente ---------------------------------------------------------------
+
+  #demarrerDescente(etape: EtapeDescente): void {
+    const vmin = evaluer(etape.vitesseZone.min)
+    this.#e.descente = {
+      g: graviteSurfaceMs2(etape.astre),
+      k: evaluer(etape.poussee),
+      altitudeDepart: evaluer(etape.altitudeDepart),
+      vmin,
+      vmax: evaluer(etape.vitesseZone.max),
+      altitude: evaluer(etape.altitudeDepart),
+      vitesse: vmin,
+      moteur: false,
+      assiste: false,
+    }
+  }
+
+  #regler(_etape: EtapeDescente, actif: boolean): void {
+    const d = this.#e.descente
+    if (!d || d.moteur === actif) return
+    d.moteur = actif
+    this.#emettre({ type: 'moteur', actif })
+  }
+
+  /**
+   * Intègre la chute : la gravité accélère, le moteur freine. La vitesse ne
+   * descend jamais sous le minimum de la zone (on ne reste pas en l'air). Avec
+   * une marge d'assistance, le copilote freine quand la vitesse dépasse
+   * vitesse maximale × marge.
+   */
+  #avancerDescente(etape: EtapeDescente, pas: number): void {
+    const d = this.#e.descente
+    if (!d) return
+    const marge = paliers(this.#niveau).aide.margeAssistanceDescente
+    const limite = marge === null ? Infinity : d.vmax * marge
+    let vitesse = Math.max(d.vmin, d.vitesse + d.g * (1 - (d.moteur ? d.k : 0)) * pas)
+    if (vitesse > limite) {
+      // Le copilote freine à la place du joueur : la vitesse reste à la limite.
+      vitesse = limite
+      if (!d.assiste) {
+        d.assiste = true
+        this.#emettre({ type: 'assistance', texte: this.#texte(etape.objectif) })
+      }
+    }
+    d.vitesse = vitesse
+    d.altitude -= d.vitesse * pas
+    if (d.altitude > 0) return
+    const dansLaZone = d.vitesse <= d.vmax
+    this.#emettre({ type: 'contact', vitesseMs: d.vitesse, dansLaZone })
+    if (dansLaZone) {
+      this.#terminer(etape, etape.suivant)
+    } else if (this.#erreur(etape)) {
+      // Rattrapage assisté : le copilote pose le vaisseau, la solution explique.
+      this.#terminer(etape, etape.suivant)
+    } else {
+      this.#demarrerDescente(etape)
+    }
+  }
+
+  #vueDescente(etape: Etape | null): MissionVue['descente'] {
+    const d = this.#e.descente
+    if (etape?.type !== 'descente' || !d) return null
+    return {
+      altitudeM: Math.max(0, d.altitude),
+      vitesseMs: d.vitesse,
+      moteur: d.moteur,
+      assistance: d.assiste,
+      zone: { min: d.vmin, max: d.vmax },
+      statut: d.vitesse <= d.vmax ? 'dans-la-zone' : 'trop-rapide',
+    }
+  }
+
   // --- Voyage -----------------------------------------------------------------
 
   #demarrerVoyage(etape: EtapeVoyage): void {
@@ -669,6 +798,9 @@ export class MoteurMission {
         break
       case 'observation':
         actions.push({ type: 'observer' })
+        break
+      case 'descente':
+        actions.push({ type: 'moteur' })
         break
       case 'voyage':
         break
