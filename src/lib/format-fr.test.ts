@@ -14,7 +14,7 @@ import {
 const FINE = ' '
 
 /** Remplace toutes les sortes d'espaces par une espace normale avant de comparer. */
-const norm = (texte: string) => texte.replace(/[\s  ]+/g, ' ')
+const norm = (texte: string) => texte.replace(/[\s\u00a0\u202f]+/g, ' ')
 
 describe('formaterNombre', () => {
   it('sépare les milliers par une espace fine et met une virgule décimale', () => {
