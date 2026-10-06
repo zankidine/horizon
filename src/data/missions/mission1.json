@@ -1,0 +1,596 @@
+{
+  "id": "mission1",
+  "titre": {
+    "enfant": "Premier pas vers la Lune",
+    "adulte": "Premier pas vers la Lune"
+  },
+  "debut": "p1-accueil",
+  "scenes": [
+    {
+      "id": "preparation",
+      "titre": {
+        "enfant": "Préparation",
+        "adulte": "Préparation de la mission"
+      }
+    },
+    {
+      "id": "cabine",
+      "titre": {
+        "enfant": "La cabine",
+        "adulte": "Cabine : mise sous tension"
+      }
+    },
+    {
+      "id": "decollage",
+      "titre": {
+        "enfant": "Décollage",
+        "adulte": "Décollage"
+      }
+    },
+    {
+      "id": "orbite",
+      "titre": {
+        "enfant": "En orbite",
+        "adulte": "Orbite basse"
+      }
+    },
+    {
+      "id": "cap-lune",
+      "titre": {
+        "enfant": "Cap sur la Lune",
+        "adulte": "Injection translunaire"
+      }
+    },
+    {
+      "id": "voyage",
+      "titre": {
+        "enfant": "Le grand voyage",
+        "adulte": "Transit Terre-Lune"
+      }
+    }
+  ],
+  "valeurs": {
+    "altitude": {
+      "expr": {
+        "ref": "ALTITUDE_ORBITE_KM"
+      },
+      "format": "km",
+      "approximatif": true
+    },
+    "vitesseOrbite": {
+      "expr": {
+        "ref": "VITESSE_ORBITALE_KM_H"
+      },
+      "format": "km/h",
+      "approximatif": true
+    },
+    "gain": {
+      "expr": {
+        "ref": "GAIN_VITESSE_LUNE_KM_S"
+      },
+      "format": "km/s",
+      "approximatif": true
+    },
+    "vitesseVoyage": {
+      "expr": {
+        "somme": [
+          {
+            "ref": "VITESSE_ORBITALE_KM_H"
+          },
+          {
+            "produit": [
+              {
+                "ref": "GAIN_VITESSE_LUNE_KM_S"
+              },
+              {
+                "ref": "SECONDES_PAR_HEURE"
+              }
+            ]
+          }
+        ]
+      },
+      "format": "km/h",
+      "approximatif": true
+    },
+    "duree": {
+      "expr": {
+        "quotient": [
+          {
+            "ref": "DISTANCE_TERRE_LUNE_KM"
+          },
+          {
+            "somme": [
+              {
+                "ref": "VITESSE_ORBITALE_KM_H"
+              },
+              {
+                "produit": [
+                  {
+                    "ref": "GAIN_VITESSE_LUNE_KM_S"
+                  },
+                  {
+                    "ref": "SECONDES_PAR_HEURE"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "format": "heures",
+      "approximatif": true
+    }
+  },
+  "journal": [
+    {
+      "id": "decollage",
+      "titre": {
+        "enfant": "Décollage réussi",
+        "adulte": "Journal de bord : décollage"
+      },
+      "texte": {
+        "enfant": "Nous avons quitté le sol avec {copilote}. Le moteur a tremblé, puis tout est devenu calme.",
+        "adulte": "Décollage nominal. Poussée soutenue, séparation des étages, mise en orbite en cours."
+      }
+    },
+    {
+      "id": "orbite",
+      "titre": {
+        "enfant": "Je tourne autour de la Terre",
+        "adulte": "Journal de bord : orbite basse"
+      },
+      "texte": {
+        "enfant": "Nous volons à {altitude} au-dessus de la Terre, à {vitesseOrbite}.",
+        "adulte": "Orbite basse à {altitude} d'altitude, vitesse orbitale {vitesseOrbite} (valeurs de la Station spatiale internationale, NASA)."
+      }
+    },
+    {
+      "id": "poussee",
+      "titre": {
+        "enfant": "La grande poussée",
+        "adulte": "Journal de bord : injection translunaire"
+      },
+      "texte": {
+        "enfant": "Notre moteur a donné un grand coup : {gain} de plus. Cela suffit pour quitter la Terre et filer vers la Lune.",
+        "adulte": "Injection translunaire : gain de vitesse de {gain} (valeur de la manœuvre d'Apollo 11, NASA)."
+      }
+    },
+    {
+      "id": "radio",
+      "titre": {
+        "enfant": "Un message de la Terre",
+        "adulte": "Journal de bord : délai radio"
+      },
+      "texte": {
+        "enfant": "À {distance} de la Terre, un message met {delai} pour aller et revenir. Plus on s'éloigne, plus l'attente est longue.",
+        "adulte": "Distance à la Terre {distance} : délai radio aller-retour {delai}, calculé avec la vitesse de la lumière."
+      }
+    },
+    {
+      "id": "arrivee",
+      "titre": {
+        "enfant": "Nous voilà près de la Lune",
+        "adulte": "Journal de bord : arrivée près de la Lune"
+      },
+      "texte": {
+        "enfant": "Nous sommes arrivés près de la Lune, après avoir calculé la distance avec {copilote}.",
+        "adulte": "Arrivée à proximité de la Lune. Distance Terre-Lune retrouvée par le calcul vitesse × durée."
+      }
+    }
+  ],
+  "etapes": [
+    {
+      "id": "p1-accueil",
+      "type": "dialogue",
+      "scene": "preparation",
+      "locuteur": "copilote",
+      "objectif": {
+        "enfant": "Écoute ton copilote.",
+        "adulte": "Prendre connaissance de la mission."
+      },
+      "texte": {
+        "enfant": "Bonjour ! Je m'appelle {copilote}, je serai ton copilote. Aujourd'hui, nous partons pour la Lune !",
+        "adulte": "Ici {copilote}, copilote. Mission : rejoindre l'environnement de la Lune. Je vous guide à chaque étape."
+      },
+      "suivant": "p2-choix"
+    },
+    {
+      "id": "p2-choix",
+      "type": "choix",
+      "scene": "preparation",
+      "objectif": {
+        "enfant": "Dis-moi si tu es prêt.",
+        "adulte": "Confirmer que l'équipage est prêt."
+      },
+      "question": {
+        "enfant": "Es-tu prêt à embarquer ?",
+        "adulte": "L'équipage est-il prêt à embarquer ?"
+      },
+      "options": [
+        {
+          "id": "oui",
+          "texte": {
+            "enfant": "Oui, allons-y !",
+            "adulte": "Prêt à embarquer."
+          },
+          "suivant": "c1-intro"
+        },
+        {
+          "id": "explique",
+          "texte": {
+            "enfant": "Explique-moi d'abord.",
+            "adulte": "Rappeler le plan de vol."
+          },
+          "suivant": "p3-explication"
+        }
+      ]
+    },
+    {
+      "id": "p3-explication",
+      "type": "dialogue",
+      "scene": "preparation",
+      "locuteur": "copilote",
+      "objectif": {
+        "enfant": "Écoute le plan.",
+        "adulte": "Revoir le plan de vol."
+      },
+      "texte": {
+        "enfant": "Voici le plan : on allume le vaisseau, on décolle, on tourne autour de la Terre, puis on file vers la Lune.",
+        "adulte": "Plan de vol : mise sous tension, décollage, orbite basse, injection translunaire, transit vers la Lune."
+      },
+      "suivant": "c1-intro"
+    },
+    {
+      "id": "c1-intro",
+      "type": "dialogue",
+      "scene": "cabine",
+      "locuteur": "copilote",
+      "objectif": {
+        "enfant": "Écoute ton copilote.",
+        "adulte": "Écouter la procédure."
+      },
+      "texte": {
+        "enfant": "Nous voici dans la cabine. Il y a trois interrupteurs : la batterie, l'air et le moteur. Il faut les allumer dans cet ordre.",
+        "adulte": "Procédure de mise sous tension : batterie, support-vie, puis moteur, dans cet ordre."
+      },
+      "suivant": "c2-interrupteurs"
+    },
+    {
+      "id": "c2-interrupteurs",
+      "type": "action",
+      "scene": "cabine",
+      "ordre": "impose",
+      "etoile": true,
+      "objectif": {
+        "enfant": "Allume les trois interrupteurs : la batterie, l'air, puis le moteur.",
+        "adulte": "Actionner dans l'ordre : batterie, support-vie, moteur."
+      },
+      "rappel": {
+        "enfant": "Il reste des interrupteurs à allumer. Commence par la batterie !",
+        "adulte": "Mise sous tension incomplète : suivre l'ordre batterie, support-vie, moteur."
+      },
+      "interrupteurs": [
+        {
+          "id": "batterie",
+          "libelle": {
+            "enfant": "Batterie",
+            "adulte": "Batterie"
+          }
+        },
+        {
+          "id": "air",
+          "libelle": {
+            "enfant": "Air",
+            "adulte": "Support-vie"
+          }
+        },
+        {
+          "id": "moteur",
+          "libelle": {
+            "enfant": "Moteur",
+            "adulte": "Moteur"
+          }
+        }
+      ],
+      "indices": [
+        {
+          "enfant": "On commence toujours par la batterie : sans elle, rien ne marche.",
+          "adulte": "Le premier organe à alimenter est la batterie."
+        },
+        {
+          "enfant": "Après la batterie, on allume l'air pour pouvoir respirer.",
+          "adulte": "Après la batterie, activer le support-vie."
+        },
+        {
+          "enfant": "Le moteur s'allume en dernier.",
+          "adulte": "Le moteur s'allume en dernier, une fois les systèmes vitaux en marche."
+        }
+      ],
+      "solution": {
+        "enfant": "Voici l'ordre : la batterie, l'air, puis le moteur. Je les allume pour toi, tu le sauras la prochaine fois !",
+        "adulte": "Ordre de mise sous tension : batterie, support-vie, moteur. Séquence exécutée par le copilote."
+      },
+      "suivant": "d1-compte"
+    },
+    {
+      "id": "d1-compte",
+      "type": "dialogue",
+      "scene": "decollage",
+      "locuteur": "controle",
+      "effetsEntree": [
+        "compte-a-rebours"
+      ],
+      "objectif": {
+        "enfant": "Écoute le compte à rebours.",
+        "adulte": "Suivre le compte à rebours."
+      },
+      "texte": {
+        "enfant": "Contrôle au sol : tout est bon. Compte à rebours : trois, deux, un…",
+        "adulte": "Contrôle au sol : tous les systèmes sont nominaux. Compte à rebours engagé."
+      },
+      "suivant": "d2-decollage"
+    },
+    {
+      "id": "d2-decollage",
+      "type": "dialogue",
+      "scene": "decollage",
+      "locuteur": "copilote",
+      "effetsEntree": [
+        "decollage",
+        "vibration"
+      ],
+      "journal": "decollage",
+      "objectif": {
+        "enfant": "Profite du décollage !",
+        "adulte": "Décollage en cours."
+      },
+      "texte": {
+        "enfant": "Décollage ! Tiens bon, ça tremble un peu. Bravo, nous quittons le sol !",
+        "adulte": "Décollage. Vibrations normales. Nous quittons le sol."
+      },
+      "suivant": "o1-orbite"
+    },
+    {
+      "id": "o1-orbite",
+      "type": "dialogue",
+      "scene": "orbite",
+      "locuteur": "copilote",
+      "journal": "orbite",
+      "objectif": {
+        "enfant": "Regarde la Terre par le hublot.",
+        "adulte": "Observer la Terre depuis l'orbite."
+      },
+      "texte": {
+        "enfant": "Nous sommes en orbite, à {altitude} au-dessus de la Terre ! Nous allons à {vitesseOrbite}.",
+        "adulte": "Orbite atteinte à {altitude} d'altitude. Vitesse orbitale : {vitesseOrbite}."
+      },
+      "suivant": "o2-scanner"
+    },
+    {
+      "id": "o2-scanner",
+      "type": "observation",
+      "scene": "orbite",
+      "cible": "terre",
+      "mode": "scanner",
+      "etoile": true,
+      "objectif": {
+        "enfant": "Scanne la Terre avec ton scanner.",
+        "adulte": "Scanner la Terre."
+      },
+      "rappel": {
+        "enfant": "Utilise le scanner sur la Terre, la grande planète bleue.",
+        "adulte": "Lancer le scanner sur la Terre."
+      },
+      "indices": [
+        {
+          "enfant": "La Terre est la grande planète bleue sous nous.",
+          "adulte": "La Terre est la sphère sous le vaisseau."
+        },
+        {
+          "enfant": "Choisis le scanner, puis touche la Terre.",
+          "adulte": "Sélectionner le mode scanner, puis la cible Terre."
+        }
+      ],
+      "solution": {
+        "enfant": "Le scanner a visé la Terre pour toi. Il lit des informations sur la planète.",
+        "adulte": "Scan de la Terre lancé par le copilote."
+      },
+      "suivant": "l1-reperer"
+    },
+    {
+      "id": "l1-reperer",
+      "type": "observation",
+      "scene": "cap-lune",
+      "cible": "lune",
+      "mode": "reperer",
+      "etoile": true,
+      "objectif": {
+        "enfant": "Repère la Lune dans le hublot.",
+        "adulte": "Repérer la Lune."
+      },
+      "rappel": {
+        "enfant": "La Lune est la boule grise et plus petite : touche-la !",
+        "adulte": "Repérer la Lune, cible du transit."
+      },
+      "indices": [
+        {
+          "enfant": "La Lune est plus petite que la Terre, et grise.",
+          "adulte": "La Lune apparaît plus petite et grise."
+        },
+        {
+          "enfant": "Choisis « repérer », puis touche la Lune.",
+          "adulte": "Mode repérage, cible Lune."
+        }
+      ],
+      "solution": {
+        "enfant": "Voilà la Lune : c'est elle que nous allons rejoindre. Je l'ai repérée pour toi.",
+        "adulte": "Repérage de la Lune effectué par le copilote."
+      },
+      "suivant": "l2-poussee"
+    },
+    {
+      "id": "l2-poussee",
+      "type": "timing",
+      "scene": "cap-lune",
+      "etoile": true,
+      "journal": "poussee",
+      "effetsSortie": [
+        "poussee",
+        "vibration"
+      ],
+      "objectif": {
+        "enfant": "Quand le voyant devient vert, appuie sur POUSSÉE !",
+        "adulte": "Déclencher la poussée dans la fenêtre de tir."
+      },
+      "rappel": {
+        "enfant": "Attends que le voyant devienne vert, puis appuie sur POUSSÉE.",
+        "adulte": "Attendre l'ouverture de la fenêtre, puis déclencher la poussée."
+      },
+      "consigne": {
+        "enfant": "Appuie sur POUSSÉE au moment où le voyant est vert.",
+        "adulte": "Poussée à déclencher pendant que la fenêtre est ouverte."
+      },
+      "indices": [
+        {
+          "enfant": "Ne te presse pas : attends que le voyant soit vert.",
+          "adulte": "Ne pas anticiper : attendre l'ouverture de la fenêtre."
+        },
+        {
+          "enfant": "Appuie quand le voyant est vert, pas avant et pas après.",
+          "adulte": "Déclencher entre l'ouverture et la fermeture de la fenêtre."
+        }
+      ],
+      "solution": {
+        "enfant": "Je m'en occupe : poussée ! Le moteur nous donne {gain} de plus pour partir vers la Lune.",
+        "adulte": "Poussée déclenchée par le copilote : gain de vitesse de {gain} pour l'injection translunaire."
+      },
+      "suivant": "v1-voyage"
+    },
+    {
+      "id": "v1-voyage",
+      "type": "voyage",
+      "scene": "voyage",
+      "cible": "lune",
+      "depart": {
+        "astre": "terre",
+        "altitude": {
+          "ref": "ALTITUDE_ORBITE_KM"
+        }
+      },
+      "vitesse": {
+        "somme": [
+          {
+            "ref": "VITESSE_ORBITALE_KM_S"
+          },
+          {
+            "ref": "GAIN_VITESSE_LUNE_KM_S"
+          }
+        ]
+      },
+      "facteurTemps": {
+        "ref": "FACTEUR_ACCELERATION_TEMPS"
+      },
+      "arrivee": {
+        "produit": [
+          {
+            "ref": "MISSION_ARRIVEE_LUNE_RAYONS"
+          },
+          {
+            "ref": "RAYON_LUNE_KM"
+          }
+        ]
+      },
+      "objectif": {
+        "enfant": "Regarde le voyage vers la Lune.",
+        "adulte": "Transit vers la Lune en cours."
+      },
+      "jalons": [
+        {
+          "part": 0.25,
+          "type": "radio",
+          "journal": "radio",
+          "texte": {
+            "enfant": "Message de la Terre : tout va bien ! Nous sommes à {distance} de la Terre. Le message met {delai} pour aller et revenir.",
+            "adulte": "Message du contrôle : trajectoire nominale. Distance à la Terre : {distance}. Délai radio aller-retour : {delai}."
+          }
+        },
+        {
+          "part": 0.5,
+          "type": "observation",
+          "astre": "terre",
+          "texte": {
+            "enfant": "Regarde derrière nous : la Terre est devenue toute petite !",
+            "adulte": "À mi-parcours, la Terre apparaît nettement plus petite."
+          }
+        },
+        {
+          "part": 0.75,
+          "type": "observation",
+          "astre": "lune",
+          "texte": {
+            "enfant": "La Lune grossit ! Nous approchons.",
+            "adulte": "La Lune grossit dans le champ de vision : approche."
+          }
+        }
+      ],
+      "suivant": "v2-calcul"
+    },
+    {
+      "id": "v2-calcul",
+      "type": "calcul",
+      "scene": "voyage",
+      "etoile": true,
+      "journal": "arrivee",
+      "formatReponse": "km",
+      "objectif": {
+        "enfant": "Calcule la distance parcourue jusqu'à la Lune, en kilomètres.",
+        "adulte": "Calculer la distance Terre-Lune en kilomètres (vitesse × durée)."
+      },
+      "rappel": {
+        "enfant": "Multiplie la vitesse par la durée pour trouver la distance.",
+        "adulte": "Distance = vitesse × durée."
+      },
+      "question": {
+        "enfant": "Nous avons volé à {vitesseVoyage} pendant {duree}. Quelle distance avons-nous parcourue, en kilomètres ?",
+        "adulte": "Vitesse moyenne {vitesseVoyage} pendant {duree}. Quelle distance, en kilomètres ?"
+      },
+      "reponse": {
+        "ref": "DISTANCE_TERRE_LUNE_KM"
+      },
+      "indices": [
+        {
+          "enfant": "Pour une distance, on multiplie la vitesse par la durée.",
+          "adulte": "Distance = vitesse × durée."
+        },
+        {
+          "enfant": "Multiplie le nombre de kilomètres par heure par le nombre d'heures.",
+          "adulte": "Multiplier la vitesse en km/h par la durée en heures."
+        },
+        {
+          "enfant": "Un nombre rond suffit : on t'accepte une petite différence.",
+          "adulte": "Une petite marge d'erreur est acceptée."
+        }
+      ],
+      "solution": {
+        "enfant": "La distance, c'est la vitesse fois la durée : cela donne {reponse}. C'est la distance de la Terre à la Lune !",
+        "adulte": "Distance = vitesse × durée = {reponse}, soit la distance Terre-Lune."
+      },
+      "suivant": "v3-fin"
+    },
+    {
+      "id": "v3-fin",
+      "type": "dialogue",
+      "scene": "voyage",
+      "locuteur": "copilote",
+      "fin": true,
+      "objectif": {
+        "enfant": "Bravo, mission terminée !",
+        "adulte": "Fin de la mission."
+      },
+      "texte": {
+        "enfant": "Bravo ! Nous sommes près de la Lune. Tu es un vrai explorateur !",
+        "adulte": "Mission accomplie : nous sommes à proximité de la Lune. Bon travail."
+      }
+    }
+  ]
+}
