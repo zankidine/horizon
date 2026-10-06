@@ -114,6 +114,10 @@ function createAppStore() {
     partir() {
       state.pretAPartir = true
     },
+    /** Retour à l'écran de préparation (pour changer de niveau). */
+    revenir() {
+      state.pretAPartir = false
+    },
   }
 }
 

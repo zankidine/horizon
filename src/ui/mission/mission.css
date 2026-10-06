@@ -1,0 +1,415 @@
+/*
+ * Panneau de mission : grand et lisible. Texte d'au moins 18 px, boutons d'au
+ * moins 56 px, au moins 14 px entre deux éléments cliquables. Les couleurs
+ * viennent des jetons du HUD (tokens.css).
+ */
+.mission {
+  --m-txt: max(18px, 1.125rem);
+  --m-txt-g: max(20px, 1.375rem);
+  --m-cible: 3.5rem;
+  --m-gap: 0.875rem;
+  --m-hmax: 60dvh;
+
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: var(--m-hmax);
+  border: var(--hud-epaisseur) solid var(--hud-bordure);
+  border-radius: var(--hud-rayon);
+  background: color-mix(in srgb, var(--hud-fond) 82%, #000);
+  color: var(--hud-texte);
+  font-family: var(--hud-font-titre);
+  font-size: var(--m-txt);
+  line-height: 1.35;
+  pointer-events: auto;
+  text-shadow: none;
+}
+
+.ecran[data-mise-en-page='portrait'] .mission {
+  --m-hmax: min(76dvh, 48rem);
+}
+
+.ecran[data-mise-en-page='paysage'] .mission {
+  --m-hmax: min(58dvh, 34rem);
+}
+
+.ecran[data-mise-en-page='compact'] .mission {
+  --m-hmax: 78dvh;
+}
+
+.mission :where(p, h2, h3, ul, ol, li, figure) {
+  margin: 0;
+  padding: 0;
+}
+
+.mission :where(ul, ol) {
+  list-style: none;
+}
+
+.m-entete {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--m-gap);
+  padding: var(--m-gap);
+  border-bottom: 1px solid var(--hud-bordure-douce);
+}
+
+.m-ligne-titre {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem var(--m-gap);
+  color: var(--hud-texte-doux);
+  font-weight: 600;
+}
+
+.m-corps {
+  display: grid;
+  align-content: start;
+  gap: var(--m-gap);
+  min-height: 0;
+  padding: var(--m-gap);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.m-pied {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--m-gap);
+  padding: var(--m-gap);
+  border-top: 1px solid var(--hud-bordure-douce);
+}
+
+/* Les trois boutons gardent leur place : un bouton inutile s'efface sans décaler les autres. */
+.m-pied .m-absent {
+  visibility: hidden;
+}
+
+.m-rangee {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--m-gap);
+}
+
+.m-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: var(--m-gap);
+}
+
+/* Réponses courtes (valeurs, repérer ou scanner) : deux ou trois par ligne. */
+.m-compacte {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr));
+}
+
+/* Libellés longs (interrupteurs) : deux colonnes seulement si la place le permet. */
+.m-large {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+}
+
+.m-colonne {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.m-objectif {
+  font-weight: 600;
+  color: var(--hud-texte-doux);
+}
+
+.m-etiquette {
+  color: var(--hud-ligne);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.m-titre {
+  font-size: var(--m-txt-g);
+  font-weight: 700;
+  color: var(--hud-ligne);
+}
+
+.m-replique {
+  font-size: var(--m-txt-g);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.m-locuteur {
+  color: var(--hud-ligne);
+  font-weight: 700;
+}
+
+.m-question {
+  font-size: var(--m-txt-g);
+  font-weight: 500;
+}
+
+.m-note {
+  color: var(--hud-texte-doux);
+  font-style: italic;
+}
+
+/* --- Boutons ------------------------------------------------------------------ */
+.m-bouton {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: var(--m-cible);
+  min-height: var(--m-cible);
+  padding: 0.25rem 1.1rem;
+  border: var(--hud-epaisseur) solid var(--hud-ligne);
+  border-radius: var(--hud-rayon);
+  background: var(--hud-fond-actif);
+  color: var(--hud-texte);
+  font: 700 var(--m-txt) / 1.2 var(--hud-font-titre);
+  letter-spacing: 0.03em;
+  text-align: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.m-bouton:focus-visible {
+  outline: var(--hud-focus);
+  outline-offset: var(--hud-focus-decalage);
+}
+
+@media (hover: hover) {
+  .m-bouton:hover {
+    background: color-mix(in srgb, var(--hud-fond-actif) 70%, var(--hud-ligne));
+  }
+}
+
+.m-bouton:active {
+  transform: scale(0.98);
+}
+
+.m-bouton[aria-pressed='true'],
+.m-bouton[aria-checked='true'] {
+  border-color: var(--role-valide);
+  background: color-mix(in srgb, var(--role-valide) 32%, #000);
+}
+
+.m-grand {
+  min-height: 4rem;
+  font-size: var(--m-txt-g);
+}
+
+.m-enorme {
+  display: flex;
+  width: 100%;
+  min-height: 5rem;
+  font-size: clamp(1.5rem, 6vw, 2rem);
+  letter-spacing: 0.08em;
+}
+
+.m-enorme[data-ouverte='true'] {
+  border-color: var(--role-valide);
+  background: color-mix(in srgb, var(--role-valide) 45%, #000);
+}
+
+.m-discret {
+  background: transparent;
+}
+
+/* --- Interrupteurs -------------------------------------------------------------- */
+.m-interrupteur {
+  justify-content: space-between;
+  width: 100%;
+  min-height: 4rem;
+  font-size: var(--m-txt-g);
+  text-align: left;
+}
+
+.m-numero {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 2px solid currentcolor;
+  border-radius: 50%;
+}
+
+.m-etat {
+  margin-left: auto;
+  font-size: var(--m-txt);
+  color: var(--hud-texte-doux);
+}
+
+/* --- Saisie ------------------------------------------------------------------------ */
+.m-saisie {
+  display: grid;
+  gap: var(--m-gap);
+}
+
+.m-champ {
+  box-sizing: border-box;
+  flex: 1 1 8rem;
+  min-width: 0;
+  min-height: 4rem;
+  padding: 0 1rem;
+  border: var(--hud-epaisseur) solid var(--hud-ligne);
+  border-radius: var(--hud-rayon);
+  background: #000;
+  color: var(--hud-texte);
+  font: 600 var(--m-txt-g) / 1 var(--hud-font-chiffres);
+}
+
+.m-champ:focus-visible {
+  outline: var(--hud-focus);
+  outline-offset: var(--hud-focus-decalage);
+}
+
+.m-champ[aria-invalid='true'] {
+  border-color: var(--hud-chaud);
+}
+
+.m-unite {
+  font-size: var(--m-txt-g);
+  font-weight: 700;
+}
+
+.m-erreur {
+  color: var(--hud-chaud);
+  font-weight: 600;
+}
+
+/* --- Jauges ----------------------------------------------------------------------- */
+.m-jauge {
+  position: relative;
+  height: 1.5rem;
+  overflow: hidden;
+  border: 2px solid var(--hud-bordure);
+  border-radius: 999px;
+  background: #000;
+}
+
+.m-jauge > .m-remplissage {
+  height: 100%;
+  background: var(--hud-ligne);
+  transition: width 120ms linear;
+}
+
+.m-jauge[data-phase='ouverte'] > .m-remplissage {
+  background: var(--role-valide);
+}
+
+.m-jauge-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: color-mix(in srgb, var(--role-valide) 55%, transparent);
+  border-inline: 3px solid var(--role-valide);
+}
+
+.m-jauge-repere {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 6px;
+  margin-left: -3px;
+  border-radius: 3px;
+  background: var(--hud-texte);
+  transition: left 120ms linear;
+}
+
+.m-statut {
+  font-size: var(--m-txt-g);
+  font-weight: 700;
+}
+
+.m-mesures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--m-gap);
+}
+
+.m-statut[data-ok='true'] {
+  color: var(--role-valide);
+}
+
+.m-statut[data-ok='false'] {
+  color: var(--hud-chaud);
+}
+
+/* --- Retours : indices, solution, coup de pouce -------------------------------------- */
+.m-retour {
+  display: grid;
+  gap: var(--m-gap);
+  padding: var(--m-gap);
+  border: var(--hud-epaisseur) solid var(--hud-ligne);
+  border-radius: var(--hud-rayon);
+  background: color-mix(in srgb, var(--hud-ligne) 14%, #000);
+}
+
+.m-retour[data-genre='solution'] {
+  border-color: var(--role-valide);
+  background: color-mix(in srgb, var(--role-valide) 14%, #000);
+}
+
+.m-retour[data-genre='rappel'] {
+  border-style: dashed;
+}
+
+.m-retour-titre {
+  color: var(--hud-ligne);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* --- Voyage, journal, fin --------------------------------------------------------------- */
+.m-jalons {
+  display: grid;
+  gap: var(--m-gap);
+}
+
+.m-jalon {
+  padding: 0.5rem 0.75rem;
+  border-left: 4px solid var(--hud-ligne);
+  background: color-mix(in srgb, var(--hud-ligne) 10%, #000);
+}
+
+.m-entree {
+  display: grid;
+  gap: 0.25rem;
+  padding-bottom: var(--m-gap);
+  border-bottom: 1px solid var(--hud-bordure-douce);
+}
+
+.m-entree strong {
+  color: var(--hud-ligne);
+}
+
+.m-etoiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--hud-ligne);
+}
+
+.m-etoiles .m-vide {
+  opacity: 0.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m-jauge > .m-remplissage,
+  .m-jauge-repere {
+    transition: none;
+  }
+
+  .m-bouton:active {
+    transform: none;
+  }
+}
