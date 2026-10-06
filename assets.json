@@ -1,0 +1,64 @@
+{
+  "assets": [
+    {
+      "chemin": "public/textures/earth-day-1k.jpg",
+      "type": "texture",
+      "description": "Terre, face de jour (1k)",
+      "source": "NASA Visible Earth, Blue Marble: Next Generation (redimensionnée en 1k, 2k et 4k)",
+      "url": "https://visibleearth.nasa.gov/collection/1484/blue-marble",
+      "auteur": "NASA Earth Observatory",
+      "licence": "Domaine public (images NASA, crédit demandé)",
+      "statut": "à fournir"
+    },
+    {
+      "chemin": "public/textures/earth-day-2k.jpg",
+      "type": "texture",
+      "description": "Terre, face de jour (2k)",
+      "source": "NASA Visible Earth, Blue Marble: Next Generation (redimensionnée en 1k, 2k et 4k)",
+      "url": "https://visibleearth.nasa.gov/collection/1484/blue-marble",
+      "auteur": "NASA Earth Observatory",
+      "licence": "Domaine public (images NASA, crédit demandé)",
+      "statut": "à fournir"
+    },
+    {
+      "chemin": "public/textures/earth-day-4k.jpg",
+      "type": "texture",
+      "description": "Terre, face de jour (4k)",
+      "source": "NASA Visible Earth, Blue Marble: Next Generation (redimensionnée en 1k, 2k et 4k)",
+      "url": "https://visibleearth.nasa.gov/collection/1484/blue-marble",
+      "auteur": "NASA Earth Observatory",
+      "licence": "Domaine public (images NASA, crédit demandé)",
+      "statut": "à fournir"
+    },
+    {
+      "chemin": "public/textures/moon-1k.jpg",
+      "type": "texture",
+      "description": "Lune (1k)",
+      "source": "NASA Scientific Visualization Studio, CGI Moon Kit (carte couleur LROC, redimensionnée en 1k, 2k et 4k)",
+      "url": "https://svs.gsfc.nasa.gov/4720",
+      "auteur": "NASA's Scientific Visualization Studio",
+      "licence": "Domaine public (images NASA, crédit demandé)",
+      "statut": "à fournir"
+    },
+    {
+      "chemin": "public/textures/moon-2k.jpg",
+      "type": "texture",
+      "description": "Lune (2k)",
+      "source": "NASA Scientific Visualization Studio, CGI Moon Kit (carte couleur LROC, redimensionnée en 1k, 2k et 4k)",
+      "url": "https://svs.gsfc.nasa.gov/4720",
+      "auteur": "NASA's Scientific Visualization Studio",
+      "licence": "Domaine public (images NASA, crédit demandé)",
+      "statut": "à fournir"
+    },
+    {
+      "chemin": "public/textures/moon-4k.jpg",
+      "type": "texture",
+      "description": "Lune (4k)",
+      "source": "NASA Scientific Visualization Studio, CGI Moon Kit (carte couleur LROC, redimensionnée en 1k, 2k et 4k)",
+      "url": "https://svs.gsfc.nasa.gov/4720",
+      "auteur": "NASA's Scientific Visualization Studio",
+      "licence": "Domaine public (images NASA, crédit demandé)",
+      "statut": "à fournir"
+    }
+  ]
+}
