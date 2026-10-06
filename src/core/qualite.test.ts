@@ -71,6 +71,8 @@ describe('PARAMETRES_QUALITE', () => {
     const [bas, moyen, haut] = NIVEAUX_QUALITE.map((n) => PARAMETRES_QUALITE[n])
     expect(bas.nombreEtoiles).toBeLessThan(moyen.nombreEtoiles)
     expect(moyen.nombreEtoiles).toBeLessThan(haut.nombreEtoiles)
+    expect(bas.nombrePoussieres).toBeLessThan(moyen.nombrePoussieres)
+    expect(moyen.nombrePoussieres).toBeLessThan(haut.nombrePoussieres)
     expect(bas.ratioPixelsMax).toBeLessThan(moyen.ratioPixelsMax)
     expect(moyen.ratioPixelsMax).toBeLessThan(haut.ratioPixelsMax)
     expect(bas.segmentsSphere).toBeLessThan(haut.segmentsSphere)
